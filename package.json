@@ -1,5 +1,5 @@
 {
-  "name": "afv-ui",
+  "name": "audio-mixer",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -16,6 +16,9 @@
     "lint": "eslint ./src --report-unused-disable-directives --max-warnings 0",
     "pretty": "prettier --write --ignore-unknown .",
     "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": "prettier --write"
   },
   "eslintConfig": {
     "extends": [
@@ -45,6 +48,8 @@
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
     "postcss": "^8.5.1",
     "prettier": "^3.4.2",
     "tailwindcss": "^3.4.17"
