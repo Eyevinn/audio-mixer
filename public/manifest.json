@@ -1,0 +1,8 @@
+{
+  "short_name": "AFV Agent",
+  "name": "Audio Follow Video Agent",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
