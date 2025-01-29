@@ -4,7 +4,6 @@ type ButtonProps = {
 };
 
 export const ActionButton = ({ status, label }: ButtonProps) => {
-  const test = 'test';
   return (
     <button
       className={`relative w-[61px] h-[40px] text-[15px] border-none bg-darkgrey text-center m-[5px_10px] p-0 rounded-[5px] text-white         
