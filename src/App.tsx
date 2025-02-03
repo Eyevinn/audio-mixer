@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './index.css';
-import { SideNav } from './components/sideNav/SideNav';
-import { MixesPage } from './pages/mixes/Mixes';
-import { StripsPage } from './pages/strips/Strips';
-import { OutputMixesPage } from './pages/outputs/ouputMixes/OutputMixes';
-import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping';
+import { SideNav } from './components/sideNav/SideNav_temp';
+import { MixesPage } from './pages/mixes/Mixes_temp';
+import { StripsPage } from './pages/strips/Strips_temp';
+import { OutputMixesPage } from './pages/outputs/ouputMixes/OutputMixes_temp';
+import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping_temp';
 import { ConfigureMixPage } from './pages/mixes/configureMix/ConfigureMix';
 
 function App() {
