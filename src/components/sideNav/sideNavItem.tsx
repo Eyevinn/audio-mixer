@@ -1,5 +1,5 @@
-import { TSideNavItem } from './sideNav';
-import { SideNavTooltip } from './sideNavTooltip';
+import { TSideNavItem } from './SideNav';
+import { SideNavTooltip } from './SideNavTooltip';
 import { useNavigate } from 'react-router-dom';
 import Icons from '../icons/Icons';
 

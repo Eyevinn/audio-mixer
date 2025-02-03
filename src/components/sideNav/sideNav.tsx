@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SideNavItemComponent } from './sideNavItem';
+import { SideNavItemComponent } from './SideNavItem';
 import Icons, { PickIconNames } from '../icons/Icons';
 
 export type TSideNavItem = {
