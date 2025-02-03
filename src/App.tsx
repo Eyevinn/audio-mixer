@@ -5,7 +5,7 @@ import { MixesPage } from './pages/mixes/Mixes_temp';
 import { StripsPage } from './pages/strips/Strips_temp';
 import { OutputMixesPage } from './pages/outputs/ouputMixes/OutputMixes_temp';
 import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping_temp';
-import { ConfigureMixPage } from './pages/mixes/configureMix/ConfigureMix';
+import { ConfigureMixPage } from './pages/mixes/configureMix/ConfigureMix_temp';
 
 function App() {
   return (
