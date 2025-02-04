@@ -1,5 +1,3 @@
-// import { AudioControlPanel } from '../AudioControlPanel';
-
 import { useEffect, useState } from 'react';
 import { AudioStrip } from '../../components/audioStrip/AudioStrip';
 import { Strip } from '../../types/types';
