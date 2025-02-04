@@ -22,7 +22,6 @@ function App() {
               <>
                 <Route path="/strips" element={<StripsPage />} />
                 <Route path="/mixes" element={<MixesPage />} />
-                <Route path="/outputs/output-mixes" element={<OutputMixesPage />} />
                 <Route
                   path="/outputs/output-mixes"
                   element={<OutputMixesPage />}
