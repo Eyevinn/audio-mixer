@@ -8,8 +8,7 @@ import { EffectsPanel } from '../../components/EffectsPanel';
 export const StripsPage = () => {
   const [localStrips, setLocalStrips] = useState<Strip[]>([]);
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
-  // const [removeMode, setRemoveMode] = useState(false);
-  const { sendMessage, isConnected, connect, lastMessage } = useWebSocket();
+  const { sendMessage, isConnected, lastMessage } = useWebSocket();
 
   useEffect(() => {
     if (!lastMessage) return;

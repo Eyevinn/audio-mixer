@@ -15,7 +15,6 @@ interface EffectsPanelProps {
 
 export const EffectsPanel: React.FC<EffectsPanelProps> = ({
   label,
-  // stripId,
   onEffectChange
 }) => {
   interface EQBand {
