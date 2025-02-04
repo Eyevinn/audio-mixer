@@ -1,0 +1,16 @@
+.volumeSlider {
+  /* Any specific styles for the volume slider that can't be handled by Tailwind */
+  transform: rotate(-90deg) translateX(-131px) translateY(167px);
+}
+
+.meterContainer {
+  /* Any specific styles for the meter container */
+}
+
+.stripContainer {
+  @apply w-[100px] absolute;
+}
+
+.stripConfig {
+  @apply flex justify-between;
+}
