@@ -2,7 +2,6 @@ export const SliderLegend = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      // className="slider_legend"
       className="relative top-[9px]"
       version="2.0"
       height="328"
@@ -85,82 +84,42 @@ export const SliderLegend = () => {
         y2="324"
         style={{ stroke: '#777', strokeWidth: 2 }}
       ></line>
-      <text
-        x="4"
-        y="7"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="4" y="7" className="text-[10px] font-sans fill-[#777]">
         10
       </text>
-      <text
-        x="10"
-        y="47"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="10" y="47" className="text-[10px] font-sans fill-[#777]">
         5
       </text>
       <text
         x="9"
         y="85"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
+        className="text-[10px] font-sans fill-[#777]"
         style={{ stroke: '#999' }}
       >
         0
       </text>
-      <text
-        x="6"
-        y="127"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="6" y="127" className="text-[10px] font-sans fill-[#777]">
         -5
       </text>
-      <text
-        x="0"
-        y="167"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="0" y="167" className="text-[10px] font-sans fill-[#777]">
         -10
       </text>
-      <text
-        x="0"
-        y="207"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="0" y="207" className="text-[10px] font-sans fill-[#777]">
         -20
       </text>
-      <text
-        x="0"
-        y="247"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="0" y="247" className="text-[10px] font-sans fill-[#777]">
         -30
       </text>
-      <text
-        x="0"
-        y="267"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="0" y="267" className="text-[10px] font-sans fill-[#777]">
         -40
       </text>
-      <text
-        x="0"
-        y="287"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="0" y="287" className="text-[10px] font-sans fill-[#777]">
         -50
       </text>
-      <text
-        x="0"
-        y="307"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="0" y="307" className="text-[10px] font-sans fill-[#777]">
         -60
       </text>
-      <text
-        x="3"
-        y="327"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="3" y="327" className="text-[10px] font-sans fill-[#777]">
         -&infin;
       </text>
     </svg>

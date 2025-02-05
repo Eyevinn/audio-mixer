@@ -2,7 +2,6 @@ export const PanningLegend = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      // className="panning_legend"
       className="absolute left-[2px]"
       version="2.0"
       height="50"
@@ -43,18 +42,10 @@ export const PanningLegend = () => {
         y2="35"
         style={{ stroke: '#777', strokeWidth: 2 }}
       />
-      <text
-        x="2"
-        y="46"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="2" y="46" className="text-[10px] font-sans fill-[#777]">
         L
       </text>
-      <text
-        x="72"
-        y="46"
-        /* className="legend_text" */ className="text-[10px] font-sans fill-[#777]"
-      >
+      <text x="72" y="46" className="text-[10px] font-sans fill-[#777]">
         R
       </text>
     </svg>

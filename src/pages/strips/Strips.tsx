@@ -57,7 +57,7 @@ export const StripsPage = () => {
     slot: localStrips.length,
     channel1: 0,
     channel2: 0,
-    mode: 'mono',
+    mode: 'stereo',
     selected: false
   });
 

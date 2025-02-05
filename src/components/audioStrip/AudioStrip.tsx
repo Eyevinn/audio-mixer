@@ -64,38 +64,35 @@ export const AudioStrip: React.FC<AudioStripProps> = ({
 
   return (
     <div className="w-[8rem] h-[50rem] relative inline-block border-[0.1px] rounded-lg border-gray-500">
-      <div className={styles.stripContainer}>
-        {/* Strip Info */}
-        <div className={styles.stripConfig}>
-          <div className="text-sm text-center mb-2 text-white">
-            Strip #{slot}
-          </div>
-          <button onClick={onRemove} className="w-[2rem] p-2">
-            <Icons
-              name="IconTrash"
-              className="stroke-delete hover:cursor-pointer rounded-xl hover:bg-light place-self-end"
-            />
-          </button>
-        </div>
+      {/* Strip Info */}
+      <div className="flex justify-between flex-wrap items-center w-full">
+        <div className="text-sm text-center ml-2 text-white">Strip #{slot}</div>
+        <button onClick={onRemove} className="w-[2rem] p-2">
+          <Icons
+            name="IconTrash"
+            className="stroke-delete hover:cursor-pointer rounded-xl hover:bg-light place-self-end"
+          />
+        </button>
+      </div>
 
-        {/* Label Input */}
-        <input
-          type="text"
-          value={label}
-          onChange={(e) => onLabelChange(e.target.value)}
-          className="w-full px-2 py-1 bg-gray-700 text-white rounded mb-2"
-        />
+      {/* Label Input */}
+      <input
+        type="text"
+        value={label}
+        onChange={(e) => onLabelChange(e.target.value)}
+        className={styles.stripUserInputs}
+      />
 
-        {/* Mode Select */}
-        <select
-          value={mode}
-          onChange={(e) => onLabelChange(e.target.value)}
-          className="w-full px-2 py-1 bg-gray-700 text-white rounded mb-2"
-        >
-          <option value="mono">Mono</option>
-          <option value="stereo">Stereo</option>
-        </select>
-
+      {/* Mode Select */}
+      <select
+        value={mode}
+        onChange={(e) => onLabelChange(e.target.value)}
+        className={styles.stripUserInputs}
+      >
+        <option value="mono">Mono</option>
+        <option value="stereo">Stereo</option>
+      </select>
+      <div className="flex justify-center flex-wrap w-full mt-5">
         {/* Panning Slider */}
         <PanningSlider
           inputValue={panningValToPos(panning)}
@@ -103,8 +100,7 @@ export const AudioStrip: React.FC<AudioStripProps> = ({
             onPanningChange(panningPosToVal(parseInt(panning)))
           }
         />
-
-        <div className="flex pb-4">
+        <div className="flex mb-5">
           {/* Audio Levels */}
           <AudioLevel
             isStereo={mode === 'stereo'}
@@ -139,14 +135,12 @@ export const AudioStrip: React.FC<AudioStripProps> = ({
             ))}
           </div>
         </div>
-        <div className="relative w-[72px] h-[346px] ml-[5px]">
-          {/* Volume Slider */}
-          <VolumeSlider
-            type="mixer"
-            inputVolume={volume}
-            onVolumeChange={onVolumeChange}
-          />
-        </div>
+        {/* Volume Slider */}
+        <VolumeSlider
+          type="mixer"
+          inputVolume={volume}
+          onVolumeChange={onVolumeChange}
+        />
       </div>
     </div>
   );

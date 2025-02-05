@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AudioLevel } from '../audioLevel/AudioLevel';
 import { VolumeSlider } from '../volumeSlider/VolumeSlider';
 import { ActionButton } from '../buttons/Buttons';
+import { EbuMeters } from './EbuMeters';
 
 interface MainVolumeProps {
   onVolumeChange: (volume: number) => void;
@@ -28,27 +29,17 @@ export const MainVolume: React.FC<MainVolumeProps> = ({
   });
 
   return (
-    <div className="w-[95px] h-[726px] relative inline-block">
-      <div className="w-full relative">
-        <div className="text-sm text-center mb-2 text-white">Main Volume</div>
+    <div className="w-[8rem] h-[50rem] relative inline-block border-[0.1px] rounded-lg border-gray-500">
+      {/* Strip Info */}
+      <div className="text-sm text-center ml-2 mb-2 text-white">
+        Main Volume
+      </div>
 
-        <div className="h-[214px]">
-          <p className="text-xs text-white m-0">EBU R 128 M:</p>
-          <p className="text-xs mb-3.5 text-white">
-            {typeof lufsData.momentary === 'number'
-              ? `${lufsData.momentary.toFixed(1)} LUFS`
-              : '- LUFS'}
-          </p>
+      {/* EBU Meters */}
+      <EbuMeters onResetLUFS={onResetLUFS} lufsData={lufsData} />
 
-          <button
-            onClick={onResetLUFS}
-            className="text-xl text-white bg-transparent border-none cursor-pointer"
-          >
-            ⟳
-          </button>
-        </div>
-
-        <div className="flex pb-4">
+      <div className="flex justify-center flex-wrap w-full mt-5">
+        <div className="flex mb-5">
           <AudioLevel isStereo={true} />
 
           <div className="flex flex-col justify-end">
@@ -64,10 +55,8 @@ export const MainVolume: React.FC<MainVolumeProps> = ({
           </div>
         </div>
 
-        <div className="relative w-[72px] h-[346px] ml-[5px]">
-          {/* Volume slider with markers */}
-          <VolumeSlider type="master" onVolumeChange={onVolumeChange} />
-        </div>
+        {/* Volume slider with markers */}
+        <VolumeSlider type="master" onVolumeChange={onVolumeChange} />
       </div>
     </div>
   );

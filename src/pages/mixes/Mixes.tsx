@@ -9,7 +9,7 @@ export const MixesPage = () => {
           // onClick={handleAddStrip}
           className="p-2 bg-green-600 rounded hover:bg-green-700"
         >
-          Add Strip
+          Add Mix
         </button>
       </PageHeader>
     </div>
