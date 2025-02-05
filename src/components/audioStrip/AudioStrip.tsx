@@ -63,7 +63,7 @@ export const AudioStrip: React.FC<AudioStripProps> = ({
   };
 
   return (
-    <div className="w-[97px] h-[726px] relative inline-block">
+    <div className="w-[8rem] h-[50rem] relative inline-block border-[0.1px] rounded-lg border-gray-500">
       <div className={styles.stripContainer}>
         {/* Strip Info */}
         <div className={styles.stripConfig}>

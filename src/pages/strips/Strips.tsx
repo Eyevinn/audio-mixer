@@ -4,6 +4,7 @@ import { Strip } from '../../types/types';
 import { addStrip, removeStrip } from '../../utils/utils';
 import { useWebSocket } from '../../components/WebSocketContext';
 import { EffectsPanel } from '../../components/EffectsPanel';
+import { PageHeader } from '../../components/pageHeader/PageHeader';
 
 export const StripsPage = () => {
   const [localStrips, setLocalStrips] = useState<Strip[]>([]);
@@ -99,16 +100,18 @@ export const StripsPage = () => {
   };
 
   return (
-    <div className="text-white text-2xl">
-      Audio Strips
-      <button
-        onClick={handleAddStrip}
-        className="p-2 bg-green-600 rounded hover:bg-green-700"
-      >
-        Add Strip
-      </button>
+    <div className="text-white text-2xl flex flex-col w-full">
+      <PageHeader title="Audio Strips">
+        <button
+          onClick={handleAddStrip}
+          className="p-2 bg-green-600 rounded hover:bg-green-700"
+        >
+          Add Strip
+        </button>
+      </PageHeader>
+
       {/* Audio Strips Container */}
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 p-5">
         {localStrips.map((strip) => (
           <AudioStrip
             key={strip.id}

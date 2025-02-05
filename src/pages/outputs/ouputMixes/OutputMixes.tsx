@@ -1,12 +1,24 @@
+import Icons from '../../../components/icons/Icons';
 import { MainVolume } from '../../../components/MainVolume';
+import { PageHeader } from '../../../components/pageHeader/PageHeader';
 import { useWebSocket } from '../../../components/WebSocketContext';
 
 export const OutputMixesPage = () => {
   const { sendMessage } = useWebSocket();
   return (
-    <div className="text-white text-2xl">
-      Output Mixes {/* Main Volume */}
-      <div className="flex space-x-2">
+    <div className="text-white text-2xl flex flex-col w-full">
+      <PageHeader title="Output Mixes">
+        <button className="w-[2rem] p-2">
+          <Icons
+            name="IconTrash"
+            className="stroke-inherit hover:cursor-pointer rounded-xl hover:bg-light place-self-end"
+          />
+        </button>
+      </PageHeader>
+
+      {/* Output Mixes Container */}
+      <div className="flex space-x-2 p-5">
+        {/* Main Volume */}
         <MainVolume
           onVolumeChange={(volume) =>
             sendMessage({
