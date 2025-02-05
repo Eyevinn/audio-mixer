@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { AudioStrip } from '../components/audioStrip/AudioStrip';
-import { ControlButtons } from '../components/ControlButtons';
-import { EffectsPanel } from '../components/EffectsPanel';
-import { MainVolume } from '../components/MainVolume';
-import { useWebSocket } from '../components/WebSocketContext';
-import { WebSocketDialog } from '../components/WebSocketDialog';
-import { Strip } from '../types/types';
+import { AudioStrip } from '../audioStrip/AudioStrip';
+import { ControlButtons } from './ControlButtons';
+import { EffectsPanel } from '../audioFilters/EffectsPanel';
+import { MainVolume } from '../mainVolume/MainVolume';
+import { useWebSocket } from '../webSocket/WebSocketContext';
+import { WebSocketDialog } from '../webSocket/WebSocketDialog';
+import { Strip } from '../../types/types';
 import {
   removeStrip,
   addStrip,
@@ -13,7 +13,7 @@ import {
   resync,
   loadConfig,
   saveConfig
-} from '../utils/utils';
+} from '../../utils/utils';
 
 export const AudioControlPanel: React.FC = () => {
   const [localStrips, setLocalStrips] = useState<Strip[]>([]);

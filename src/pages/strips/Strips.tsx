@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { AudioStrip } from '../../components/audioStrip/AudioStrip';
 import { Strip } from '../../types/types';
 import { addStrip, removeStrip } from '../../utils/utils';
-import { useWebSocket } from '../../components/WebSocketContext';
-import { EffectsPanel } from '../../components/EffectsPanel';
+import { useWebSocket } from '../../components/webSocket/WebSocketContext';
+import { EffectsPanel } from '../../components/audioFilters/EffectsPanel';
 import { PageHeader } from '../../components/pageHeader/PageHeader';
 
 export const StripsPage = () => {

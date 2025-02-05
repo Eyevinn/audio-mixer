@@ -1,5 +1,5 @@
 import React from 'react';
-import { AudioLevel } from '../AudioLevel';
+import { AudioLevel } from '../audioLevel/AudioLevel';
 import styles from './audioStrip.module.css';
 import { VolumeSlider } from '../volumeSlider/VolumeSlider';
 import { PanningSlider } from '../panningSlider/PanningSlider';

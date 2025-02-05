@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { AudioLevel } from './AudioLevel';
-import { VolumeSlider } from './volumeSlider/VolumeSlider';
-import { ActionButton } from './buttons/Buttons';
+import { AudioLevel } from '../audioLevel/AudioLevel';
+import { VolumeSlider } from '../volumeSlider/VolumeSlider';
+import { ActionButton } from '../buttons/Buttons';
 
 interface MainVolumeProps {
   onVolumeChange: (volume: number) => void;

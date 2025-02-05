@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { showError, showInfo } from '../utils/notifications';
+import { showError, showInfo } from '../../utils/notifications';
 
 interface WebSocketContextType {
   // Todo: define the message type

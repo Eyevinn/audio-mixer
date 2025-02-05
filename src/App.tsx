@@ -6,8 +6,8 @@ import { StripsPage } from './pages/strips/Strips';
 import { OutputMixesPage } from './pages/outputs/ouputMixes/OutputMixes';
 import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping';
 import { ConfigureMixPage } from './pages/mixes/configureMix/ConfigureMix';
-import { WebSocketProvider } from './components/WebSocketContext';
-import { WebSocketLogOn } from './components/WebSocketLogOn';
+import { WebSocketProvider } from './components/webSocket/WebSocketContext';
+import { WebSocketLogOn } from './components/webSocket/WebSocketLogOn';
 
 function App() {
   return (
