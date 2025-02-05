@@ -6,30 +6,39 @@ import { StripsPage } from './pages/strips/Strips';
 import { OutputMixesPage } from './pages/outputs/ouputMixes/OutputMixes';
 import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping';
 import { ConfigureMixPage } from './pages/mixes/configureMix/ConfigureMix';
+import { WebSocketProvider } from './components/webSocket/WebSocketContext';
+import { WebSocketLogOn } from './components/webSocket/WebSocketLogOn';
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="bg-zinc-900 min-h-screen flex">
-        <div className="flex-shrink-0 overflow-hidden">
-          <SideNav />
-        </div>
-        <Routes>
-          <>
-            <Route path="/strips" element={<StripsPage />} />
-            <Route path="/mixes" element={<MixesPage />} />
-            <Route path="/outputs/output-mixes" element={<OutputMixesPage />} />
-            <Route
-              path="/outputs/output-mapping"
-              element={<OutputMappingPage />}
-            />
-            <Route
-              path="/configure-mix/:mixId"
-              element={<ConfigureMixPage />}
-            />
-          </>
-        </Routes>
-      </div>
+      <WebSocketProvider>
+        <WebSocketLogOn>
+          <div className="bg-zinc-900 min-h-screen flex">
+            <div className="flex-shrink-0 overflow-hidden">
+              <SideNav />
+            </div>
+            <Routes>
+              <>
+                <Route path="/strips" element={<StripsPage />} />
+                <Route path="/mixes" element={<MixesPage />} />
+                <Route
+                  path="/outputs/output-mixes"
+                  element={<OutputMixesPage />}
+                />
+                <Route
+                  path="/outputs/output-mapping"
+                  element={<OutputMappingPage />}
+                />
+                <Route
+                  path="/configure-mix/:mixId"
+                  element={<ConfigureMixPage />}
+                />
+              </>
+            </Routes>
+          </div>
+        </WebSocketLogOn>
+      </WebSocketProvider>
     </BrowserRouter>
   );
 }

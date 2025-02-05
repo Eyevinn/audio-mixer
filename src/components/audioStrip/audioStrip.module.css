@@ -1,0 +1,8 @@
+.volumeSlider {
+  /* Any specific styles for the volume slider that can't be handled by Tailwind */
+  transform: rotate(-90deg) translateX(-131px) translateY(167px);
+}
+
+.stripUserInputs {
+  @apply w-[7rem] mx-2 px-2 py-1 bg-gray-700 text-white text-sm rounded mb-2;
+}
