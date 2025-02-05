@@ -5,7 +5,7 @@ import { MixesPage } from './pages/mixes/Mixes';
 import { StripsPage } from './pages/strips/Strips';
 import { OutputMixesPage } from './pages/outputs/ouputMixes/OutputMixes';
 import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping';
-import { ConfigureMixPage } from './pages/mixes/configureMix/ConfigureMix';
+import { ConfigureMixPage } from './pages/mixes/mix';
 import { WebSocketProvider } from './components/webSocket/WebSocketContext';
 import { WebSocketLogOn } from './components/webSocket/WebSocketLogOn';
 
@@ -22,6 +22,7 @@ function App() {
               <>
                 <Route path="/strips" element={<StripsPage />} />
                 <Route path="/mixes" element={<MixesPage />} />
+                <Route path="/mixes/:mixId" element={<ConfigureMixPage />} />
                 <Route
                   path="/outputs/output-mixes"
                   element={<OutputMixesPage />}
@@ -29,10 +30,6 @@ function App() {
                 <Route
                   path="/outputs/output-mapping"
                   element={<OutputMappingPage />}
-                />
-                <Route
-                  path="/configure-mix/:mixId"
-                  element={<ConfigureMixPage />}
                 />
               </>
             </Routes>
