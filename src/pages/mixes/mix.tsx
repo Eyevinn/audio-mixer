@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
-import { PageHeader } from '../../../components/pageHeader/PageHeader';
-import Icons from '../../../components/icons/Icons';
+import { PageHeader } from '../../components/pageHeader/PageHeader';
+import Icons from '../../components/icons/Icons';
 
 export const ConfigureMixPage = () => {
   const { mixId } = useParams();
