@@ -5,27 +5,23 @@ import { useWebSocket } from '../../context/WebSocketContext';
 
 export const WebSocketDialog = () => {
   const [address, setAddress] = useState<string>('');
-  const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const { connect, connectionFailed } = useWebSocket();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
-    if (error) {
-      setError(false);
+    if (errorMessage) {
       setErrorMessage('');
     }
   };
 
   const handleConnect = (address: string) => {
     if (!address) {
-      setError(true);
       setErrorMessage('WebSocket URL is required.');
       return;
     }
 
     if (connectionFailed) {
-      setError(true);
       setErrorMessage('Connection failed. Please try again.');
     }
     connect(address);
@@ -50,10 +46,11 @@ export const WebSocketDialog = () => {
         className="w-full p-2 rounded"
         onChange={handleInputChange}
         value={address}
-        error={error}
         onKeyDown={handleKeyDown}
       />
-      {!!error && <p className="text-delete text-sm mt-2">{errorMessage}</p>}
+      {!!errorMessage && (
+        <p className="text-delete text-sm mt-2">{errorMessage}</p>
+      )}
       <div className="mt-4 justify-end flex">
         <PrimaryButton
           onClick={() => {
