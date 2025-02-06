@@ -9,6 +9,7 @@ interface WebSocketContextType {
   isConnected: boolean;
   connect: (address: string) => void;
   lastMessage: string | null;
+  connectionFailed?: boolean;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -20,6 +21,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isConnected, setIsConnected] = useState(false);
   const [lastMessage, setLastMessage] = useState<string | null>(null);
   const [wsUrl, setWsUrl] = useState<string>('');
+  const [connectionFailed, setConnectionFailed] = useState<boolean>(false);
 
   const connect = (address: string) => {
     try {
@@ -43,6 +45,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
       websocket.onerror = () => {
         showError(`Websocket connection to ${address} failed`);
+        setConnectionFailed(true);
         setIsConnected(false);
       };
 
@@ -80,7 +83,14 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <WebSocketContext.Provider
-      value={{ wsUrl, sendMessage, isConnected, connect, lastMessage }}
+      value={{
+        wsUrl,
+        sendMessage,
+        isConnected,
+        connect,
+        lastMessage,
+        connectionFailed
+      }}
     >
       {children}
     </WebSocketContext.Provider>

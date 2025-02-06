@@ -1,4 +1,6 @@
 type TInputProps = {
+  className?: string;
+  type?: string;
   value: string;
   placeholder?: string;
   error?: boolean;
@@ -7,6 +9,8 @@ type TInputProps = {
 };
 
 export const Input = ({
+  className,
+  type,
   value,
   placeholder,
   error,
@@ -15,7 +19,8 @@ export const Input = ({
 }: TInputProps) => {
   return (
     <input
-      className={`border-2 bg-zinc-800 hover:bg-zinc-700 text-white py-2 px-4 rounded h-fit w-full font-normal ${error ? 'border-red-500' : 'border-zinc-400'}`}
+      className={`${className} text-sm border-2 bg-modal-bg hover:bg-input-hover text-white py-2 px-4 rounded h-fit w-full font-normal ${error ? 'border-delete' : 'border-bg-border'}`}
+      type={type}
       placeholder={placeholder}
       value={value}
       onChange={onChange}
