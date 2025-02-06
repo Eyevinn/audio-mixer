@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { AudioStrip } from '../../components/audioStrip/AudioStrip';
+import { AudioStrip } from '../../components/strips/audioStrip/AudioStrip';
 import { Strip } from '../../types/types';
 import { addStrip, removeStrip } from '../../utils/utils';
 import { useWebSocket } from '../../components/webSocket/WebSocketContext';
-import { EffectsPanel } from '../../components/audioFilters/EffectsPanel';
-import { PageHeader } from '../../components/pageHeader/PageHeader';
+import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
+import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 
 export const StripsPage = () => {
   const [localStrips, setLocalStrips] = useState<Strip[]>([]);

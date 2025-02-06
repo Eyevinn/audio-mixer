@@ -1,4 +1,4 @@
-import { PageHeader } from '../../components/pageHeader/PageHeader';
+import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 
 export const MixesPage = () => {
   return (

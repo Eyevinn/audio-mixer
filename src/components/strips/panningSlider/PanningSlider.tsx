@@ -1,4 +1,4 @@
-import { PanningLegend } from '../../assets/icons/PanningLegend';
+import { PanningLegend } from '../../../assets/icons/PanningLegend';
 
 type PanningSliderProps = {
   inputValue: number;

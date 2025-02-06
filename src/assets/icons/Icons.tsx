@@ -5,7 +5,11 @@ import {
   IconAdjustmentsPlus,
   IconArrowsShuffle,
   IconSTurnRight,
-  IconTrash
+  IconTrash,
+  IconPlugConnected,
+  IconPlugConnectedX,
+  IconDeviceFloppy,
+  IconFileUpload
 } from '@tabler/icons-react';
 
 interface IClassName {
@@ -29,7 +33,19 @@ const pickIcon = {
   IconSTurnRight: ({ className }: IClassName) => (
     <IconSTurnRight className={className} />
   ),
-  IconTrash: ({ className }: IClassName) => <IconTrash className={className} />
+  IconTrash: ({ className }: IClassName) => <IconTrash className={className} />,
+  IconPlugConnected: ({ className }: IClassName) => (
+    <IconPlugConnected className={className} />
+  ),
+  IconPlugConnectedX: ({ className }: IClassName) => (
+    <IconPlugConnectedX className={className} />
+  ),
+  IconSave: ({ className }: IClassName) => (
+    <IconDeviceFloppy className={className} />
+  ),
+  IconUpload: ({ className }: IClassName) => (
+    <IconFileUpload className={className} />
+  )
 };
 
 export type PickIconNames = keyof typeof pickIcon;

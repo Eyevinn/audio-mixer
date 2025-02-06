@@ -3,8 +3,8 @@ import { AudioLevel } from '../audioLevel/AudioLevel';
 import styles from './audioStrip.module.css';
 import { VolumeSlider } from '../volumeSlider/VolumeSlider';
 import { PanningSlider } from '../panningSlider/PanningSlider';
-import { ActionButton } from '../buttons/Buttons';
-import Icons from '../icons/Icons';
+import { ActionButton } from '../../ui/buttons/Buttons';
+import Icons from '../../../assets/icons/Icons';
 
 interface AudioStripProps {
   id: number;

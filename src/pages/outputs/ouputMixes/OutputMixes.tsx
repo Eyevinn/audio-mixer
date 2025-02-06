@@ -1,6 +1,6 @@
-import Icons from '../../../components/icons/Icons';
-import { MainVolume } from '../../../components/mainVolume/MainVolume';
-import { PageHeader } from '../../../components/pageHeader/PageHeader';
+import Icons from '../../../assets/icons/Icons';
+import { MainVolume } from '../../../components/strips/mainVolume/MainVolume';
+import { PageHeader } from '../../../components/pageLayout/pageHeader/PageHeader';
 import { useWebSocket } from '../../../components/webSocket/WebSocketContext';
 
 export const OutputMixesPage = () => {
