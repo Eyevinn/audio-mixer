@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
 import { PrimaryButton } from '../ui/buttons/Buttons';
 import { Input } from '../ui/input/Input';
+import { useWebSocket } from './WebSocketContext';
 
-interface WebSocketDialogProps {
-  onConnect: (address: string) => void;
-  connectionFailed?: boolean;
-}
-
-export const WebSocketDialog: React.FC<WebSocketDialogProps> = ({
-  onConnect,
-  connectionFailed
-}) => {
+export const WebSocketDialog = () => {
   const [address, setAddress] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const { connect, connectionFailed } = useWebSocket();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
@@ -34,7 +28,7 @@ export const WebSocketDialog: React.FC<WebSocketDialogProps> = ({
       setError(true);
       setErrorMessage('Connection failed. Please try again.');
     }
-    onConnect(address);
+    connect(address);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
