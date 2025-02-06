@@ -100,7 +100,7 @@ export const StripsPage = () => {
   };
 
   return (
-    <div className="text-white text-2xl flex flex-col w-full">
+    <div className="text-white text-2xl flex flex-col w-full bg-">
       <PageHeader title="Audio Strips">
         <button
           onClick={handleAddStrip}

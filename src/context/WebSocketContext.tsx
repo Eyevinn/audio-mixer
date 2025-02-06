@@ -45,6 +45,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
       websocket.onerror = () => {
         showError(`Websocket connection to ${address} failed`);
+        setConnectionFailed(true);
         setWsUrl('');
         setConnectionFailed(true);
         setIsConnected(false);
@@ -85,7 +86,14 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <WebSocketContext.Provider
-      value={{ wsUrl, sendMessage, isConnected, connect, lastMessage }}
+      value={{
+        wsUrl,
+        sendMessage,
+        isConnected,
+        connect,
+        lastMessage,
+        connectionFailed
+      }}
     >
       {children}
     </WebSocketContext.Provider>
