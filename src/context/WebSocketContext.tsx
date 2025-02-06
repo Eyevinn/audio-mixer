@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { showError, showInfo } from '../../utils/notifications';
+import { showError, showInfo } from '../utils/notifications';
 
 interface WebSocketContextType {
   // Todo: define the message type
@@ -43,6 +43,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
       websocket.onerror = () => {
         showError(`Websocket connection to ${address} failed`);
+        setWsUrl('');
         setIsConnected(false);
       };
 
@@ -54,6 +55,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       websocket.onclose = () => {
         showError(`Websocket connection to ${address} was closed`);
         setIsConnected(false);
+        setWsUrl('');
       };
 
       setWs(websocket);

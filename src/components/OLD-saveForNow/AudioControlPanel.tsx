@@ -3,7 +3,7 @@ import { AudioStrip } from '../strips/audioStrip/AudioStrip';
 import { ControlButtons } from './ControlButtons';
 import { EffectsPanel } from '../strips/audioFilters/EffectsPanel';
 import { MainVolume } from '../strips/mainVolume/MainVolume';
-import { useWebSocket } from '../webSocket/WebSocketContext';
+import { useWebSocket } from '../../context/WebSocketContext';
 import { WebSocketDialog } from '../webSocket/WebSocketDialog';
 import { Strip } from '../../types/types';
 import {

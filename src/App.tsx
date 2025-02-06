@@ -5,15 +5,16 @@ import { MixesPage } from './pages/mixes/Mixes';
 import { StripsPage } from './pages/strips/Strips';
 import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping';
 import { ConfigureMixPage } from './pages/mixes/mix';
-import { WebSocketProvider } from './components/webSocket/WebSocketContext';
+import { WebSocketProvider } from './context/WebSocketContext';
 import { WebSocketLogOn } from './components/webSocket/WebSocketLogOn';
+import { GlobalStateProvider } from './context/GlobalStateContext';
 
 function App() {
   return (
     <BrowserRouter>
-      <WebSocketProvider>
-        <WebSocketLogOn>
-          <div className="bg-zinc-900 min-h-screen flex">
+      <GlobalStateProvider>
+        <WebSocketProvider>
+          <WebSocketLogOn>
             <SideNav />
             <Routes>
               <>
@@ -23,9 +24,9 @@ function App() {
                 <Route path="/outputs" element={<OutputMappingPage />} />
               </>
             </Routes>
-          </div>
-        </WebSocketLogOn>
-      </WebSocketProvider>
+          </WebSocketLogOn>
+        </WebSocketProvider>
+      </GlobalStateProvider>
     </BrowserRouter>
   );
 }
