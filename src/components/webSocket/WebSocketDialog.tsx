@@ -1,4 +1,5 @@
 import React from 'react';
+const WS_URL = process.env.REACT_APP_WS_URL;
 
 interface WebSocketDialogProps {
   onConnect: (address: string) => void;
@@ -13,7 +14,7 @@ export const WebSocketDialog: React.FC<WebSocketDialogProps> = ({
       <input
         type="text"
         id="websocket_address"
-        placeholder="ws://localhost:8000"
+        placeholder={WS_URL || 'ws://localhost:8000'}
         className="w-full p-2 mb-4 bg-gray-700 rounded"
       />
       <button
