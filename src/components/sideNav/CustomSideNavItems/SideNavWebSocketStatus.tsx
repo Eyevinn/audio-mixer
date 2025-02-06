@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import Icons from '../../../assets/icons/Icons';
 import { SideNavTooltip } from '../SideNavTooltip';
-import { useWebSocket } from '../../webSocket/WebSocketContext';
+import { useWebSocket } from '../../../context/WebSocketContext';
 
 interface SideNavWebSocketStatus {
   isOpen: boolean;

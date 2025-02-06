@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PrimaryButton } from '../ui/buttons/Buttons';
 import { Input } from '../ui/input/Input';
-import { useWebSocket } from './WebSocketContext';
+import { useWebSocket } from '../../context/WebSocketContext';
 
 export const WebSocketDialog = () => {
   const [address, setAddress] = useState<string>('');

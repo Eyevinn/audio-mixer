@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { AudioStrip } from '../../components/strips/audioStrip/AudioStrip';
 import { Strip } from '../../types/types';
 import { addStrip, removeStrip } from '../../utils/utils';
-import { useWebSocket } from '../../components/webSocket/WebSocketContext';
+import { useWebSocket } from '../../context/WebSocketContext';
 import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 

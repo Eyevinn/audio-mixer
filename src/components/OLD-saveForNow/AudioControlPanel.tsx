@@ -3,7 +3,7 @@ import { AudioStrip } from '../strips/audioStrip/AudioStrip';
 import { ControlButtons } from './ControlButtons';
 import { EffectsPanel } from '../strips/audioFilters/EffectsPanel';
 import { MainVolume } from '../strips/mainVolume/MainVolume';
-import { useWebSocket } from '../webSocket/WebSocketContext';
+import { useWebSocket } from '../../context/WebSocketContext';
 import { WebSocketDialog } from '../webSocket/WebSocketDialog';
 import { Strip } from '../../types/types';
 import {
@@ -121,7 +121,7 @@ export const AudioControlPanel: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-strip-bg text-white">
-      {!isConnected && <WebSocketDialog onConnect={connect} />}
+      {!isConnected && <WebSocketDialog />}
 
       <div className="container mx-auto p-4">
         <div className="flex">

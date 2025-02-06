@@ -1,7 +1,7 @@
 import Icons from '../../../assets/icons/Icons';
 import { MainVolume } from '../../../components/strips/mainVolume/MainVolume';
 import { PageHeader } from '../../../components/pageLayout/pageHeader/PageHeader';
-import { useWebSocket } from '../../../components/webSocket/WebSocketContext';
+import { useWebSocket } from '../../../context/WebSocketContext';
 
 export const OutputMixesPage = () => {
   const { sendMessage } = useWebSocket();
