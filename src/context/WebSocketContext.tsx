@@ -47,7 +47,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         showError(`Websocket connection to ${address} failed`);
         setConnectionFailed(true);
         setWsUrl('');
-        setConnectionFailed(true);
         setIsConnected(false);
       };
 
