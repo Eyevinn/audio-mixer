@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SliderLegend } from '../../assets/icons/SliderLegend';
+import { SliderLegend } from '../../../assets/icons/SliderLegend';
 
 type VolumeSliderProps = {
   type: 'mixer' | 'master';

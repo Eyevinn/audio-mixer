@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { AudioStrip } from '../audioStrip/AudioStrip';
+import { AudioStrip } from '../strips/audioStrip/AudioStrip';
 import { ControlButtons } from './ControlButtons';
-import { EffectsPanel } from '../audioFilters/EffectsPanel';
-import { MainVolume } from '../mainVolume/MainVolume';
+import { EffectsPanel } from '../strips/audioFilters/EffectsPanel';
+import { MainVolume } from '../strips/mainVolume/MainVolume';
 import { useWebSocket } from '../webSocket/WebSocketContext';
 import { WebSocketDialog } from '../webSocket/WebSocketDialog';
 import { Strip } from '../../types/types';

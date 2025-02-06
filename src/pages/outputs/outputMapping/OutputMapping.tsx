@@ -1,5 +1,5 @@
-import Icons from '../../../components/icons/Icons';
-import { PageHeader } from '../../../components/pageHeader/PageHeader';
+import Icons from '../../../assets/icons/Icons';
+import { PageHeader } from '../../../components/pageLayout/pageHeader/PageHeader';
 
 export const OutputMappingPage = () => {
   return (

@@ -3,6 +3,7 @@ import { showError, showInfo } from '../../utils/notifications';
 
 interface WebSocketContextType {
   // Todo: define the message type
+  wsUrl: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sendMessage: (message: any) => void;
   isConnected: boolean;
@@ -18,9 +19,11 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [lastMessage, setLastMessage] = useState<string | null>(null);
+  const [wsUrl, setWsUrl] = useState<string>('');
 
   const connect = (address: string) => {
     try {
+      setWsUrl(address);
       const websocket = new WebSocket(address);
 
       websocket.onmessage = (event) => {
@@ -77,7 +80,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <WebSocketContext.Provider
-      value={{ sendMessage, isConnected, connect, lastMessage }}
+      value={{ wsUrl, sendMessage, isConnected, connect, lastMessage }}
     >
       {children}
     </WebSocketContext.Provider>

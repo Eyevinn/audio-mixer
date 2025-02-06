@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AudioLevel } from '../audioLevel/AudioLevel';
 import { VolumeSlider } from '../volumeSlider/VolumeSlider';
-import { ActionButton } from '../buttons/Buttons';
+import { ActionButton } from '../../ui/buttons/Buttons';
 import { EbuMeters } from './EbuMeters';
 
 interface MainVolumeProps {
