@@ -25,6 +25,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const connect = (address: string) => {
     try {
+      setConnectionFailed(false);
       setWsUrl(address);
       const websocket = new WebSocket(address);
 
