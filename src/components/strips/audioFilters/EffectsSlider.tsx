@@ -26,11 +26,8 @@ export const EffectsSlider: React.FC<EffectsSliderProps> = ({
   onDoubleClick
 }) => {
   return (
-    <div className="py-[5px]">
-      <label
-        htmlFor={`${id}_slider`}
-        className="w-[150px] inline-block pl-5 text-white"
-      >
+    <div className="py-[5px] text-sm">
+      <label htmlFor={`${id}_slider`} className="w-[150px] inline-block">
         {text}
       </label>
       <input
@@ -44,7 +41,7 @@ export const EffectsSlider: React.FC<EffectsSliderProps> = ({
         onDoubleClick={onDoubleClick}
         className="w-[200px] slider-track [&::-webkit-slider-thumb]:slider-thumb [&::-moz-range-thumb]:slider-thumb"
       />
-      <output id={`${id}_slider_value`} className="ml-2 text-white">
+      <output id={`${id}_slider_value`} className="ml-2">
         {value} {unit}
       </output>
     </div>

@@ -11,6 +11,8 @@ module.exports = {
         strip: '726px'
       },
       colors: {
+        'filter-bg': '#262829',
+        'filter-highlited-bg': '#2a2c2e',
         'dark-grey': '#a9a9a9',
         'select-green': '#0fcc00',
         'pfl-yellow': '#ffd000',
