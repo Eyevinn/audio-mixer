@@ -3,6 +3,8 @@ import { PrimaryButton } from '../ui/buttons/Buttons';
 import { Input } from '../ui/input/Input';
 import { useWebSocket } from '../../context/WebSocketContext';
 
+const WS_URL = process.env.REACT_APP_WS_URL;
+
 export const WebSocketDialog = () => {
   const [address, setAddress] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -42,11 +44,11 @@ export const WebSocketDialog = () => {
       <h2 className="text-xl mb-4">Connect to WebSocket</h2>
       <Input
         type="text"
-        placeholder="ws://localhost:8000"
         className="w-full p-2 rounded"
         onChange={handleInputChange}
         value={address}
         onKeyDown={handleKeyDown}
+        placeholder={WS_URL || 'ws://localhost:8000'}
       />
       {!!errorMessage && (
         <p className="text-delete text-sm mt-2">{errorMessage}</p>
