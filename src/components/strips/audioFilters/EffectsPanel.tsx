@@ -3,16 +3,11 @@ import styles from './filterComponents.module.css';
 import { CompressorVisualisation } from './CompressorVisualisation';
 import { EffectsSlider } from './EffectsSlider';
 import { EQVisualisation } from './EQVisualisation';
-import { useWebSocket } from '../webSocket/WebSocketContext';
+import { useWebSocket } from '../../../context/WebSocketContext';
 
 interface EffectsPanelProps {
   label: string;
   stripId: number;
-  // onEffectChange: (
-  //   filter: string,
-  //   parameter: string,
-  //   value: number | string
-  // ) => void;
 }
 
 interface EQBand {
@@ -36,7 +31,6 @@ type EQState = {
 export const EffectsPanel: React.FC<EffectsPanelProps> = ({
   label,
   stripId
-  // onEffectChange
 }) => {
   const [eqState, setEqState] = useState<EQState>({
     band0: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
