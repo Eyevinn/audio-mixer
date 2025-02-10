@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { ControlButtons } from './ControlButtons';
-import { EffectsPanel } from '../strips/audioFilters/EffectsPanel';
 import { MainVolume } from '../strips/mainVolume/MainVolume';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { WebSocketDialog } from '../webSocket/WebSocketDialog';
 import { Strip } from '../../types/types';
-import {
-  removeStrip,
-  addStrip,
-  resync,
-  loadConfig,
-  saveConfig
-} from '../../utils/utils';
+import { addStrip, resync, loadConfig, saveConfig } from '../../utils/utils';
 
 // TODO: Delete if not needed (currently not used)
 
 export const AudioControlPanel: React.FC = () => {
   const [localStrips, setLocalStrips] = useState<Strip[]>([]);
-  const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
   const [removeMode, setRemoveMode] = useState(false);
   const { sendMessage, isConnected, lastMessage } = useWebSocket();
 
@@ -73,7 +65,7 @@ export const AudioControlPanel: React.FC = () => {
     } catch (error) {
       console.error('Error processing WebSocket message:', error);
     }
-  }, [lastMessage, selectedStrip]);
+  }, [lastMessage]);
 
   useEffect(() => {
     if (isConnected) {
@@ -127,14 +119,6 @@ export const AudioControlPanel: React.FC = () => {
             onSaveConfig={handleSaveConfig}
           />
         </div>
-
-        {/* Effects Panel */}
-        {selectedStrip !== null && (
-          <EffectsPanel
-            label={localStrips.find((s) => s.id === selectedStrip)?.label || ''}
-            stripId={selectedStrip}
-          />
-        )}
       </div>
 
       {/* Error Messages */}
