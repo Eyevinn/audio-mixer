@@ -18,14 +18,6 @@ export const removeStrip = (
   });
 };
 
-export const removeAllStrips = (sendMessage: (message: any) => void) => {
-  sendMessage({
-    type: 'command',
-    resource: '/audio/strips',
-    body: { command: 'remove_all', parameters: {} }
-  });
-};
-
 export const resync = (sendMessage: (message: any) => void) => {
   sendMessage({
     type: 'subscribe',

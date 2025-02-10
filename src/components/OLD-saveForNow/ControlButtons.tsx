@@ -4,7 +4,6 @@ interface ControlButtonsProps {
   removeMode: boolean;
   onAddStrip: () => void;
   onToggleRemoveMode: () => void;
-  onRemoveAllStrips: () => void;
   onResync: () => void;
   onLoadConfig: (file: File) => void;
   onSaveConfig: () => void;
@@ -14,7 +13,6 @@ export const ControlButtons: React.FC<ControlButtonsProps> = ({
   removeMode,
   onAddStrip,
   onToggleRemoveMode,
-  onRemoveAllStrips,
   onResync,
   onLoadConfig,
   onSaveConfig
@@ -38,12 +36,6 @@ export const ControlButtons: React.FC<ControlButtonsProps> = ({
           }`}
         >
           <img src="/trash.png" alt="Remove" className="w-8 h-8" />
-        </button>
-        <button
-          onClick={onRemoveAllStrips}
-          className="p-2 bg-red-600 rounded hover:bg-red-700"
-        >
-          <img src="/remove.png" alt="Remove All" className="w-8 h-8" />
         </button>
         <button
           onClick={onResync}

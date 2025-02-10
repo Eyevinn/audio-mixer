@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react';
-import { AudioStrip } from '../../components/strips/audioStrip/AudioStrip';
 import { Strip } from '../../types/types';
 import { addStrip, removeStrip } from '../../utils/utils';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
+import {
+  PrimaryButton,
+  DeleteButton
+} from '../../components/ui/buttons/Buttons';
+import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
+import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
 
 export const StripsPage = () => {
   const [localStrips, setLocalStrips] = useState<Strip[]>([]);
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const { sendMessage, isConnected, lastMessage } = useWebSocket();
 
   useEffect(() => {
@@ -46,8 +53,13 @@ export const StripsPage = () => {
     }
   }, [isConnected, sendMessage]);
 
+  useEffect(() => {
+    setIsDeleteAllDisabled(localStrips.length === 0);
+  }, [localStrips]);
+
   // Create a default strip object
   const createDefaultStrip = (id: number): Strip => ({
+    // Todo: Change from id to index
     id,
     label: `Strip ${id}`,
     volume: 0,
@@ -78,64 +90,49 @@ export const StripsPage = () => {
     }
   };
 
-  const handleStripChange = (
-    stripId: number,
-    property: string,
-    value: number | boolean | string
-  ) => {
-    setLocalStrips((prevStrips) =>
-      prevStrips.map((strip) =>
-        strip.id === stripId ? { ...strip, [property]: value } : strip
-      )
-    );
+  const handleRemoveAllStrips = () => {
+    localStrips.forEach((strip) => handleRemoveStrip(strip.id));
+    setSelectedStrip(null);
+    setLocalStrips([]);
+  };
 
-    if (property === 'selected') return;
+  const onModalOpen = () => {
+    if (isDeleteAllDisabled) {
+      return;
+    }
 
-    // ToDo: Implement real endpoints and body
-    sendMessage({
-      type: 'set',
-      resource: `/audio/strips/${stripId}/${property}`,
-      body: { value }
-    });
+    setIsModalOpen(!isModalOpen);
   };
 
   return (
-    <div className="text-white text-2xl flex flex-col w-full">
+    <div className="text-white text-2xl flex flex-col w-full overflow-hidden">
       <PageHeader title="Audio Strips">
-        <button
-          onClick={handleAddStrip}
-          className="p-2 bg-green-600 rounded hover:bg-green-700"
-        >
-          Add Strip
-        </button>
+        <div className="space-x-4">
+          <DeleteButton disabled={isDeleteAllDisabled} onClick={onModalOpen}>
+            Delete all strips
+          </DeleteButton>
+          <PrimaryButton onClick={handleAddStrip}>Add Strip</PrimaryButton>
+        </div>
+        <ConfirmationModal
+          title="Delete all strips"
+          message="Are you sure you want to delete all strips?"
+          isOpen={isModalOpen}
+          confirmText="Yes, delete all"
+          onConfirm={() => handleRemoveAllStrips()}
+          onClose={() => setIsModalOpen(false)}
+        />
       </PageHeader>
+
       <div className="text-white text-2xl flex flex-row justify-between w-full">
         {/* Audio Strips Container */}
-        <div className="flex space-x-2 p-5">
-          {localStrips.map((strip) => (
-            <AudioStrip
-              key={strip.id}
-              {...strip}
-              onLabelChange={(label) =>
-                handleStripChange(strip.id, 'label', label)
-              }
-              onPanningChange={(panning) =>
-                handleStripChange(strip.id, 'panning', panning)
-              }
-              onMuteChange={(muted) =>
-                handleStripChange(strip.id, 'muted', muted)
-              }
-              onPflChange={(pfl) => handleStripChange(strip.id, 'pfl', pfl)}
-              onVolumeChange={(volume) =>
-                handleStripChange(strip.id, 'volume', volume)
-              }
-              onSelect={() => {
-                handleStripChange(strip.id, 'selected', !strip.selected);
-                setSelectedStrip(selectedStrip === null ? strip.id : null);
-              }}
-              onRemove={() => handleRemoveStrip(strip.id)}
-            />
-          ))}
+        <div className="ml-8 mt-4 w-full max-w-full overflow-hidden">
+          <ScrollableContainer
+            strips={localStrips}
+            selectedStrip={selectedStrip}
+            setLocalStrips={setLocalStrips}
+            setSelectedStrip={setSelectedStrip}
+            handleRemoveStrip={handleRemoveStrip}
+          />
         </div>
 
         {/* Effects Panel */}
