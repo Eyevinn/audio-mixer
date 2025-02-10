@@ -195,13 +195,6 @@ export const AudioControlPanel: React.FC = () => {
           <EffectsPanel
             label={localStrips.find((s) => s.id === selectedStrip)?.label || ''}
             stripId={selectedStrip}
-            onEffectChange={(filter, parameter, value) => {
-              sendMessage({
-                type: 'set',
-                resource: `/audio/strips/${selectedStrip}/filters/${filter}/${parameter}`,
-                body: { value }
-              });
-            }}
           />
         )}
       </div>

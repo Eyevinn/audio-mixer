@@ -1,0 +1,3 @@
+.settingsItem {
+  @apply bg-filter-highlited-bg mb-4 w-fit min-w-[30rem] p-5 rounded-lg;
+}

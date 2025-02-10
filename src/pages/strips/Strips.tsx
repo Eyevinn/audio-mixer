@@ -109,48 +109,43 @@ export const StripsPage = () => {
           Add Strip
         </button>
       </PageHeader>
+      <div className="text-white text-2xl flex flex-row justify-between w-full">
+        {/* Audio Strips Container */}
+        <div className="flex space-x-2 p-5">
+          {localStrips.map((strip) => (
+            <AudioStrip
+              key={strip.id}
+              {...strip}
+              onLabelChange={(label) =>
+                handleStripChange(strip.id, 'label', label)
+              }
+              onPanningChange={(panning) =>
+                handleStripChange(strip.id, 'panning', panning)
+              }
+              onMuteChange={(muted) =>
+                handleStripChange(strip.id, 'muted', muted)
+              }
+              onPflChange={(pfl) => handleStripChange(strip.id, 'pfl', pfl)}
+              onVolumeChange={(volume) =>
+                handleStripChange(strip.id, 'volume', volume)
+              }
+              onSelect={() => {
+                handleStripChange(strip.id, 'selected', !strip.selected);
+                setSelectedStrip(selectedStrip === null ? strip.id : null);
+              }}
+              onRemove={() => handleRemoveStrip(strip.id)}
+            />
+          ))}
+        </div>
 
-      {/* Audio Strips Container */}
-      <div className="flex space-x-2 p-5">
-        {localStrips.map((strip) => (
-          <AudioStrip
-            key={strip.id}
-            {...strip}
-            onLabelChange={(label) =>
-              handleStripChange(strip.id, 'label', label)
-            }
-            onPanningChange={(panning) =>
-              handleStripChange(strip.id, 'panning', panning)
-            }
-            onMuteChange={(muted) =>
-              handleStripChange(strip.id, 'muted', muted)
-            }
-            onPflChange={(pfl) => handleStripChange(strip.id, 'pfl', pfl)}
-            onVolumeChange={(volume) =>
-              handleStripChange(strip.id, 'volume', volume)
-            }
-            onSelect={() => {
-              handleStripChange(strip.id, 'selected', !strip.selected);
-              setSelectedStrip(selectedStrip === null ? strip.id : null);
-            }}
-            onRemove={() => handleRemoveStrip(strip.id)}
+        {/* Effects Panel */}
+        {selectedStrip !== null && (
+          <EffectsPanel
+            label={localStrips.find((s) => s.id === selectedStrip)?.label || ''}
+            stripId={selectedStrip}
           />
-        ))}
+        )}
       </div>
-      {/* Effects Panel */}
-      {selectedStrip !== null && (
-        <EffectsPanel
-          label={localStrips.find((s) => s.id === selectedStrip)?.label || ''}
-          stripId={selectedStrip}
-          onEffectChange={(filter, parameter, value) => {
-            sendMessage({
-              type: 'set',
-              resource: `/audio/strips/${selectedStrip}/filters/${filter}/${parameter}`,
-              body: { value }
-            });
-          }}
-        />
-      )}
     </div>
   );
 };
