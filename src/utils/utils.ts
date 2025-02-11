@@ -2,11 +2,9 @@ export const addStrip = (
   sendMessage: (message: Record<string, unknown>) => void,
   index: number
 ) => {
-  console.log('should add strip');
   sendMessage({
     type: 'command',
     resource: '/audio/strips',
-    body: { command: 'add_strip', parameters: { index: index } }
     body: { command: 'add_strip', parameters: { index: index } }
   });
 };
@@ -15,11 +13,8 @@ export const removeStrip = (
   index: number,
   sendMessage: (message: Record<string, unknown>) => void
 ) => {
-  console.log('should  remove strip');
   sendMessage({
     type: 'command',
-    resource: `/audio/strips`,
-    body: { command: 'remove_strip', parameters: { index: index } }
     resource: `/audio/strips`,
     body: { command: 'remove_strip', parameters: { index: index } }
   });
@@ -29,8 +24,6 @@ export const getAllStrips = (
   sendMessage: (message: Record<string, unknown>) => void
 ) => {
   sendMessage({
-    type: 'get',
-    resource: '/audio/strips'
     type: 'get',
     resource: '/audio/strips'
   });
