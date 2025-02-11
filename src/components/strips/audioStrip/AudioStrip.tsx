@@ -13,7 +13,7 @@ import { useGlobalState } from '../../../context/GlobalStateContext';
 import { LabelInput } from '../../ui/input/Input';
 import { InputFields } from './InputFields';
 import { Filters } from '../../../types/types';
-
+import { LabelInput, StripInput } from '../../ui/input/Input';
 interface AudioStripProps {
   stripId: number;
   label: string;

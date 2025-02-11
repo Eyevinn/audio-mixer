@@ -4,6 +4,7 @@ import { useWebSocket } from '../../context/WebSocketContext';
 import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { useGlobalState } from '../../context/GlobalStateContext';
+import { useGlobalState } from '../../context/GlobalStateContext';
 import {
   PrimaryButton,
   DeleteButton
@@ -18,6 +19,7 @@ export const StripsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const { sendMessage, isConnected, lastMessage } = useWebSocket();
+  const { savedStrips, setSavedStrips } = useGlobalState();
   const { savedStrips, setSavedStrips } = useGlobalState();
   const nextStripIndex = useNextAvailableIndex(savedStrips);
 
