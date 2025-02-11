@@ -10,6 +10,23 @@ import {
 } from '../../components/ui/buttons/Buttons';
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
+import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
+
+// TODO: Replace with real strips from API
+const mockStrips = [
+  {
+    index: 1,
+    label: 'Strip 1'
+  },
+  {
+    index: 2,
+    label: 'Strip 2'
+  },
+  {
+    index: 3,
+    label: 'Strip 3'
+  }
+];
 
 export const StripsPage = () => {
   const [localStrips, setLocalStrips] = useState<Strip[]>([]);
@@ -74,14 +91,11 @@ export const StripsPage = () => {
   });
 
   const handleAddStrip = () => {
-    const tempId = Date.now();
-    const newStrip = createDefaultStrip(tempId);
-
-    setLocalStrips((prev) => [...prev, newStrip]);
-
-    addStrip(sendMessage);
+    const nextStripIndex = useNextAvailableIndex(mockStrips);
+    addStrip(sendMessage, nextStripIndex);
   };
 
+  // TODO: Should use index instead
   const handleRemoveStrip = (stripId: number) => {
     removeStrip(stripId, sendMessage);
     setLocalStrips((prev) => prev.filter((strip) => strip.id !== stripId));

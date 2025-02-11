@@ -1,23 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const addStrip = (sendMessage: (message: any) => void) => {
+
+// Strips
+export const addStrip = (
+  sendMessage: (message: any) => void,
+  index: number
+) => {
   sendMessage({
     type: 'command',
     resource: '/audio/strips',
-    body: { command: 'add', parameters: {} }
+    body: { command: 'add_strip', parameters: { index: index } }
   });
 };
 
 export const removeStrip = (
-  stripId: number,
+  index: number,
   sendMessage: (message: any) => void
 ) => {
   sendMessage({
     type: 'command',
-    resource: `/audio/strips/${stripId}`,
-    body: { command: 'remove', parameters: {} }
+    resource: `/audio/strips`,
+    body: { command: 'remove_strip', parameters: { index: index } }
   });
 };
 
+export const getAllStrips = (sendMessage: (message: any) => void) => {
+  sendMessage({
+    type: 'get',
+    resource: '/audio/strips'
+  });
+};
+
+// Other
 export const resync = (sendMessage: (message: any) => void) => {
   sendMessage({
     type: 'subscribe',

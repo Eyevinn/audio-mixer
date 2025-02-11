@@ -34,7 +34,7 @@ export const AudioControlPanel: React.FC = () => {
 
     setLocalStrips((prev) => [...prev, newStrip]);
 
-    addStrip(sendMessage);
+    addStrip(sendMessage, 1);
   };
 
   const handleResync = () => resync(sendMessage);
