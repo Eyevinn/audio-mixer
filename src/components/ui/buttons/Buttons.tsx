@@ -52,7 +52,7 @@ export const ActionButton = ({
 }: TActionButtonProps) => {
   return (
     <button
-      className={`relative w-[61px] h-[40px] text-[15px] border-none bg-darkgrey text-center
+      className={`relative w-[61px] h-[40px] text-[15px] border-none bg-dark-grey text-center
         m-[5px_0_0_10px] p-0 rounded-[5px] text-white ${buttonColor}`}
       id={label.toLowerCase()}
       data-buttonstate="0"

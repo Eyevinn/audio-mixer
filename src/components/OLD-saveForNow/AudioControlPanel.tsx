@@ -34,12 +34,47 @@ export const AudioControlPanel: React.FC = () => {
 
     setLocalStrips((prev) => [...prev, newStrip]);
 
-    addStrip(sendMessage, 1);
+    // addStrip(123, sendMessage);
+  };
+
+  const handleRemoveStrip = (stripId: number) => {
+    removeStrip(stripId, sendMessage);
+    setLocalStrips((prev) => prev.filter((strip) => strip.id !== stripId));
+    if (selectedStrip === stripId) {
+      setSelectedStrip(null);
+    }
+  };
+
+  const handleRemoveAllStrips = () => {
+    // removeAllStrips(sendMessage);
+    setLocalStrips([]);
+    setSelectedStrip(null);
   };
 
   const handleResync = () => resync(sendMessage);
-  const handleSaveConfig = () => saveConfig(sendMessage);
+  // const handleSaveConfig = () => saveConfig(sendMessage);
   const handleLoadConfig = (file: File) => loadConfig(file, sendMessage);
+
+  // const handleStripChange = (
+  //   stripId: number,
+  //   property: string,
+  //   value: number | boolean | string
+  // ) => {
+  //   setLocalStrips((prevStrips) =>
+  //     prevStrips.map((strip) =>
+  //       strip.id === stripId ? { ...strip, [property]: value } : strip
+  //     )
+  //   );
+
+  //   if (property === 'selected') return;
+
+  //   // ToDo: Implement real endpoints and body
+  //   sendMessage({
+  //     type: 'set',
+  //     resource: `/audio/strips/${stripId}/${property}`,
+  //     body: { value }
+  //   });
+  // };
 
   useEffect(() => {
     if (!lastMessage) return;
@@ -116,7 +151,7 @@ export const AudioControlPanel: React.FC = () => {
             onToggleRemoveMode={() => setRemoveMode(!removeMode)}
             onResync={handleResync}
             onLoadConfig={handleLoadConfig}
-            onSaveConfig={handleSaveConfig}
+            // onSaveConfig={handleSaveConfig}
           />
         </div>
       </div>

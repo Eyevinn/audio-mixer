@@ -1,52 +1,64 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// TODO: Make sure the message type is correct
+interface Message {
+  type: string;
+  resource: string;
+  body?: {
+    command: string;
+    parameters: {
+      index?: number;
+      content?: string;
+    };
+  };
+}
 
-// Strips
 export const addStrip = (
-  sendMessage: (message: any) => void,
+  sendMessage: (message: Message) => void,
   index: number
 ) => {
+  console.log('should add strip');
   sendMessage({
     type: 'command',
     resource: '/audio/strips',
+    body: { command: 'add_strip', parameters: { index: index } }
     body: { command: 'add_strip', parameters: { index: index } }
   });
 };
 
 export const removeStrip = (
   index: number,
-  sendMessage: (message: any) => void
+  sendMessage: (message: Message) => void
 ) => {
+  console.log('should  remove strip');
   sendMessage({
     type: 'command',
+    resource: `/audio/strips`,
+    body: { command: 'remove_strip', parameters: { index: index } }
     resource: `/audio/strips`,
     body: { command: 'remove_strip', parameters: { index: index } }
   });
 };
 
-export const getAllStrips = (sendMessage: (message: any) => void) => {
+export const getAllStrips = (sendMessage: (message: Message) => void) => {
   sendMessage({
+    type: 'get',
+    resource: '/audio/strips'
     type: 'get',
     resource: '/audio/strips'
   });
 };
 
 // Other
-export const resync = (sendMessage: (message: any) => void) => {
+export const resync = (sendMessage: (message: Message) => void) => {
   sendMessage({
     type: 'subscribe',
     resource: '/audio'
   });
 };
 
-export const saveConfig = (sendMessage: (message: any) => void) => {
-  sendMessage({
-    type: 'command',
-    resource: '/audio',
-    body: { command: 'save', parameters: {} }
-  });
-};
-
-export const loadConfig = (file: File, sendMessage: (message: any) => void) => {
+export const loadConfig = (
+  file: File,
+  sendMessage: (message: Message) => void
+) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     const content = e.target?.result;

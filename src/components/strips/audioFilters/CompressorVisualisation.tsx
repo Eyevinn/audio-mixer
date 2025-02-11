@@ -55,7 +55,7 @@ export const CompressorVisualisation: React.FC<
   }, [threshold, ratio, kneeWidth, makeUpGain]);
 
   return (
-    <div className="relative h-[250px] w-[250px] bg-strip-bg">
+    <div className="relative h-[250px] w-[250px] bg-grid-bg">
       <svg
         className="absolute top-0 left-0 w-full h-full"
         viewBox="0 0 40 40"

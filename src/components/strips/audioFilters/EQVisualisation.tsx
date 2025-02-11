@@ -262,7 +262,14 @@ export const EQVisualisation: React.FC<EQVisualisationProps> = ({
   }, [draw]);
 
   return (
-    <div className="relative h-[228px] w-[583px] bg-strip-bg">
+    <div className="relative h-[228px] w-[583px] bg-grid-bg">
+      <svg
+        className="absolute top-0 left-0 w-full h-full"
+        preserveAspectRatio="none"
+      >
+        {/* Add frequency grid lines */}
+        {/* Add dB grid lines */}
+      </svg>
       <canvas
         ref={canvasRef}
         height={height}

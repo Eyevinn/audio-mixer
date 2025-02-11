@@ -6,7 +6,7 @@ interface ControlButtonsProps {
   onToggleRemoveMode: () => void;
   onResync: () => void;
   onLoadConfig: (file: File) => void;
-  onSaveConfig: () => void;
+  // onSaveConfig: () => void;
 }
 
 export const ControlButtons: React.FC<ControlButtonsProps> = ({
@@ -14,8 +14,8 @@ export const ControlButtons: React.FC<ControlButtonsProps> = ({
   onAddStrip,
   onToggleRemoveMode,
   onResync,
-  onLoadConfig,
-  onSaveConfig
+  onLoadConfig
+  // onSaveConfig
 }) => {
   return (
     <div className="ml-4 flex flex-col space-y-4">
@@ -58,7 +58,7 @@ export const ControlButtons: React.FC<ControlButtonsProps> = ({
           <img src="/load.png" alt="Load" className="w-8 h-8" />
         </label>
         <button
-          onClick={onSaveConfig}
+          // onClick={onSaveConfig}
           className="p-2 bg-blue-600 rounded hover:bg-blue-700"
         >
           <img src="/save.png" alt="Save" className="w-8 h-8" />

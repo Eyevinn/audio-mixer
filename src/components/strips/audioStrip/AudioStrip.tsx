@@ -1,10 +1,13 @@
 import React from 'react';
 import { AudioLevel } from '../audioLevel/AudioLevel';
-import styles from './audioStrip.module.css';
 import { VolumeSlider } from '../volumeSlider/VolumeSlider';
 import { PanningSlider } from '../panningSlider/PanningSlider';
 import { ActionButton } from '../../ui/buttons/Buttons';
-import Icons from '../../../assets/icons/Icons';
+import { StripHeader } from '../stripHeader/StripHeader';
+import { StripDropdown } from '../../ui/dropdown/Dropdown';
+import { useWebSocket } from '../../../context/WebSocketContext';
+import { useGlobalState } from '../../../context/GlobalStateContext';
+import { LabelInput, StripInput } from '../../ui/input/Input';
 
 interface AudioStripProps {
   id: number;
@@ -18,16 +21,12 @@ interface AudioStripProps {
   muted: boolean;
   pfl: boolean;
   volume: number;
-  onLabelChange: (label: string) => void;
-  onPanningChange: (panning: number) => void;
-  onMuteChange: (muted: boolean) => void;
-  onPflChange: (pfl: boolean) => void;
-  onVolumeChange: (volume: number) => void;
   onSelect: () => void;
   onRemove: () => void;
 }
 
 export const AudioStrip: React.FC<AudioStripProps> = ({
+  id: stripId,
   label,
   selected,
   slot,
@@ -38,69 +37,118 @@ export const AudioStrip: React.FC<AudioStripProps> = ({
   muted,
   pfl,
   volume,
-  onLabelChange,
-  onPanningChange,
-  onMuteChange,
-  onPflChange,
-  onVolumeChange,
   onSelect,
   onRemove
 }) => {
   const panningValToPos = (val: number): number => Math.round((val + 1) * 64);
   const panningPosToVal = (pos: number): number => pos / 64 - 1.0;
+  const { sendMessage } = useWebSocket();
+  const { savedStrips, setSavedStrips } = useGlobalState();
+
+  const active = true;
 
   const renderButtonColor = (label: string) => {
     switch (label) {
       case 'SELECT':
-        return selected ? 'bg-select-green' : 'bg-dark-grey';
+        return selected ? 'bg-select-btn' : 'bg-default-btn';
       case 'PFL':
-        return pfl ? 'bg-pfl-yellow' : 'bg-dark-grey';
+        return pfl ? 'bg-pfl-btn' : 'bg-default-btn';
       case 'MUTE':
-        return muted ? 'bg-mute-red' : 'bg-dark-grey';
+        return muted ? 'bg-mute-btn' : 'bg-default-btn';
       default:
-        return 'bg-dark-grey';
+        return 'bg-default-btn';
+    }
+  };
+
+  const handleStripChange = (
+    stripId: number,
+    property: string,
+    value: number | boolean | string | undefined
+  ) => {
+    setSavedStrips(
+      savedStrips.map((strip) =>
+        strip.id === stripId ? { ...strip, [property]: value } : strip
+      )
+    );
+
+    if (!value) return;
+
+    if (property === 'selected') return;
+
+    if (property === 'label') {
+      // ToDo: Fix endpoint
+      sendMessage({
+        type: 'set',
+        resource: `/audio/strips/${stripId}`,
+        body: { [property]: value }
+      });
+    } else {
+      // ToDo: Fix endpoint
+      sendMessage({
+        type: 'set',
+        resource: `/audio/strips/${stripId}/input`,
+        body: { value }
+      });
     }
   };
 
   return (
-    <div className="w-[8rem] h-[50rem] relative inline-block border-[0.1px] rounded-lg border-gray-500">
+    <div
+      className={`flex flex-col w-fit h-fit relative border-[1px] rounded-lg bg-strip-bg ${active ? 'border-gray-400' : ''}`}
+    >
       {/* Strip Info */}
-      <div className="flex justify-between flex-wrap items-center w-full">
-        <div className="text-sm text-center ml-2 text-white">Strip #{slot}</div>
-        <button onClick={onRemove} className="w-[2rem] p-2">
-          <Icons
-            name="IconTrash"
-            className="stroke-delete hover:cursor-pointer rounded-xl hover:bg-light place-self-end"
-          />
-        </button>
-      </div>
+      <StripHeader label={`Strip #${slot}`} onRemove={onRemove} />
 
       {/* Label Input */}
-      <input
-        type="text"
+      <LabelInput
         value={label}
-        onChange={(e) => onLabelChange(e.target.value)}
-        className={styles.stripUserInputs}
+        onChange={(label) => handleStripChange(stripId, 'label', label)}
+      />
+
+      {/* Slot Input */}
+      <StripInput
+        type="Slot"
+        value={slot !== undefined ? slot.toString() : ''}
+        onChange={(slot: string) =>
+          handleStripChange(
+            stripId,
+            'slot',
+            slot !== '' ? parseInt(slot, 10) : ''
+          )
+        }
       />
 
       {/* Mode Select */}
-      <select
+      <StripDropdown
+        type="Mode"
+        options={['Mono', 'Stereo']}
         value={mode}
-        onChange={(e) => onLabelChange(e.target.value)}
-        className={styles.stripUserInputs}
-      >
-        <option value="mono">Mono</option>
-        <option value="stereo">Stereo</option>
-      </select>
-      <div className="flex justify-center flex-wrap w-full mt-5">
-        {/* Panning Slider */}
-        <PanningSlider
-          inputValue={panningValToPos(panning)}
-          onChange={(panning) =>
-            onPanningChange(panningPosToVal(parseInt(panning)))
-          }
-        />
-        <div className="flex mb-5">
+        onChange={(mode: string) => handleStripChange(stripId, 'mode', mode)}
+      />
+
+      {/* Left Ch Select */}
+      <StripDropdown
+        type="Left Ch"
+        options={['0', '1']}
+        value={channel1.toString()}
+        onChange={(channel1: string) =>
+          handleStripChange(stripId, 'channel1', parseInt(channel1, 10))
+        }
+      />
+
+      {/* Right Ch Select */}
+      <StripDropdown
+        type="Right Ch"
+        options={['0', '1']}
+        value={channel2.toString()}
+        onChange={(channel2: string) =>
+          handleStripChange(stripId, 'channel2', parseInt(channel2, 10))
+        }
+        hidden={mode === 'mono'}
+      />
+
+      <div className="flex flex-col items-center flex-wrap w-full mt-5 mb-3">
+        <div className="w-full flex justify-evenly mb-5">
           {/* Audio Levels */}
           <AudioLevel
             isStereo={mode === 'stereo'}
@@ -111,35 +159,50 @@ export const AudioStrip: React.FC<AudioStripProps> = ({
           />
           {/* Control Buttons */}
           <div className="flex flex-col justify-end">
-            {['SELECT', 'PFL', 'MUTE'].map((label, index) => (
-              <ActionButton
-                key={index}
-                label={label}
-                buttonColor={renderButtonColor(label)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  switch (label) {
-                    // TODO where is the select function?
-                    case 'SELECT':
-                      onSelect();
-                      break;
-                    case 'PFL':
-                      onPflChange(!pfl);
-                      break;
-                    case 'MUTE':
-                      onMuteChange(!muted);
-                      break;
-                  }
-                }}
-              />
-            ))}
+            {/* Panning Slider */}
+            <PanningSlider
+              inputValue={panningValToPos(panning)}
+              onChange={(panning) =>
+                handleStripChange(
+                  stripId,
+                  'panning',
+                  panningPosToVal(parseInt(panning))
+                )
+              }
+            />
+            <div className="flex flex-col justify-end">
+              {['SELECT', 'PFL', 'MUTE'].map((label, index) => (
+                <ActionButton
+                  key={index}
+                  label={label}
+                  buttonColor={renderButtonColor(label)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    switch (label) {
+                      // TODO where is the select function?
+                      case 'SELECT':
+                        onSelect();
+                        break;
+                      case 'PFL':
+                        handleStripChange(stripId, 'pfl', !pfl);
+                        break;
+                      case 'MUTE':
+                        handleStripChange(stripId, 'muted', !muted);
+                        break;
+                    }
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
         {/* Volume Slider */}
         <VolumeSlider
           type="mixer"
           inputVolume={volume}
-          onVolumeChange={onVolumeChange}
+          onVolumeChange={(volume: number) =>
+            handleStripChange(stripId, 'volume', volume)
+          }
         />
       </div>
     </div>
