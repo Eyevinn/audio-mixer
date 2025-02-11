@@ -74,22 +74,6 @@ export const StripsPage = () => {
     setIsDeleteAllDisabled(localStrips.length === 0);
   }, [localStrips]);
 
-  // Create a default strip object
-  const createDefaultStrip = (id: number): Strip => ({
-    // Todo: Change from id to index
-    id,
-    label: `Strip ${id}`,
-    volume: 0,
-    panning: 0,
-    muted: false,
-    pfl: false,
-    slot: localStrips.length,
-    channel1: 0,
-    channel2: 0,
-    mode: 'stereo',
-    selected: false
-  });
-
   const handleAddStrip = () => {
     const nextStripIndex = useNextAvailableIndex(mockStrips);
     addStrip(sendMessage, nextStripIndex);
