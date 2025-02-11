@@ -10,7 +10,6 @@ import {
 } from '../../components/ui/buttons/Buttons';
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
-import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 
 export const StripsPage = () => {
   const [localStrips, setLocalStrips] = useState<Strip[]>([]);
