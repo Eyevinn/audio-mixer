@@ -45,8 +45,6 @@ export const AudioStrip: React.FC<AudioStripProps> = ({
   const { sendMessage } = useWebSocket();
   const { savedStrips, setSavedStrips } = useGlobalState();
 
-  const active = true;
-
   const renderButtonColor = (label: string) => {
     switch (label) {
       case 'SELECT':
@@ -94,7 +92,7 @@ export const AudioStrip: React.FC<AudioStripProps> = ({
 
   return (
     <div
-      className={`flex flex-col w-fit h-fit relative border-[1px] rounded-lg bg-strip-bg ${active ? 'border-gray-400' : ''}`}
+      className={`flex flex-col w-fit h-fit relative rounded-lg bg-strip-bg ${selected ? 'border-[1px] border-gray-400' : ''}`}
     >
       {/* Strip Info */}
       <StripHeader label={`Strip #${slot}`} onRemove={onRemove} />
@@ -179,9 +177,9 @@ export const AudioStrip: React.FC<AudioStripProps> = ({
                   onClick={(e) => {
                     e.stopPropagation();
                     switch (label) {
-                      // TODO where is the select function?
                       case 'SELECT':
                         onSelect();
+                        // handleStripChange(stripId, 'selected', !selected);
                         break;
                       case 'PFL':
                         handleStripChange(stripId, 'pfl', !pfl);

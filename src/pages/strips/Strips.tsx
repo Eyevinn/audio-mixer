@@ -60,6 +60,16 @@ export const StripsPage = () => {
   }, [isConnected, sendMessage]);
 
   useEffect(() => {
+    setSavedStrips(
+      savedStrips.map((strip) =>
+        strip.id !== selectedStrip
+          ? { ...strip, selected: false }
+          : { ...strip, selected: true }
+      )
+    );
+  }, [selectedStrip]);
+
+  useEffect(() => {
     setIsDeleteAllDisabled(localStrips.length === 0);
   }, [localStrips]);
 
@@ -98,6 +108,10 @@ export const StripsPage = () => {
       setSelectedStrip(null);
     }
   };
+
+  useEffect(() => {
+    console.log('Selected strip: ', selectedStrip);
+  }, [selectedStrip]);
 
   const handleRemoveAllStrips = () => {
     localStrips.forEach((strip) => handleRemoveStrip(strip.id));
