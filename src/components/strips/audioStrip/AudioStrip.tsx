@@ -8,6 +8,7 @@ import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { useGlobalState } from '../../../context/GlobalStateContext';
 import { LabelInput, StripInput } from '../../ui/input/Input';
+import { InputFields } from './InputFields';
 
 interface AudioStripProps {
   id: number;
@@ -103,46 +104,13 @@ export const AudioStrip: React.FC<AudioStripProps> = ({
         onChange={(label) => handleStripChange(stripId, 'label', label)}
       />
 
-      {/* Slot Input */}
-      <StripInput
-        type="Slot"
-        value={slot !== undefined ? slot.toString() : ''}
-        onChange={(slot: string) =>
-          handleStripChange(
-            stripId,
-            'slot',
-            slot !== '' ? parseInt(slot, 10) : ''
-          )
-        }
-      />
-
-      {/* Mode Select */}
-      <StripDropdown
-        type="Mode"
-        options={['Mono', 'Stereo']}
-        value={mode}
-        onChange={(mode: string) => handleStripChange(stripId, 'mode', mode)}
-      />
-
-      {/* Left Ch Select */}
-      <StripDropdown
-        type="Left Ch"
-        options={['0', '1']}
-        value={channel1.toString()}
-        onChange={(channel1: string) =>
-          handleStripChange(stripId, 'channel1', parseInt(channel1, 10))
-        }
-      />
-
-      {/* Right Ch Select */}
-      <StripDropdown
-        type="Right Ch"
-        options={['0', '1']}
-        value={channel2.toString()}
-        onChange={(channel2: string) =>
-          handleStripChange(stripId, 'channel2', parseInt(channel2, 10))
-        }
-        hidden={mode === 'mono'}
+      <InputFields
+        slot={slot !== undefined ? slot.toString() : ''}
+        mode={mode}
+        channel1={channel1.toString()}
+        channel2={channel2.toString()}
+        stripId={stripId}
+        handleStripChange={handleStripChange}
       />
 
       <div className="flex flex-col items-center flex-wrap w-full mt-5 mb-3">
