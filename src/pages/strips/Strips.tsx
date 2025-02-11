@@ -12,29 +12,14 @@ import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 
-// TODO: Replace with real strips from API
-const mockStrips = [
-  {
-    index: 1,
-    label: 'Strip 1'
-  },
-  {
-    index: 2,
-    label: 'Strip 2'
-  },
-  {
-    index: 3,
-    label: 'Strip 3'
-  }
-];
-
 export const StripsPage = () => {
   const [localStrips, setLocalStrips] = useState<Strip[]>([]);
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const { sendMessage, isConnected, lastMessage } = useWebSocket();
-  const nextStripIndex = useNextAvailableIndex(mockStrips);
+  // TODO: Add back when types are updated
+  // const nextStripIndex = useNextAvailableIndex(strips);
 
   useEffect(() => {
     if (!lastMessage) return;
@@ -75,8 +60,27 @@ export const StripsPage = () => {
     setIsDeleteAllDisabled(localStrips.length === 0);
   }, [localStrips]);
 
+  // Create a default strip object
+  const createDefaultStrip = (id: number): Strip => ({
+    id,
+    label: `Strip ${id}`,
+    volume: 0,
+    panning: 0,
+    muted: false,
+    pfl: false,
+    slot: localStrips.length,
+    channel1: 0,
+    channel2: 1,
+    mode: 'stereo',
+    selected: false
+  });
+
   const handleAddStrip = () => {
-    addStrip(sendMessage, nextStripIndex);
+    const id = localStrips.length;
+    const newStrip = createDefaultStrip(id);
+    setLocalStrips([...localStrips, newStrip]);
+
+    addStrip(sendMessage, localStrips.length + 1);
   };
 
   // TODO: Should use index instead

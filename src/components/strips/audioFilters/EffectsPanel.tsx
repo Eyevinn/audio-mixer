@@ -112,7 +112,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({
   };
 
   return (
-    <div className="max-h-screen min-w-max overflow-y-auto rounded-tl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg mt-4 p-2 text-white">
+    <div className="h-[70vh] min-w-max overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg mt-4 p-2 text-white">
       <h1 className="text-xl font-semibold mb-4">Settings for {label}</h1>
 
       <section className={styles.settingsItem}>
