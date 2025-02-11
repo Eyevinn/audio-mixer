@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { AudioStrip } from '../strips/audioStrip/AudioStrip';
 import { ControlButtons } from './ControlButtons';
-import { EffectsPanel } from '../strips/audioFilters/EffectsPanel';
 import { MainVolume } from '../strips/mainVolume/MainVolume';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { WebSocketDialog } from '../webSocket/WebSocketDialog';
 import { Strip } from '../../types/types';
-import {
-  removeStrip,
-  addStrip,
-  removeAllStrips,
-  resync,
-  loadConfig,
-  saveConfig
-} from '../../utils/utils';
+import { addStrip, resync, loadConfig, saveConfig } from '../../utils/utils';
+
+// TODO: Delete if not needed (currently not used)
 
 export const AudioControlPanel: React.FC = () => {
   const [localStrips, setLocalStrips] = useState<Strip[]>([]);
-  const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
   const [removeMode, setRemoveMode] = useState(false);
   const { sendMessage, isConnected, lastMessage } = useWebSocket();
 
@@ -42,47 +34,12 @@ export const AudioControlPanel: React.FC = () => {
 
     setLocalStrips((prev) => [...prev, newStrip]);
 
-    addStrip(sendMessage);
-  };
-
-  const handleRemoveStrip = (stripId: number) => {
-    removeStrip(stripId, sendMessage);
-    setLocalStrips((prev) => prev.filter((strip) => strip.id !== stripId));
-    if (selectedStrip === stripId) {
-      setSelectedStrip(null);
-    }
-  };
-
-  const handleRemoveAllStrips = () => {
-    removeAllStrips(sendMessage);
-    setLocalStrips([]);
-    setSelectedStrip(null);
+    addStrip(sendMessage, 1);
   };
 
   const handleResync = () => resync(sendMessage);
   const handleSaveConfig = () => saveConfig(sendMessage);
   const handleLoadConfig = (file: File) => loadConfig(file, sendMessage);
-
-  const handleStripChange = (
-    stripId: number,
-    property: string,
-    value: number | boolean | string
-  ) => {
-    setLocalStrips((prevStrips) =>
-      prevStrips.map((strip) =>
-        strip.id === stripId ? { ...strip, [property]: value } : strip
-      )
-    );
-
-    if (property === 'selected') return;
-
-    // ToDo: Implement real endpoints and body
-    sendMessage({
-      type: 'set',
-      resource: `/audio/strips/${stripId}/${property}`,
-      body: { value }
-    });
-  };
 
   useEffect(() => {
     if (!lastMessage) return;
@@ -108,7 +65,7 @@ export const AudioControlPanel: React.FC = () => {
     } catch (error) {
       console.error('Error processing WebSocket message:', error);
     }
-  }, [lastMessage, selectedStrip]);
+  }, [lastMessage]);
 
   useEffect(() => {
     if (isConnected) {
@@ -126,32 +83,6 @@ export const AudioControlPanel: React.FC = () => {
       <div className="container mx-auto p-4">
         <div className="flex">
           {/* Audio Strips Container */}
-          <div className="flex space-x-2">
-            {localStrips.map((strip) => (
-              <AudioStrip
-                key={strip.id}
-                {...strip}
-                onLabelChange={(label) =>
-                  handleStripChange(strip.id, 'label', label)
-                }
-                onPanningChange={(panning) =>
-                  handleStripChange(strip.id, 'panning', panning)
-                }
-                onMuteChange={(muted) =>
-                  handleStripChange(strip.id, 'muted', muted)
-                }
-                onPflChange={(pfl) => handleStripChange(strip.id, 'pfl', pfl)}
-                onVolumeChange={(volume) =>
-                  handleStripChange(strip.id, 'volume', volume)
-                }
-                onSelect={() => {
-                  handleStripChange(strip.id, 'selected', !strip.selected);
-                  setSelectedStrip(selectedStrip === null ? strip.id : null);
-                }}
-                onRemove={() => removeMode && handleRemoveStrip(strip.id)}
-              />
-            ))}
-          </div>
 
           {/* Main Volume */}
           <MainVolume
@@ -183,20 +114,11 @@ export const AudioControlPanel: React.FC = () => {
             removeMode={removeMode}
             onAddStrip={handleAddStrip}
             onToggleRemoveMode={() => setRemoveMode(!removeMode)}
-            onRemoveAllStrips={handleRemoveAllStrips}
             onResync={handleResync}
             onLoadConfig={handleLoadConfig}
             onSaveConfig={handleSaveConfig}
           />
         </div>
-
-        {/* Effects Panel */}
-        {selectedStrip !== null && (
-          <EffectsPanel
-            label={localStrips.find((s) => s.id === selectedStrip)?.label || ''}
-            stripId={selectedStrip}
-          />
-        )}
       </div>
 
       {/* Error Messages */}
