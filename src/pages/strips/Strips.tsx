@@ -34,6 +34,7 @@ export const StripsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const { sendMessage, isConnected, lastMessage } = useWebSocket();
+  const nextStripIndex = useNextAvailableIndex(mockStrips);
 
   useEffect(() => {
     if (!lastMessage) return;
@@ -75,7 +76,6 @@ export const StripsPage = () => {
   }, [localStrips]);
 
   const handleAddStrip = () => {
-    const nextStripIndex = useNextAvailableIndex(mockStrips);
     addStrip(sendMessage, nextStripIndex);
   };
 
