@@ -44,8 +44,8 @@ export const StripInput = ({ type, value, onChange }: TStripInputProps) => {
       <input
         type="number"
         placeholder="Input Slot"
-        value={value !== '' ? value : ''}
-        onChange={(e) => onChange(e.target.value !== '' ? e.target.value : '')}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="w-[6rem] px-2 py-1 bg-input-field text-black text-center text-sm rounded"
       />
     </div>

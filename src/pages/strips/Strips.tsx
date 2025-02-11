@@ -28,11 +28,9 @@ export const StripsPage = () => {
       const data = JSON.parse(lastMessage);
       switch (data.type) {
         case 'get-response':
-          console.log('GET RESPONSE');
           if (data.resource === '/audio/strips') {
             // TODO - Handle response and update state
             // setSavedStrips(data.body);
-            console.log('Strips: ', data.body);
           }
           break;
 
@@ -70,8 +68,8 @@ export const StripsPage = () => {
   }, [selectedStrip]);
 
   useEffect(() => {
-    setIsDeleteAllDisabled(localStrips.length === 0);
-  }, [localStrips]);
+    setIsDeleteAllDisabled(savedStrips.length === 0);
+  }, [savedStrips]);
 
   // Create a default strip object
   const createDefaultStrip = (id: number): Strip => ({
@@ -109,14 +107,10 @@ export const StripsPage = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('Selected strip: ', selectedStrip);
-  }, [selectedStrip]);
-
   const handleRemoveAllStrips = () => {
-    localStrips.forEach((strip) => handleRemoveStrip(strip.id));
+    savedStrips.forEach((strip) => handleRemoveStrip(strip.id));
     setSelectedStrip(null);
-    setLocalStrips([]);
+    setSavedStrips([]);
   };
 
   const onModalOpen = () => {
@@ -150,9 +144,7 @@ export const StripsPage = () => {
         {/* Audio Strips Container */}
         <div className="ml-8 mt-4 w-full max-w-full overflow-hidden">
           <ScrollableContainer
-            strips={localStrips}
             selectedStrip={selectedStrip}
-            setLocalStrips={setLocalStrips}
             setSelectedStrip={setSelectedStrip}
             handleRemoveStrip={handleRemoveStrip}
           />
