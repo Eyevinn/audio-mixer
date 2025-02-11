@@ -109,10 +109,6 @@ export const StripsPage = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('Selected strip: ', selectedStrip);
-  }, [selectedStrip]);
-
   const handleRemoveAllStrips = () => {
     savedStrips.forEach((strip) => handleRemoveStrip(strip.stripId));
     setSelectedStrip(null);
