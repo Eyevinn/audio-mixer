@@ -4,7 +4,6 @@ import { useWebSocket } from '../../context/WebSocketContext';
 import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { useGlobalState } from '../../context/GlobalStateContext';
-import { useGlobalState } from '../../context/GlobalStateContext';
 import {
   PrimaryButton,
   DeleteButton
