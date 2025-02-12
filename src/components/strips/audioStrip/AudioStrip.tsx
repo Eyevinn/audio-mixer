@@ -4,10 +4,9 @@ import { VolumeSlider } from '../volumeSlider/VolumeSlider';
 import { PanningSlider } from '../panningSlider/PanningSlider';
 import { ActionButton } from '../../ui/buttons/Buttons';
 import { StripHeader } from '../stripHeader/StripHeader';
-import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { useGlobalState } from '../../../context/GlobalStateContext';
-import { LabelInput, StripInput } from '../../ui/input/Input';
+import { LabelInput } from '../../ui/input/Input';
 import { InputFields } from './InputFields';
 
 interface AudioStripProps {
