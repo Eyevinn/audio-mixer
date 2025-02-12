@@ -9,7 +9,9 @@ import {
   IconPlugConnected,
   IconPlugConnectedX,
   IconDeviceFloppy,
-  IconFileUpload
+  IconFileUpload,
+  IconSettings,
+  IconCopy
 } from '@tabler/icons-react';
 
 interface IClassName {
@@ -45,7 +47,11 @@ const pickIcon = {
   ),
   IconUpload: ({ className }: IClassName) => (
     <IconFileUpload className={className} />
-  )
+  ),
+  IconSettings: ({ className }: IClassName) => (
+    <IconSettings className={className} />
+  ),
+  IconCopy: ({ className }: IClassName) => <IconCopy className={className} />
 };
 
 export type PickIconNames = keyof typeof pickIcon;

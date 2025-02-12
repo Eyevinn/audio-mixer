@@ -1,7 +1,7 @@
 import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { StripInput } from '../../ui/input/Input';
 
-type TInputFieldsProps = {
+type TStripFieldsProps = {
   slot: string;
   mode: string;
   channel1: string;
@@ -14,14 +14,14 @@ type TInputFieldsProps = {
   ) => void;
 };
 
-export const InputFields = ({
+export const StripFields = ({
   slot,
   mode,
   channel1,
   channel2,
   stripId,
   handleStripChange
-}: TInputFieldsProps) => {
+}: TStripFieldsProps) => {
   return (
     <div className="flex flex-col">
       {/* Slot Input */}
