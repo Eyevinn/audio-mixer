@@ -18,6 +18,10 @@ import React from 'react';
 import { BaseStrip } from '../BaseStrip';
 import { StripFields } from './StripFields';
 
+import React from 'react';
+import { BaseStrip } from '../BaseStrip';
+import { StripFields } from './StripFields';
+
 interface AudioStripProps {
   stripId: number;
   label: string;
