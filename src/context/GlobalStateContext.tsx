@@ -1,7 +1,10 @@
-import { createContext, FC, ReactNode, useContext } from 'react';
+import { createContext, FC, ReactNode, useContext, useState } from 'react';
+import { Strip } from '../types/types';
 
 interface GlobalStateContextType {
   strips: string[];
+  savedStrips: Strip[];
+  setSavedStrips: (strips: Strip[]) => void;
 }
 
 const GlobalStateContext = createContext<GlobalStateContextType | null>(null);
@@ -9,8 +12,11 @@ const GlobalStateContext = createContext<GlobalStateContextType | null>(null);
 export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
   children
 }) => {
+  const [savedStrips, setSavedStrips] = useState<Strip[]>([]);
   return (
-    <GlobalStateContext.Provider value={{ strips: ['Hejj S&L'] }}>
+    <GlobalStateContext.Provider
+      value={{ strips: ['Hejj S&L'], savedStrips, setSavedStrips }}
+    >
       {children}
     </GlobalStateContext.Provider>
   );

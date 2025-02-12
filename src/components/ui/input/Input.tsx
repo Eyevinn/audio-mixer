@@ -8,6 +8,12 @@ type TInputProps = {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
+type TStripInputProps = {
+  type?: string;
+  value: string;
+  onChange: (input: string) => void;
+};
+
 export const Input = ({
   className,
   type,
@@ -26,5 +32,36 @@ export const Input = ({
       onChange={onChange}
       onKeyDown={onKeyDown}
     />
+  );
+};
+
+export const StripInput = ({ type, value, onChange }: TStripInputProps) => {
+  return (
+    <div className="flex justify-between text-sm items-center px-4 py-1">
+      <label htmlFor={type} className="text-white">
+        {type}
+      </label>
+      <input
+        type="number"
+        placeholder="Input Slot"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-[6rem] px-2 py-1 bg-input-field text-black text-center text-sm rounded"
+      />
+    </div>
+  );
+};
+
+export const LabelInput = ({ value, onChange }: TStripInputProps) => {
+  return (
+    <div className="w-full px-4 items-center">
+      <input
+        type="text"
+        maxLength={15}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-[8rem] bg-label-field text-black g-transparent outline-none text-center py-1 text-sm rounded mb-2"
+      />
+    </div>
   );
 };

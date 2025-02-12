@@ -1,8 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// TODO: Make sure the message type is correct
+interface Message {
+  type: string;
+  resource: string;
+  body?: {
+    command: string;
+    parameters: {
+      index?: number;
+      content?: string;
+    };
+  };
+}
 
-// Strips
 export const addStrip = (
-  sendMessage: (message: any) => void,
+  sendMessage: (message: Message) => void,
   index: number
 ) => {
   sendMessage({
@@ -14,7 +24,7 @@ export const addStrip = (
 
 export const removeStrip = (
   index: number,
-  sendMessage: (message: any) => void
+  sendMessage: (message: Message) => void
 ) => {
   sendMessage({
     type: 'command',
@@ -23,7 +33,7 @@ export const removeStrip = (
   });
 };
 
-export const getAllStrips = (sendMessage: (message: any) => void) => {
+export const getAllStrips = (sendMessage: (message: Message) => void) => {
   sendMessage({
     type: 'get',
     resource: '/audio/strips'
@@ -31,22 +41,17 @@ export const getAllStrips = (sendMessage: (message: any) => void) => {
 };
 
 // Other
-export const resync = (sendMessage: (message: any) => void) => {
+export const resync = (sendMessage: (message: Message) => void) => {
   sendMessage({
     type: 'subscribe',
     resource: '/audio'
   });
 };
 
-export const saveConfig = (sendMessage: (message: any) => void) => {
-  sendMessage({
-    type: 'command',
-    resource: '/audio',
-    body: { command: 'save', parameters: {} }
-  });
-};
-
-export const loadConfig = (file: File, sendMessage: (message: any) => void) => {
+export const loadConfig = (
+  file: File,
+  sendMessage: (message: Message) => void
+) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     const content = e.target?.result;
