@@ -27,6 +27,13 @@ module.exports = {
         'meter-green': '#0e0',
         'select-btn': '#63b65f',
         'pfl-btn': '#b6b15f',
+        'select-btn': '#63B65F',
+        'pfl-btn': '#b6b15f',
+        'mute-btn': '#b15f5f',
+        'default-btn': '#a9a9a9',
+        // Filter-settings colors:
+        'grid-bg': '#151515',
+        // Mix colors:
         'mute-btn': '#b15f5f',
         'default-btn': '#a9a9a9',
         'copy-btn': '#d9d9d9',
