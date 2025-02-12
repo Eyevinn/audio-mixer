@@ -14,6 +14,10 @@ import { LabelInput } from '../../ui/input/Input';
 import { InputFields } from './InputFields';
 import { Filters } from '../../../types/types';
 import { LabelInput, StripInput } from '../../ui/input/Input';
+import React from 'react';
+import { BaseStrip } from '../BaseStrip';
+import { StripFields } from './StripFields';
+
 interface AudioStripProps {
   stripId: number;
   label: string;
