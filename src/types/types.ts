@@ -73,6 +73,49 @@ export interface Filters {
   };
 }
 
+export interface Compressor {
+  attack: number;
+  gain: number;
+  knee: number;
+  ratio: number;
+  release: number;
+  threshold: number;
+}
+
+export interface Filters {
+  compressor: Compressor;
+  eq: {
+    bands: {
+      frequency: number;
+      gain: number;
+      q: number;
+      type:
+        | 'none'
+        | 'low_pass'
+        | 'high_pass'
+        | 'band_pass'
+        | 'low_shelf'
+        | 'high_shelf'
+        | 'peak'
+        | 'notch';
+    }[];
+  };
+  gain: {
+    value: number;
+  };
+  mid_side: {
+    enabled: boolean;
+    // left right stereo or mid side stereo, mono input will always be bypassed
+    input_format: 'lr_stereo' | 'ms_stereo';
+    invert_polarity: boolean;
+    mid_amount: number;
+    side_amount: number;
+  };
+  pan: {
+    value: number;
+  };
+}
+
 interface BaseStrip {
   stripId: number;
   label: string;
