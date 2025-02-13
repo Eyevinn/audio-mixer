@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { SliderLegend } from '../../../assets/icons/SliderLegend';
+import debounce from 'lodash/debounce';
 
 type VolumeSliderProps = {
   type: 'mixer' | 'master';
@@ -13,29 +14,47 @@ export const VolumeSlider = ({
   onVolumeChange
 }: VolumeSliderProps) => {
   const [volume, setVolume] = useState(40);
+  const [isDragging, setIsDragging] = useState(false);
+
   const volumeValToPos = (val: number): number =>
     Math.round(((val + 60) * 127) / 70);
   const volumePosToVal = (pos: number): number => (pos * 70) / 127 - 60;
 
+  // Throttle WebSocket updates
+  const throttledVolumeChange = useMemo(
+    () =>
+      debounce((value: number) => {
+        onVolumeChange(value);
+      }, 50),
+    [onVolumeChange]
+  );
+
   useEffect(() => {
-    if (inputVolume) {
+    if (inputVolume && !isDragging) {
       setVolume(inputVolume);
     }
-  }, [inputVolume]);
+  }, [inputVolume, isDragging]);
 
-  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseInt(e.target.value);
+  const onChangeHandler = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = parseInt(e.target.value);
 
-    switch (type) {
-      case 'mixer':
-        onVolumeChange(volumePosToVal(parseInt(e.target.value)));
-        break;
-      case 'master':
+      // Update local state immediately for smooth visual feedback
+      if (type === 'master') {
         setVolume(newValue);
-        onVolumeChange(newValue);
-        break;
-    }
-  };
+      } else {
+        setVolume(volumePosToVal(newValue));
+      }
+
+      // Throttle the WebSocket updates
+      if (type === 'mixer') {
+        throttledVolumeChange(volumePosToVal(newValue));
+      } else {
+        throttledVolumeChange(newValue);
+      }
+    },
+    [type, throttledVolumeChange]
+  );
 
   return (
     <div className="relative w-[72px] h-[346px] mr-[7px]">
@@ -49,7 +68,17 @@ export const VolumeSlider = ({
         max="127"
         step="1"
         value={type === 'master' ? volume : volumeValToPos(volume)}
-        onChange={(e) => onChangeHandler(e)}
+        onChange={onChangeHandler}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          setIsDragging(true);
+        }}
+        onMouseUp={() => {
+          setIsDragging(false);
+        }}
+        onMouseLeave={() => {
+          setIsDragging(false);
+        }}
         onDoubleClick={() => {
           if (type === 'master') {
             setVolume(0);

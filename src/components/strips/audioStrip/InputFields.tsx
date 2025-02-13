@@ -3,20 +3,20 @@ import { StripInput } from '../../ui/input/Input';
 
 type TInputFieldsProps = {
   slot: string;
-  mode: string;
+  isStereo: boolean;
   channel1: string;
   channel2: string;
   stripId: number;
   handleStripChange: (
     stripId: number,
     key: string,
-    value: string | number
+    value: string | number | boolean
   ) => void;
 };
 
 export const InputFields = ({
   slot,
-  mode,
+  isStereo,
   channel1,
   channel2,
   stripId,
@@ -31,7 +31,7 @@ export const InputFields = ({
         onChange={(slot: string) =>
           handleStripChange(
             stripId,
-            'slot',
+            'input_slot',
             slot !== '' ? parseInt(slot, 10) : ''
           )
         }
@@ -41,8 +41,10 @@ export const InputFields = ({
       <StripDropdown
         type="Mode"
         options={['Mono', 'Stereo']}
-        value={mode}
-        onChange={(mode: string) => handleStripChange(stripId, 'mode', mode)}
+        value={isStereo ? 'stereo' : 'mono'}
+        onChange={(mode: string) =>
+          handleStripChange(stripId, 'is_stereo', mode === 'stereo')
+        }
       />
 
       {/* Left Ch Select */}
@@ -51,7 +53,7 @@ export const InputFields = ({
         options={['0', '1']}
         value={channel1.toString()}
         onChange={(channel1: string) =>
-          handleStripChange(stripId, 'channel1', parseInt(channel1, 10))
+          handleStripChange(stripId, 'first_channel', parseInt(channel1, 10))
         }
       />
 
@@ -61,9 +63,9 @@ export const InputFields = ({
         options={['0', '1']}
         value={channel2.toString()}
         onChange={(channel2: string) =>
-          handleStripChange(stripId, 'channel2', parseInt(channel2, 10))
+          handleStripChange(stripId, 'second_channel', parseInt(channel2, 10))
         }
-        hidden={mode === 'mono'}
+        hidden={!isStereo}
       />
     </div>
   );
