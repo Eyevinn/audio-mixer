@@ -65,3 +65,27 @@ export const loadConfig = (
   };
   reader.readAsText(file);
 };
+
+export const addEQBand = (
+  sendMessage: (message: Message) => void,
+  stripId: number,
+  index: number
+) => {
+  sendMessage({
+    type: 'command',
+    resource: `/audio/strips/${stripId}/filters/eq`,
+    body: { command: 'add_band', parameters: { index: index } }
+  });
+};
+
+export const removeEQBand = (
+  sendMessage: (message: Message) => void,
+  stripId: number,
+  index: number
+) => {
+  sendMessage({
+    type: 'command',
+    resource: `/audio/strips/${stripId}/filters/eq`,
+    body: { command: 'remove_band', parameters: { index: index } }
+  });
+};
