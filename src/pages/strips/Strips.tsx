@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Strip } from '../../types/types';
-import { addStrip, removeStrip } from '../../utils/utils';
+import { addStrip, getAllStrips, removeStrip } from '../../utils/utils';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
@@ -11,6 +10,8 @@ import {
 } from '../../components/ui/buttons/Buttons';
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
+import { Strip } from '../../types/types';
+import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
@@ -18,8 +19,7 @@ export const StripsPage = () => {
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const { sendMessage, isConnected, lastMessage } = useWebSocket();
   const { savedStrips, setSavedStrips } = useGlobalState();
-  // TODO: Add back when types are updated
-  // const nextStripIndex = useNextAvailableIndex(strips);
+  const nextStripIndex = useNextAvailableIndex(savedStrips);
 
   useEffect(() => {
     if (!lastMessage) return;
@@ -29,8 +29,32 @@ export const StripsPage = () => {
       switch (data.type) {
         case 'get-response':
           if (data.resource === '/audio/strips') {
-            // TODO - Handle response and update state
-            // setSavedStrips(data.body);
+            const stripsArray = Object.entries(data.body).map(
+              ([index, stripData]) => {
+                const strip = stripData as Strip;
+                // Find existing strip to preserve local states
+                const existingStrip = savedStrips.find(
+                  (s) => s.stripId === parseInt(index)
+                );
+
+                return {
+                  // Preserve local states if they exist
+                  selected: existingStrip?.selected ?? false,
+                  pfl: existingStrip?.pfl ?? false,
+                  stripId: parseInt(index),
+                  // API data
+                  fader: strip.fader,
+                  filters: strip.filters,
+                  input: strip.input,
+                  input_meter: strip.input_meter,
+                  label: strip.label,
+                  post_fader_meter: strip.post_fader_meter,
+                  pre_fader_meter: strip.pre_fader_meter
+                };
+              }
+            );
+
+            setSavedStrips(stripsArray);
           }
           break;
 
@@ -49,18 +73,14 @@ export const StripsPage = () => {
 
   useEffect(() => {
     if (isConnected) {
-      // ToDo: Fix endpoint
-      sendMessage({
-        type: 'subscribe',
-        resource: '/audio/strips'
-      });
+      getAllStrips(sendMessage);
     }
   }, [isConnected, sendMessage]);
 
   useEffect(() => {
     setSavedStrips(
       savedStrips.map((strip) =>
-        strip.id !== selectedStrip
+        strip.stripId !== selectedStrip
           ? { ...strip, selected: false }
           : { ...strip, selected: true }
       )
@@ -71,36 +91,16 @@ export const StripsPage = () => {
     setIsDeleteAllDisabled(savedStrips.length === 0);
   }, [savedStrips]);
 
-  // Create a default strip object
-  const createDefaultStrip = (id: number): Strip => ({
-    id,
-    label: `Strip ${id}`,
-    volume: 0,
-    panning: 0,
-    muted: false,
-    pfl: false,
-    slot: 0,
-    channel1: 0,
-    channel2: 1,
-    mode: 'stereo',
-    selected: false
-  });
-
   const handleAddStrip = () => {
-    const id = savedStrips.length;
-    const newStrip = createDefaultStrip(id);
-
-    setSavedStrips([...savedStrips, newStrip]);
-
-    // ToDo: Fix index that now is length of all strips
-    addStrip(sendMessage, id);
+    addStrip(sendMessage, nextStripIndex);
   };
 
-  // TODO: Should use index instead
   const handleRemoveStrip = (stripId: number) => {
     removeStrip(stripId, sendMessage);
 
-    const filteredStrips = savedStrips.filter((strip) => strip.id !== stripId);
+    const filteredStrips = savedStrips.filter(
+      (strip) => strip.stripId !== stripId
+    );
     setSavedStrips(filteredStrips);
     if (selectedStrip === stripId) {
       setSelectedStrip(null);
@@ -108,7 +108,7 @@ export const StripsPage = () => {
   };
 
   const handleRemoveAllStrips = () => {
-    savedStrips.forEach((strip) => handleRemoveStrip(strip.id));
+    savedStrips.forEach((strip) => handleRemoveStrip(strip.stripId));
     setSelectedStrip(null);
     setSavedStrips([]);
   };
@@ -153,8 +153,7 @@ export const StripsPage = () => {
         {/* Effects Panel */}
         {selectedStrip !== null && (
           <EffectsPanel
-            label={savedStrips.find((s) => s.id === selectedStrip)?.label || ''}
-            stripId={selectedStrip}
+            strip={savedStrips.find((s) => s.stripId === selectedStrip)}
           />
         )}
       </div>

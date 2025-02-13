@@ -12,19 +12,37 @@ import { useWebSocket } from '../../../context/WebSocketContext';
 import { useGlobalState } from '../../../context/GlobalStateContext';
 import { LabelInput } from '../../ui/input/Input';
 import { InputFields } from './InputFields';
+import { Filters } from '../../../types/types';
 
 interface AudioStripProps {
-  id: number;
+  stripId: number;
   label: string;
   selected: boolean;
-  slot: number;
-  channel1: number;
-  channel2: number;
-  mode: 'mono' | 'stereo';
-  panning: number;
-  muted: boolean;
   pfl: boolean;
-  volume: number;
+  fader: {
+    volume: number;
+    muted: boolean;
+  };
+  filters: Filters;
+  input: {
+    first_channel: number;
+    input_slot: number;
+    is_stereo: boolean;
+    second_channel: number;
+  };
+  input_meter: {
+    peak?: number;
+    peak_left?: number;
+    peak_right?: number;
+  };
+  post_fader_meter: {
+    peak_left: number;
+    peak_right: number;
+  };
+  pre_fader_meter: {
+    peak_left: number;
+    peak_right: number;
+  };
   onSelect: () => void;
   onRemove: () => void;
 }
@@ -40,7 +58,7 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
   ) => {
     setSavedStrips(
       savedStrips.map((strip) =>
-        strip.id === stripId ? { ...strip, [property]: value } : strip
+        strip.stripId === stripId ? { ...strip, [property]: value } : strip
       )
     );
 
@@ -57,7 +75,19 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
       sendMessage({
         type: 'set',
         resource: `/audio/strips/${stripId}/input`,
-        body: { value }
+        body: { [property]: value }
+      });
+    } else if (property === 'volume' || property === 'muted') {
+      sendMessage({
+        type: 'set',
+        resource: `/audio/strips/${stripId}/fader`,
+        body: { [property]: value }
+      });
+    } else if (property === 'panning') {
+      sendMessage({
+        type: 'set',
+        resource: `/audio/strips/${stripId}/filters/pan`,
+        body: { value: value }
       });
     }
   };

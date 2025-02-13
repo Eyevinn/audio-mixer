@@ -27,7 +27,7 @@ module.exports = {
         'meter-green': '#0e0',
         'select-btn': '#63b65f',
         'pfl-btn': '#b6b15f',
-        'select-btn': '#63B65F',
+        'select-btn': '#63b65f',
         'pfl-btn': '#b6b15f',
         'mute-btn': '#b15f5f',
         'default-btn': '#a9a9a9',
