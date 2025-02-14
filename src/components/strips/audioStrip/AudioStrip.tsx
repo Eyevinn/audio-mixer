@@ -1,175 +1,121 @@
 import React from 'react';
-import { AudioLevel } from '../audioLevel/AudioLevel';
-import { VolumeSlider } from '../volumeSlider/VolumeSlider';
-import { PanningSlider } from '../panningSlider/PanningSlider';
-import { ActionButton } from '../../ui/buttons/Buttons';
-import { StripHeader } from '../stripHeader/StripHeader';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { useGlobalState } from '../../../context/GlobalStateContext';
-import { LabelInput } from '../../ui/input/Input';
-import { InputFields } from './InputFields';
+import { Filters } from '../../../types/types';
+import { BaseStrip } from '../BaseStrip';
+import { StripFields } from './StripFields';
 
 interface AudioStripProps {
-  id: number;
+  stripId: number;
   label: string;
   selected: boolean;
-  slot: number;
-  channel1: number;
-  channel2: number;
-  mode: 'mono' | 'stereo';
-  panning: number;
-  muted: boolean;
   pfl: boolean;
-  volume: number;
-  onSelect: () => void;
+  fader: {
+    volume: number;
+    muted: boolean;
+  };
+  filters: Filters;
+  input: {
+    first_channel: number;
+    input_slot: number;
+    is_stereo: boolean;
+    second_channel: number;
+  };
+  input_meter: {
+    peak?: number;
+    peak_left?: number;
+    peak_right?: number;
+  };
+  post_fader_meter: {
+    peak_left: number;
+    peak_right: number;
+  };
+  pre_fader_meter: {
+    peak_left: number;
+    peak_right: number;
+  };
+  onStripSelect: (stripId: number | null) => void;
   onRemove: () => void;
 }
 
-export const AudioStrip: React.FC<AudioStripProps> = ({
-  id: stripId,
-  label,
-  selected,
-  slot,
-  channel1,
-  channel2,
-  mode,
-  panning,
-  muted,
-  pfl,
-  volume,
-  onSelect,
-  onRemove
-}) => {
-  const panningValToPos = (val: number): number => Math.round((val + 1) * 64);
-  const panningPosToVal = (pos: number): number => pos / 64 - 1.0;
+export const AudioStrip: React.FC<AudioStripProps> = (props) => {
   const { sendMessage } = useWebSocket();
   const { savedStrips, setSavedStrips } = useGlobalState();
 
-  const renderButtonColor = (label: string) => {
-    switch (label) {
-      case 'SELECT':
-        return selected ? 'bg-select-btn' : 'bg-default-btn';
-      case 'PFL':
-        return pfl ? 'bg-pfl-btn' : 'bg-default-btn';
-      case 'MUTE':
-        return muted ? 'bg-mute-btn' : 'bg-default-btn';
-      default:
-        return 'bg-default-btn';
-    }
+  const handleSelection = () => {
+    props.onStripSelect(props.selected ? null : props.stripId);
   };
 
-  const handleStripChange = (
+  const handleChange = (
     stripId: number,
     property: string,
     value: number | boolean | string | undefined
   ) => {
     setSavedStrips(
       savedStrips.map((strip) =>
-        strip.id === stripId ? { ...strip, [property]: value } : strip
+        strip.stripId === stripId ? { ...strip, [property]: value } : strip
       )
     );
 
-    if (!value) return;
+    // If the value is undefined, do not send the message.
+    // Needed for the input fields, so the input fields can be cleared
+    if (value === undefined) return;
 
-    if (property === 'selected') return;
+    // Local states are not needed to be sent
+    if (property === 'pfl') return;
 
     if (property === 'label') {
-      // ToDo: Fix endpoint
       sendMessage({
         type: 'set',
         resource: `/audio/strips/${stripId}`,
         body: { [property]: value }
       });
-    } else {
-      // ToDo: Fix endpoint
+    } else if (
+      property === 'input_slot' ||
+      property === 'is_stereo' ||
+      property === 'first_channel' ||
+      property === 'second_channel'
+    ) {
       sendMessage({
         type: 'set',
         resource: `/audio/strips/${stripId}/input`,
-        body: { value }
+        body: { [property]: value }
+      });
+    } else if (property === 'volume' || property === 'muted') {
+      sendMessage({
+        type: 'set',
+        resource: `/audio/strips/${stripId}/fader`,
+        body: { [property]: value }
+      });
+    } else if (property === 'panning') {
+      sendMessage({
+        type: 'set',
+        resource: `/audio/strips/${stripId}/filters/pan`,
+        body: { value: value }
       });
     }
   };
 
   return (
-    <div
-      className={`flex flex-col w-fit h-fit relative rounded-lg bg-strip-bg ${selected ? 'border-[1px] border-gray-400' : ''}`}
+    <BaseStrip
+      {...props}
+      backgroundColor="bg-strip-bg"
+      header={`Strip #${props.input.input_slot}`}
+      handleStripChange={handleChange}
+      handleSelection={handleSelection}
     >
-      {/* Strip Info */}
-      <StripHeader label={`Strip #${slot}`} onRemove={onRemove} />
-
-      {/* Label Input */}
-      <LabelInput
-        value={label}
-        onChange={(label) => handleStripChange(stripId, 'label', label)}
+      <StripFields
+        slot={
+          props.input.input_slot !== undefined
+            ? props.input.input_slot.toString()
+            : ''
+        }
+        isStereo={props.input.is_stereo}
+        channel1={props.input.first_channel}
+        channel2={props.input.second_channel}
+        stripId={props.stripId}
+        handleStripChange={handleChange}
       />
-
-      <InputFields
-        slot={slot !== undefined ? slot.toString() : ''}
-        mode={mode}
-        channel1={channel1.toString()}
-        channel2={channel2.toString()}
-        stripId={stripId}
-        handleStripChange={handleStripChange}
-      />
-
-      <div className="flex flex-col items-center flex-wrap w-full mt-5 mb-3">
-        <div className="w-full flex justify-evenly mb-5">
-          {/* Audio Levels */}
-          <AudioLevel
-            isStereo={mode === 'stereo'}
-            audioBarData={{
-              peak_left: channel1,
-              peak_right: channel2
-            }}
-          />
-          {/* Control Buttons */}
-          <div className="flex flex-col justify-end">
-            {/* Panning Slider */}
-            <PanningSlider
-              inputValue={panningValToPos(panning)}
-              onChange={(panning) =>
-                handleStripChange(
-                  stripId,
-                  'panning',
-                  panningPosToVal(parseInt(panning))
-                )
-              }
-            />
-            <div className="flex flex-col justify-end">
-              {['SELECT', 'PFL', 'MUTE'].map((label, index) => (
-                <ActionButton
-                  key={index}
-                  label={label}
-                  buttonColor={renderButtonColor(label)}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    switch (label) {
-                      case 'SELECT':
-                        onSelect();
-                        // handleStripChange(stripId, 'selected', !selected);
-                        break;
-                      case 'PFL':
-                        handleStripChange(stripId, 'pfl', !pfl);
-                        break;
-                      case 'MUTE':
-                        handleStripChange(stripId, 'muted', !muted);
-                        break;
-                    }
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        {/* Volume Slider */}
-        <VolumeSlider
-          type="mixer"
-          inputVolume={volume}
-          onVolumeChange={(volume: number) =>
-            handleStripChange(stripId, 'volume', volume)
-          }
-        />
-      </div>
-    </div>
+    </BaseStrip>
   );
 };

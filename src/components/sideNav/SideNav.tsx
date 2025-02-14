@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Icons from '../../assets/icons/Icons';
 import logoSrc from '../../assets/images/ateliere-logo.png';
 import SideNavWebSocketStatus from './CustomSideNavItems/SideNavWebSocketStatus';

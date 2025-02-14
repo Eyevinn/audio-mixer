@@ -1,3 +1,5 @@
+import React from 'react';
+
 type TInputProps = {
   className?: string;
   type?: string;

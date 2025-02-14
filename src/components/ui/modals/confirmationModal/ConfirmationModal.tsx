@@ -1,3 +1,4 @@
+import React from 'react';
 import { DeleteButton, CancelButton } from '../../buttons/Buttons';
 
 interface ConfirmationModalProps {

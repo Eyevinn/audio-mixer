@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { Strip } from '../../types/types';
+import React, { useEffect, useState } from 'react';
 import { addStrip, removeStrip } from '../../utils/utils';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
@@ -12,95 +11,42 @@ import {
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
 
+import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
+import { useData } from '../../hooks/useData';
+
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
-  const { sendMessage, isConnected, lastMessage } = useWebSocket();
+  const { sendMessage } = useWebSocket();
   const { savedStrips, setSavedStrips } = useGlobalState();
-  // TODO: Add back when types are updated
-  // const nextStripIndex = useNextAvailableIndex(strips);
-
-  useEffect(() => {
-    if (!lastMessage) return;
-
-    try {
-      const data = JSON.parse(lastMessage);
-      switch (data.type) {
-        case 'get-response':
-          if (data.resource === '/audio/strips') {
-            // TODO - Handle response and update state
-            // setSavedStrips(data.body);
-          }
-          break;
-
-        case 'state-change':
-          // ToDo: Implement state-change handling
-          break;
-
-        case 'sampling-update':
-          // ToDo: Implement sampling-update handling
-          break;
-      }
-    } catch (error) {
-      console.error('Error processing WebSocket message:', error);
-    }
-  }, [lastMessage, selectedStrip]);
-
-  useEffect(() => {
-    if (isConnected) {
-      // ToDo: Fix endpoint
-      sendMessage({
-        type: 'subscribe',
-        resource: '/audio/strips'
-      });
-    }
-  }, [isConnected, sendMessage]);
-
-  useEffect(() => {
-    setSavedStrips(
-      savedStrips.map((strip) =>
-        strip.id !== selectedStrip
-          ? { ...strip, selected: false }
-          : { ...strip, selected: true }
-      )
-    );
-  }, [selectedStrip]);
+  const nextStripIndex = useNextAvailableIndex(savedStrips);
+  useData();
 
   useEffect(() => {
     setIsDeleteAllDisabled(savedStrips.length === 0);
   }, [savedStrips]);
 
-  // Create a default strip object
-  const createDefaultStrip = (id: number): Strip => ({
-    id,
-    label: `Strip ${id}`,
-    volume: 0,
-    panning: 0,
-    muted: false,
-    pfl: false,
-    slot: 0,
-    channel1: 0,
-    channel2: 1,
-    mode: 'stereo',
-    selected: false
-  });
+  useEffect(() => {
+    const isSelected = savedStrips.find((strip) => {
+      return strip.selected === true;
+    })?.stripId;
+
+    if (isSelected) {
+      setSelectedStrip(isSelected);
+    }
+  }, [savedStrips]);
 
   const handleAddStrip = () => {
-    const id = savedStrips.length;
-    const newStrip = createDefaultStrip(id);
-
-    setSavedStrips([...savedStrips, newStrip]);
-
-    // ToDo: Fix index that now is length of all strips
-    addStrip(sendMessage, id);
+    addStrip(sendMessage, nextStripIndex);
   };
 
-  // TODO: Should use index instead
   const handleRemoveStrip = (stripId: number) => {
     removeStrip(stripId, sendMessage);
 
-    const filteredStrips = savedStrips.filter((strip) => strip.id !== stripId);
+    const filteredStrips = savedStrips.filter(
+      (strip) => strip.stripId !== stripId
+    );
     setSavedStrips(filteredStrips);
     if (selectedStrip === stripId) {
       setSelectedStrip(null);
@@ -108,7 +54,7 @@ export const StripsPage = () => {
   };
 
   const handleRemoveAllStrips = () => {
-    savedStrips.forEach((strip) => handleRemoveStrip(strip.id));
+    savedStrips.forEach((strip) => handleRemoveStrip(strip.stripId));
     setSelectedStrip(null);
     setSavedStrips([]);
   };
@@ -119,6 +65,17 @@ export const StripsPage = () => {
     }
 
     setIsModalOpen(!isModalOpen);
+  };
+
+  const handleStripSelection = (stripId: number | null) => {
+    setSelectedStrip(stripId);
+
+    setSavedStrips((prevStrips) =>
+      prevStrips.map((strip) => ({
+        ...strip,
+        selected: strip.stripId === stripId || false
+      }))
+    );
   };
 
   return (
@@ -144,17 +101,15 @@ export const StripsPage = () => {
         {/* Audio Strips Container */}
         <div className="ml-8 mt-4 w-full max-w-full overflow-hidden">
           <ScrollableContainer
-            selectedStrip={selectedStrip}
-            setSelectedStrip={setSelectedStrip}
             handleRemoveStrip={handleRemoveStrip}
+            onStripSelect={handleStripSelection}
           />
         </div>
 
         {/* Effects Panel */}
         {selectedStrip !== null && (
           <EffectsPanel
-            label={savedStrips.find((s) => s.id === selectedStrip)?.label || ''}
-            stripId={selectedStrip}
+            strip={savedStrips.find((s) => s.stripId === selectedStrip)}
           />
         )}
       </div>

@@ -4,10 +4,10 @@ import { CompressorVisualisation } from './CompressorVisualisation';
 import { EffectsSlider } from './EffectsSlider';
 import { EQVisualisation } from './EQVisualisation';
 import { useWebSocket } from '../../../context/WebSocketContext';
-
+import { AudioStrip } from '../../../types/types';
+import { addEQBand, removeEQBand } from '../../../utils/utils';
 interface EffectsPanelProps {
-  label: string;
-  stripId: number;
+  strip: AudioStrip | undefined;
 }
 
 interface EQBand {
@@ -28,10 +28,7 @@ type EQState = {
   band7: EQBand;
 };
 
-export const EffectsPanel: React.FC<EffectsPanelProps> = ({
-  label,
-  stripId
-}) => {
+export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
   const [eqState, setEqState] = useState<EQState>({
     band0: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
     band1: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
@@ -43,6 +40,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({
     band7: { type: 'none', freq: 1000, gain: 0, q: 0.707 }
   });
   const eqBandFilters = [
+    { select: 'No EQ', array: [] },
     { select: '1 filter', array: [0] },
     { select: '2 filters', array: [0, 1] },
     { select: '3 filters', array: [0, 1, 2] },
@@ -97,6 +95,81 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({
     }
   ];
 
+  if (!strip) return null;
+
+  const compressorArray = [
+    {
+      name: 'attack',
+      min: 0.1,
+      max: 120,
+      value: strip.filters.compressor.attack,
+      step: 0.1,
+      unit: 'ms'
+    },
+    {
+      name: 'gain',
+      min: 0,
+      max: 30,
+      value: strip.filters.compressor.gain,
+      step: 0.1,
+      unit: 'dB'
+    },
+    {
+      name: 'knee',
+      min: 0,
+      max: 30,
+      value: strip.filters.compressor.knee,
+      step: 0.1,
+      unit: 'dB'
+    },
+    {
+      name: 'ratio',
+      min: 1,
+      max: 30,
+      value: strip.filters.compressor.ratio,
+      step: 1,
+      unit: ':1'
+    },
+    {
+      name: 'release',
+      min: 10,
+      max: 1000,
+      value: strip.filters.compressor.release,
+      step: 0.707,
+      unit: 'ms'
+    },
+    {
+      name: 'threshold',
+      min: -60,
+      max: 0,
+      value: strip.filters.compressor.threshold,
+      step: 0.1,
+      unit: 'dB'
+    }
+  ];
+
+  const handleEQBandChange = (newBandsArray: number[]) => {
+    if (strip.filters.eq.bands.length < newBandsArray.length) {
+      // Add each missing band one by one
+      for (
+        let i = strip.filters.eq.bands.length;
+        i < newBandsArray.length;
+        i++
+      ) {
+        addEQBand(sendMessage, strip.stripId, i);
+      }
+    } else if (strip.filters.eq.bands.length > newBandsArray.length) {
+      // Remove each extra band one by one, starting from the end
+      for (
+        let i = strip.filters.eq.bands.length - 1;
+        i >= newBandsArray.length;
+        i--
+      ) {
+        removeEQBand(sendMessage, strip.stripId, i);
+      }
+    }
+  };
+
   const handleEffectChange = (
     filter: string,
     parameter: string,
@@ -105,15 +178,17 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({
     if (isConnected) {
       sendMessage({
         type: 'set',
-        resource: `/audio/strips/${stripId}/filters/${filter}/${parameter}`,
-        body: { value }
+        resource: `/audio/strips/${strip.stripId}/filters/${filter}`,
+        body: { [parameter]: value }
       });
     }
   };
 
   return (
     <div className="h-[50rem] min-w-max overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg mt-4 p-2 text-white">
-      <h1 className="text-xl font-semibold mb-4">Settings for {label}</h1>
+      <h1 className="text-xl font-semibold mb-4">
+        Settings for {strip.label || strip.stripId.toString()}
+      </h1>
 
       <section className={styles.settingsItem}>
         <h2 className="text-base font-bold mb-2">Trim</h2>
@@ -144,6 +219,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({
           onChange={(e) => {
             const parsedArray = JSON.parse(e.target.value);
             setEqBandsArray(parsedArray.map(Number));
+            handleEQBandChange(parsedArray);
           }}
           className="text-sm bg-gray-700 rounded px-2 py-1"
         >
@@ -153,99 +229,110 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({
             </option>
           ))}
         </select>
-        {eqBandsArray.map((bandIndex) => (
-          <div key={bandIndex} className={`${styles.settingsItem} mt-5`}>
-            <h3 className="text-base font-bold mb-2">Filter {bandIndex + 1}</h3>
-            <div className="mb-2 ml-2">
-              <div className="mb-2 text-sm">
-                <label className="w-[150px] inline-block">Type:</label>
-                <select
-                  value={eqState[`band${bandIndex}` as keyof EQState].type}
-                  onChange={(e) => {
-                    setEqState((prev) => ({
-                      ...prev,
-                      [`band${bandIndex}`]: {
-                        ...prev[`band${bandIndex}` as keyof EQState],
-                        type: e.target.value
-                      }
-                    }));
-                    handleEffectChange(
-                      'eq',
-                      `${bandIndex} type`,
-                      e.target.value
-                    );
-                  }}
-                  className="bg-gray-700 rounded px-2 py-1"
-                >
-                  {filterTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {type.replace('_', ' ')}
-                    </option>
-                  ))}
-                </select>
+        {eqBandsArray.length > 0 &&
+          eqBandsArray.map((bandIndex) => (
+            <div key={bandIndex} className={`${styles.settingsItem} mt-5`}>
+              <h3 className="text-base font-bold mb-2">
+                Filter {bandIndex + 1}
+              </h3>
+              <div className="mb-2 ml-2">
+                <div className="mb-2 text-sm">
+                  <label className="w-[150px] inline-block">Type:</label>
+                  <select
+                    value={eqState[`band${bandIndex}` as keyof EQState].type}
+                    onChange={(e) => {
+                      setEqState((prev) => ({
+                        ...prev,
+                        [`band${bandIndex}`]: {
+                          ...prev[`band${bandIndex}` as keyof EQState],
+                          type: e.target.value
+                        }
+                      }));
+                      handleEffectChange(
+                        `eq/bands/${bandIndex}`,
+                        'type',
+                        e.target.value
+                      );
+                    }}
+                    className="bg-gray-700 rounded px-2 py-1"
+                  >
+                    {filterTypes.map((type) => (
+                      <option key={type} value={type}>
+                        {type.replace('_', ' ')}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {renderEQ.map((eqType) => (
+                  <EffectsSlider
+                    key={eqType.type}
+                    id={`eq_band_${bandIndex}_${eqType.type}`}
+                    text={`${eqType.type.charAt(0).toUpperCase() + eqType.type.slice(1)}:`}
+                    min={eqType.min}
+                    max={eqType.max}
+                    value={Number(
+                      eqState[`band${bandIndex}` as keyof EQState][
+                        eqType.type as keyof EQBand
+                      ]
+                    )}
+                    step={eqType.step}
+                    unit={eqType.unit}
+                    filter="eq"
+                    parameter={`${bandIndex} ${eqType.type}`}
+                    onChange={(value) => {
+                      setEqState((prev) => ({
+                        ...prev,
+                        [`band${bandIndex}`]: {
+                          ...prev[`band${bandIndex}` as keyof EQState],
+                          [eqType.type as keyof EQBand]: value
+                        }
+                      }));
+                      handleEffectChange(
+                        `eq/bands/${bandIndex}`,
+                        eqType.type,
+                        value
+                      );
+                    }}
+                  />
+                ))}
               </div>
-              {renderEQ.map((eqType) => (
-                <EffectsSlider
-                  key={eqType.type}
-                  id={`eq_band_${bandIndex}_${eqType.type}`}
-                  text={`${eqType.type.charAt(0).toUpperCase() + eqType.type.slice(1)}:`}
-                  min={eqType.min}
-                  max={eqType.max}
-                  value={Number(
-                    eqState[`band${bandIndex}` as keyof EQState][
-                      eqType.type as keyof EQBand
-                    ]
-                  )}
-                  step={eqType.step}
-                  unit={eqType.unit}
-                  filter="eq"
-                  parameter={`${bandIndex} ${eqType.type}`}
-                  onChange={(value) => {
-                    setEqState((prev) => ({
-                      ...prev,
-                      [`band${bandIndex}`]: {
-                        ...prev[`band${bandIndex}` as keyof EQState],
-                        [eqType.type as keyof EQBand]: value
-                      }
-                    }));
-                    handleEffectChange(
-                      'eq',
-                      `${bandIndex} ${eqType.type}`,
-                      value
-                    );
-                  }}
-                />
-              ))}
             </div>
-          </div>
-        ))}
+          ))}
 
-        <EQVisualisation
-          bands={eqState}
-          lowPass={{ freq: 20000, q: 0.7 }}
-          highPass={{ freq: 20, q: 0.7 }}
-        />
+        {eqBandsArray.length > 0 && (
+          <EQVisualisation
+            bands={eqState}
+            lowPass={{ freq: 20000, q: 0.7 }}
+            highPass={{ freq: 20, q: 0.7 }}
+          />
+        )}
       </section>
 
       {/* Compressor Section */}
       <section className={styles.settingsItem}>
         <h2 className="text-base font-bold mb-2">Compressor</h2>
         <div className="mb-2 ml-2">
-          <EffectsSlider
-            id="compressor_threshold"
-            text="Threshold:"
-            min={-30.0}
-            max={0.0}
-            value={compressorState.threshold}
-            step={0.05}
-            unit="dB"
-            filter="compressor"
-            parameter="threshold"
-            onChange={(value) => {
-              setCompressorState((prev) => ({ ...prev, threshold: value }));
-              handleEffectChange('compressor', 'threshold', value);
-            }}
-          />
+          {compressorArray.map((compressor) => (
+            <EffectsSlider
+              key={compressor.name}
+              id={`compressor_${compressor.name}`}
+              text={`${compressor.name.charAt(0).toUpperCase() + compressor.name.slice(1)}:`}
+              min={compressor.min}
+              max={compressor.max}
+              value={Number(compressor.value.toFixed(1))}
+              step={compressor.step}
+              unit={compressor.unit}
+              filter="compressor"
+              parameter={compressor.name}
+              onChange={(value) => {
+                setCompressorState((prev) => ({
+                  ...prev,
+                  [compressor.name]: value
+                }));
+                handleEffectChange('compressor', compressor.name, value);
+              }}
+            />
+          ))}
         </div>
 
         <CompressorVisualisation
