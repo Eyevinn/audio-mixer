@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { AudioLevel } from './audioLevel/AudioLevel';
-import { VolumeSlider } from './volumeSlider/VolumeSlider';
-import { PanningSlider } from './panningSlider/PanningSlider';
+import { Filters } from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { LabelInput } from '../ui/input/Input';
 import { AudioLevel } from './audioLevel/AudioLevel';
 import { PanningSlider } from './panningSlider/PanningSlider';
 import { StripHeader } from './stripHeader/StripHeader';
-import { Filters } from '../../types/types';
+import { VolumeSlider } from './volumeSlider/VolumeSlider';
 
 interface BaseStripProps {
   stripId: number;

@@ -11,13 +11,13 @@ type TStripFieldsProps = {
   handleStripChange: (
     stripId: number,
     key: string,
-    value: string | number
+    value: string | number | boolean
   ) => void;
 };
 
 export const StripFields = ({
   slot,
-  mode,
+  isStereo,
   channel1,
   channel2,
   stripId,
@@ -32,7 +32,7 @@ export const StripFields = ({
         onChange={(slot: string) =>
           handleStripChange(
             stripId,
-            'slot',
+            'input_slot',
             slot !== '' ? parseInt(slot, 10) : ''
           )
         }
@@ -66,7 +66,7 @@ export const StripFields = ({
         onChange={(channel2) =>
           handleStripChange(stripId, 'second_channel', parseInt(channel2, 10))
         }
-        hidden={mode === 'mono'}
+        hidden={!isStereo}
       />
     </div>
   );

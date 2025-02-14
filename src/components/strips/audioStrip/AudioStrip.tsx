@@ -70,7 +70,12 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
         resource: `/audio/strips/${stripId}`,
         body: { [property]: value }
       });
-    } else {
+    } else if (
+      property === 'input_slot' ||
+      property === 'is_stereo' ||
+      property === 'first_channel' ||
+      property === 'second_channel'
+    ) {
       sendMessage({
         type: 'set',
         resource: `/audio/strips/${stripId}/input`,
