@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   IconMenu2,
   IconMenuDeep,

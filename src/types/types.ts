@@ -73,8 +73,35 @@ export interface Filters {
   };
 }
 
-export interface Strip {
+interface BaseStrip {
   stripId: number;
+  label: string;
+  selected: boolean;
+  pfl: boolean;
+  fader: {
+    muted: boolean;
+    volume: number;
+  };
+  filters: Filters;
+  input_meter: {
+    peak?: number;
+    peak_left?: number;
+    peak_right?: number;
+  };
+  post_fader_meter: {
+    peak_left: number;
+    peak_right: number;
+  };
+  pre_fader_meter: {
+    peak_left: number;
+    peak_right: number;
+  };
+}
+
+export interface AudioStrip {
+  [key: string]: unknown;
+  stripId: number;
+  label: string;
   selected: boolean;
   pfl: boolean;
   fader: {
@@ -93,7 +120,6 @@ export interface Strip {
     peak_left?: number;
     peak_right?: number;
   };
-  label: string;
   post_fader_meter: {
     peak_left: number;
     peak_right: number;
@@ -101,5 +127,22 @@ export interface Strip {
   pre_fader_meter: {
     peak_left: number;
     peak_right: number;
+  };
+}
+
+export interface MixStrip extends BaseStrip {
+  inputs: {
+    mixes: {
+      stripId: number;
+      muted: boolean;
+      volume: number;
+      origin: 'pre_fader' | 'post_fader';
+    }[];
+    strips: {
+      stripId: number;
+      muted: boolean;
+      volume: number;
+      origin: 'pre_fader' | 'post_fader';
+    }[];
   };
 }

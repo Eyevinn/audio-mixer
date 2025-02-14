@@ -1,22 +1,23 @@
+import React from 'react';
 import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { StripInput } from '../../ui/input/Input';
 
 type TStripFieldsProps = {
   slot: string;
-  mode: string;
-  channel1: string;
-  channel2: string;
+  isStereo: boolean;
+  channel1: number;
+  channel2: number;
   stripId: number;
   handleStripChange: (
     stripId: number,
     key: string,
-    value: string | number
+    value: string | number | boolean
   ) => void;
 };
 
 export const StripFields = ({
   slot,
-  mode,
+  isStereo,
   channel1,
   channel2,
   stripId,
@@ -31,7 +32,7 @@ export const StripFields = ({
         onChange={(slot: string) =>
           handleStripChange(
             stripId,
-            'slot',
+            'input_slot',
             slot !== '' ? parseInt(slot, 10) : ''
           )
         }
@@ -41,17 +42,19 @@ export const StripFields = ({
       <StripDropdown
         type="Mode"
         options={['Mono', 'Stereo']}
-        value={mode}
-        onChange={(mode: string) => handleStripChange(stripId, 'mode', mode)}
+        value={isStereo ? 'stereo' : 'mono'}
+        onChange={(mode) =>
+          handleStripChange(stripId, 'is_stereo', mode === 'stereo')
+        }
       />
 
       {/* Left Ch Select */}
       <StripDropdown
         type="Left Ch"
         options={['0', '1']}
-        value={channel1.toString()}
-        onChange={(channel1: string) =>
-          handleStripChange(stripId, 'channel1', parseInt(channel1, 10))
+        value={channel1 !== undefined ? channel1.toString() : ''}
+        onChange={(channel1) =>
+          handleStripChange(stripId, 'first_channel', parseInt(channel1, 10))
         }
       />
 
@@ -59,11 +62,11 @@ export const StripFields = ({
       <StripDropdown
         type="Right Ch"
         options={['0', '1']}
-        value={channel2.toString()}
-        onChange={(channel2: string) =>
-          handleStripChange(stripId, 'channel2', parseInt(channel2, 10))
+        value={channel2 !== undefined ? channel2.toString() : ''}
+        onChange={(channel2) =>
+          handleStripChange(stripId, 'second_channel', parseInt(channel2, 10))
         }
-        hidden={mode === 'mono'}
+        hidden={!isStereo}
       />
     </div>
   );

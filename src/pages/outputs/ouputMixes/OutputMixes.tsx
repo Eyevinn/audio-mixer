@@ -1,3 +1,4 @@
+import React from 'react';
 import Icons from '../../../assets/icons/Icons';
 import { MainVolume } from '../../../components/strips/mainVolume/MainVolume';
 import { PageHeader } from '../../../components/pageLayout/pageHeader/PageHeader';
