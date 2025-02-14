@@ -1,6 +1,4 @@
 import Icons from '../../../assets/icons/Icons';
-import { StripDropdown } from '../../ui/dropdown/Dropdown';
-import { StripInput } from '../../ui/input/Input';
 
 type TMixFieldsProps = {
   slot: string;

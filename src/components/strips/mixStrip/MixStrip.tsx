@@ -1,7 +1,5 @@
 import React from 'react';
 import { BaseStrip } from '../BaseStrip';
-import { useWebSocket } from '../../../context/WebSocketContext';
-import { useGlobalState } from '../../../context/GlobalStateContext';
 import { MixFields } from './MixFields';
 
 interface MixStripProps {
@@ -23,11 +21,7 @@ interface MixStripProps {
 export const MixStrip: React.FC<MixStripProps> = (props) => {
   const mix = 1;
 
-  const handleStripChange = (
-    stripId: number,
-    property: string,
-    value: number | boolean | string | undefined
-  ) => {
+  const handleStripChange = () => {
     // Implement mix-specific handling logic here
     // ...
   };

@@ -1,10 +1,10 @@
 import React from 'react';
-import { AudioLevel } from './audioLevel/AudioLevel';
-import { VolumeSlider } from './volumeSlider/VolumeSlider';
-import { PanningSlider } from './panningSlider/PanningSlider';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { LabelInput } from '../ui/input/Input';
+import { AudioLevel } from './audioLevel/AudioLevel';
+import { PanningSlider } from './panningSlider/PanningSlider';
 import { StripHeader } from './stripHeader/StripHeader';
+import { VolumeSlider } from './volumeSlider/VolumeSlider';
 
 interface BaseStripProps {
   id: number;
@@ -23,6 +23,7 @@ interface BaseStripProps {
   copyButton?: boolean;
   onSelect: () => void;
   onRemove: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleStripChange: (stripId: number, property: string, value: any) => void;
   children?: React.ReactNode; // This will be either InputFields or your new component
 }

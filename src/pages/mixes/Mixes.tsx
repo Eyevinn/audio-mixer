@@ -1,9 +1,9 @@
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
-import { useGlobalState } from '../../context/GlobalStateContext';
 import { MixStrip } from '../../components/strips/mixStrip/MixStrip';
+import { useGlobalState } from '../../context/GlobalStateContext';
 
 export const MixesPage = () => {
-  const { savedStrips, setSavedStrips } = useGlobalState();
+  const { savedStrips } = useGlobalState();
 
   const handleRemoveStrip = (stripId: number) => {
     console.log('remove strip', stripId);
