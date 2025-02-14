@@ -1,3 +1,5 @@
+import React from 'react';
+
 type TMeterFieldProps = {
   label: string;
   value: string;
