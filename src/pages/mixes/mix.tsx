@@ -1,3 +1,4 @@
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import Icons from '../../assets/icons/Icons';

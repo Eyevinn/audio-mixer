@@ -1,9 +1,11 @@
+import React from 'react';
+
 type TStripDropdownProps = {
   type: string;
   options: string[];
   value: string;
   hidden?: boolean;
-  onChange: (label: string) => void;
+  onChange: (input: string) => void;
 };
 
 export const StripDropdown = ({

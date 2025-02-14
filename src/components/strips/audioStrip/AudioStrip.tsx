@@ -1,24 +1,7 @@
-import React from 'react';
-import { BaseStrip } from '../BaseStrip';
-import { StripFields } from './StripFields';
+import React, { useEffect } from 'react';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { useGlobalState } from '../../../context/GlobalStateContext';
-import { AudioLevel } from '../audioLevel/AudioLevel';
-import { VolumeSlider } from '../volumeSlider/VolumeSlider';
-import { PanningSlider } from '../panningSlider/PanningSlider';
-import { ActionButton } from '../../ui/buttons/Buttons';
-import { StripHeader } from '../stripHeader/StripHeader';
-import { useWebSocket } from '../../../context/WebSocketContext';
-import { useGlobalState } from '../../../context/GlobalStateContext';
-import { LabelInput } from '../../ui/input/Input';
-import { InputFields } from './InputFields';
 import { Filters } from '../../../types/types';
-import { LabelInput, StripInput } from '../../ui/input/Input';
-import React from 'react';
-import { BaseStrip } from '../BaseStrip';
-import { StripFields } from './StripFields';
-
-import React from 'react';
 import { BaseStrip } from '../BaseStrip';
 import { StripFields } from './StripFields';
 
@@ -51,7 +34,7 @@ interface AudioStripProps {
     peak_left: number;
     peak_right: number;
   };
-  onSelect: () => void;
+  onStripSelect: (stripId: number | null) => void;
   onRemove: () => void;
 }
 
@@ -59,7 +42,11 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
   const { sendMessage } = useWebSocket();
   const { savedStrips, setSavedStrips } = useGlobalState();
 
-  const handleStripChange = (
+  const handleSelection = () => {
+    props.onStripSelect(props.selected ? null : props.stripId);
+  };
+
+  const handleChange = (
     stripId: number,
     property: string,
     value: number | boolean | string | undefined
@@ -70,8 +57,12 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
       )
     );
 
-    if (!value) return;
-    if (property === 'selected') return;
+    // If the value is undefined, do not send the message.
+    // Needed for the input fields, so the input fields can be cleared
+    if (value === undefined) return;
+
+    // Local states are not needed to be sent
+    if (property === 'pfl') return;
 
     if (property === 'label') {
       sendMessage({
@@ -104,16 +95,21 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
     <BaseStrip
       {...props}
       backgroundColor="bg-strip-bg"
-      header={`Strip #${props.slot}`}
-      handleStripChange={handleStripChange}
+      header={`Strip #${props.input.input_slot}`}
+      handleStripChange={handleChange}
+      handleSelection={handleSelection}
     >
       <StripFields
-        slot={props.slot.toString()}
-        mode={props.mode}
-        channel1={props.channel1.toString()}
-        channel2={props.channel2.toString()}
-        stripId={props.id}
-        handleStripChange={handleStripChange}
+        slot={
+          props.input.input_slot !== undefined
+            ? props.input.input_slot.toString()
+            : ''
+        }
+        isStereo={props.input.is_stereo}
+        channel1={props.input.first_channel}
+        channel2={props.input.second_channel}
+        stripId={props.stripId}
+        handleStripChange={handleChange}
       />
     </BaseStrip>
   );

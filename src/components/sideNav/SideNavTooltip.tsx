@@ -1,3 +1,5 @@
+import React from 'react';
+
 type TSideNavTooltipProps = {
   label?: string;
   isOpen: boolean;

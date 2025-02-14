@@ -4,10 +4,10 @@ import { CompressorVisualisation } from './CompressorVisualisation';
 import { EffectsSlider } from './EffectsSlider';
 import { EQVisualisation } from './EQVisualisation';
 import { useWebSocket } from '../../../context/WebSocketContext';
-import { Strip } from '../../../types/types';
+import { AudioStrip } from '../../../types/types';
 import { addEQBand, removeEQBand } from '../../../utils/utils';
 interface EffectsPanelProps {
-  strip: Strip | undefined;
+  strip: AudioStrip | undefined;
 }
 
 interface EQBand {
@@ -29,8 +29,6 @@ type EQState = {
 };
 
 export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
-  if (!strip) return null;
-
   const [eqState, setEqState] = useState<EQState>({
     band0: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
     band1: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
@@ -96,6 +94,8 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
       step: 0.1
     }
   ];
+
+  if (!strip) return null;
 
   const compressorArray = [
     {
@@ -186,7 +186,9 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
 
   return (
     <div className="h-[50rem] min-w-max overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg mt-4 p-2 text-white">
-      <h1 className="text-xl font-semibold mb-4">Settings for {strip.label}</h1>
+      <h1 className="text-xl font-semibold mb-4">
+        Settings for {strip.label || strip.stripId.toString()}
+      </h1>
 
       <section className={styles.settingsItem}>
         <h2 className="text-base font-bold mb-2">Trim</h2>

@@ -1,18 +1,5 @@
-// TODO: Make sure the message type is correct
-interface Message {
-  type: string;
-  resource: string;
-  body?: {
-    command: string;
-    parameters: {
-      index?: number;
-      content?: string;
-    };
-  };
-}
-
 export const addStrip = (
-  sendMessage: (message: Message) => void,
+  sendMessage: (message: Record<string, unknown>) => void,
   index: number
 ) => {
   sendMessage({
@@ -24,7 +11,7 @@ export const addStrip = (
 
 export const removeStrip = (
   index: number,
-  sendMessage: (message: Message) => void
+  sendMessage: (message: Record<string, unknown>) => void
 ) => {
   sendMessage({
     type: 'command',
@@ -33,7 +20,9 @@ export const removeStrip = (
   });
 };
 
-export const getAllStrips = (sendMessage: (message: Message) => void) => {
+export const getAllStrips = (
+  sendMessage: (message: Record<string, unknown>) => void
+) => {
   sendMessage({
     type: 'get',
     resource: '/audio/strips'
@@ -41,16 +30,36 @@ export const getAllStrips = (sendMessage: (message: Message) => void) => {
 };
 
 // Other
-export const resync = (sendMessage: (message: Message) => void) => {
+export const resync = (
+  sendMessage: (message: Record<string, unknown>) => void
+) => {
   sendMessage({
     type: 'subscribe',
     resource: '/audio'
   });
 };
 
+export const subscribeToStrips = (
+  sendMessage: (message: Record<string, unknown>) => void
+) => {
+  sendMessage({
+    type: 'subscribe',
+    resource: '/audio/strips'
+  });
+};
+
+export const subscribeToMixes = (
+  sendMessage: (message: Record<string, unknown>) => void
+) => {
+  sendMessage({
+    type: 'subscribe',
+    resource: '/audio/mixes'
+  });
+};
+
 export const loadConfig = (
   file: File,
-  sendMessage: (message: Message) => void
+  sendMessage: (message: Record<string, unknown>) => void
 ) => {
   const reader = new FileReader();
   reader.onload = (e) => {
@@ -67,7 +76,7 @@ export const loadConfig = (
 };
 
 export const addEQBand = (
-  sendMessage: (message: Message) => void,
+  sendMessage: (message: Record<string, unknown>) => void,
   stripId: number,
   index: number
 ) => {
@@ -79,7 +88,7 @@ export const addEQBand = (
 };
 
 export const removeEQBand = (
-  sendMessage: (message: Message) => void,
+  sendMessage: (message: Record<string, unknown>) => void,
   stripId: number,
   index: number
 ) => {

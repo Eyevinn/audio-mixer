@@ -1,3 +1,5 @@
+import React from 'react';
+
 type TButtonProps = {
   onClick: () => void;
   children?: React.ReactNode;

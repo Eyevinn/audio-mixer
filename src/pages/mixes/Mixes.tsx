@@ -1,3 +1,4 @@
+import React from 'react';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { MixStrip } from '../../components/strips/mixStrip/MixStrip';
 import { useGlobalState } from '../../context/GlobalStateContext';
@@ -7,6 +8,12 @@ export const MixesPage = () => {
 
   const handleRemoveStrip = (stripId: number) => {
     console.log('remove strip', stripId);
+    console.log('savedStrips', setSavedStrips);
+  };
+
+  const handleStripSelection = (stripId: number) => {
+    console.log('handleStripSelection called with stripId:', stripId);
+    // setSelectedStrip(stripId);
   };
 
   return (
@@ -23,12 +30,13 @@ export const MixesPage = () => {
       <div className="overflow-x-auto w-[97%] flex space-x-4 cursor-grab active:cursor-grabbing select-none">
         {savedStrips.map((strip) => (
           <MixStrip
-            key={strip.id}
+            key={strip.stripId}
             {...strip}
-            onSelect={() => {
-              // setSelectedStrip(selectedStrip !== strip.id ? strip.id : null);
-            }}
-            onRemove={() => handleRemoveStrip(strip.id)}
+            // onSelect={() => {
+            //   // setSelectedStrip(selectedStrip !== strip.id ? strip.id : null);
+            // }}
+            onStripSelect={handleStripSelection}
+            onRemove={() => handleRemoveStrip(strip.stripId)}
           />
         ))}
       </div>

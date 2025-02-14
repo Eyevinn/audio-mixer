@@ -1,53 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { AudioLevel } from './audioLevel/AudioLevel';
+import { VolumeSlider } from './volumeSlider/VolumeSlider';
+import { PanningSlider } from './panningSlider/PanningSlider';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { LabelInput } from '../ui/input/Input';
 import { AudioLevel } from './audioLevel/AudioLevel';
 import { PanningSlider } from './panningSlider/PanningSlider';
 import { StripHeader } from './stripHeader/StripHeader';
-import { VolumeSlider } from './volumeSlider/VolumeSlider';
+import { Filters } from '../../types/types';
 
 interface BaseStripProps {
-  id: number;
+  stripId: number;
   label: string;
   selected: boolean;
-  panning: number;
-  muted: boolean;
   pfl: boolean;
-  volume: number;
-  mode: 'mono' | 'stereo';
-  slot: number;
-  channel1: number;
-  channel2: number;
+  fader: {
+    muted: boolean;
+    volume: number;
+  };
+  filters: Filters;
+  input: {
+    first_channel: number;
+    input_slot: number;
+    is_stereo: boolean;
+    second_channel: number;
+  };
+  input_meter: {
+    peak?: number;
+    peak_left?: number;
+    peak_right?: number;
+  };
+  post_fader_meter: {
+    peak_left: number;
+    peak_right: number;
+  };
+  pre_fader_meter: {
+    peak_left: number;
+    peak_right: number;
+  };
   backgroundColor: string;
   header: string;
   copyButton?: boolean;
-  onSelect: () => void;
   onRemove: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleStripChange: (stripId: number, property: string, value: any) => void;
-  children?: React.ReactNode; // This will be either InputFields or your new component
+  handleSelection: () => void;
+  handleStripChange: (
+    stripId: number,
+    property: string,
+    value: number | boolean | string | undefined
+  ) => void;
+  children?: React.ReactNode;
 }
 
 export const BaseStrip: React.FC<BaseStripProps> = ({
-  id: stripId,
+  stripId,
   label,
   selected,
-  panning,
-  muted,
   pfl,
-  volume,
-  mode,
-  // slot,
-  channel1,
-  channel2,
+  fader,
+  filters,
+  input,
+  pre_fader_meter,
   backgroundColor,
   header,
   copyButton,
-  onSelect,
   onRemove,
   handleStripChange,
+  handleSelection,
   children
 }) => {
+  const [stripLabel, setStripLabel] = useState(stripId.toString());
   const panningValToPos = (val: number): number => Math.round((val + 1) * 64);
   const panningPosToVal = (pos: number): number => pos / 64 - 1.0;
 
@@ -58,7 +79,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
       case 'PFL':
         return pfl ? 'bg-pfl-btn' : 'bg-default-btn';
       case 'MUTE':
-        return muted ? 'bg-mute-btn' : 'bg-default-btn';
+        return fader.muted ? 'bg-mute-btn' : 'bg-default-btn';
       default:
         return 'bg-default-btn';
     }
@@ -68,30 +89,38 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
     <div
       className={`flex flex-col w-fit h-fit relative rounded-lg ${backgroundColor} ${selected ? 'border-[1px] border-gray-400' : ''}`}
     >
+      {/* Strip Info */}
       <StripHeader label={header} copyButton={copyButton} onRemove={onRemove} />
+
+      {/* Label Input */}
       <LabelInput
-        value={label}
-        onChange={(label) => handleStripChange(stripId, 'label', label)}
+        value={label === '' ? stripLabel : label}
+        onChange={(updatedLabel) => {
+          setStripLabel(updatedLabel);
+          handleStripChange(stripId, 'label', updatedLabel);
+        }}
       />
+
+      {/* Audio Strip Fields */}
       {children}
+
       <div className="flex flex-col items-center flex-wrap w-full mt-5 mb-3">
         <div className="w-full flex justify-evenly mb-5">
+          {/* Audio Levels */}
           <AudioLevel
-            isStereo={mode === 'stereo'}
+            isStereo={input.is_stereo}
             audioBarData={{
-              peak_left: channel1,
-              peak_right: channel2
+              peak_left: pre_fader_meter.peak_left,
+              peak_right: pre_fader_meter.peak_right
             }}
           />
+          {/* Control Buttons */}
           <div className="flex flex-col justify-end">
+            {/* Panning Slider */}
             <PanningSlider
-              inputValue={panningValToPos(panning)}
+              inputValue={panningValToPos(filters.pan.value)}
               onChange={(panning) =>
-                handleStripChange(
-                  stripId,
-                  'panning',
-                  panningPosToVal(parseInt(panning))
-                )
+                handleStripChange(stripId, 'panning', panningPosToVal(panning))
               }
             />
             <div className="flex flex-col justify-end">
@@ -104,13 +133,13 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
                     e.stopPropagation();
                     switch (label) {
                       case 'SELECT':
-                        onSelect();
+                        handleSelection();
                         break;
                       case 'PFL':
                         handleStripChange(stripId, 'pfl', !pfl);
                         break;
                       case 'MUTE':
-                        handleStripChange(stripId, 'muted', !muted);
+                        handleStripChange(stripId, 'muted', !fader.muted);
                         break;
                     }
                   }}
@@ -119,9 +148,10 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
             </div>
           </div>
         </div>
+        {/* Volume Slider */}
         <VolumeSlider
           type="mixer"
-          inputVolume={volume}
+          inputVolume={fader.volume}
           onVolumeChange={(volume: number) =>
             handleStripChange(stripId, 'volume', volume)
           }
