@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { PanningLegend } from '../../../assets/icons/PanningLegend';
 import debounce from 'lodash/debounce';
+import debounce from 'lodash/debounce';
 
 type PanningSliderProps = {
   inputValue: number;

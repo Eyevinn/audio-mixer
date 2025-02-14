@@ -48,6 +48,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       {savedStrips.map((strip) => (
         <AudioStrip
           key={strip.stripId}
+          key={strip.stripId}
           {...strip}
           onStripSelect={onStripSelect}
           onRemove={() => handleRemoveStrip(strip.stripId)}
