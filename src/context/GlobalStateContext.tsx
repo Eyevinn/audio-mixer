@@ -1,11 +1,11 @@
 import React from 'react';
 import { createContext, FC, ReactNode, useContext, useState } from 'react';
-import { AudioStrip } from '../types/types';
+import { TAudioStrip } from '../types/types';
 
 interface GlobalStateContextType {
   strips: string[];
-  savedStrips: AudioStrip[];
-  setSavedStrips: React.Dispatch<React.SetStateAction<AudioStrip[]>>;
+  savedStrips: TAudioStrip[];
+  setSavedStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>;
 }
 
 const GlobalStateContext = createContext<GlobalStateContextType | null>(null);
@@ -13,7 +13,7 @@ const GlobalStateContext = createContext<GlobalStateContextType | null>(null);
 export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
   children
 }) => {
-  const [savedStrips, setSavedStrips] = useState<AudioStrip[]>([]);
+  const [savedStrips, setSavedStrips] = useState<TAudioStrip[]>([]);
   return (
     <GlobalStateContext.Provider
       value={{ strips: ['Hejj S&L'], savedStrips, setSavedStrips }}

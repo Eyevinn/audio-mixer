@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useWebSocket } from '../context/WebSocketContext';
 import { useGlobalState } from '../context/GlobalStateContext';
-import { AudioStrip } from '../types/types';
+import { TAudioStrip } from '../types/types';
 import { resync, getAllStrips } from '../utils/utils';
 
 export const useData = () => {
@@ -9,11 +9,11 @@ export const useData = () => {
   const { setSavedStrips } = useGlobalState();
 
   const mapStripsData = (
-    data: Record<string, AudioStrip>,
-    existingStrips: AudioStrip[]
+    data: Record<string, TAudioStrip>,
+    existingStrips: TAudioStrip[]
   ) => {
     return Object.entries(data).map(([index, stripData]) => {
-      const strip = stripData as AudioStrip;
+      const strip = stripData as TAudioStrip;
       const existingStrip = existingStrips.find(
         (s) => s.stripId === parseInt(index)
       );
@@ -54,14 +54,14 @@ export const useData = () => {
         case 'state-change':
           console.log('state-change', data.body);
           if (data.body?.strips) {
-            setSavedStrips((prevStrips: AudioStrip[]) =>
+            setSavedStrips((prevStrips: TAudioStrip[]) =>
               prevStrips.map((strip) => {
                 const updatedStripData = data.body.strips[strip.stripId];
                 if (updatedStripData) {
                   return {
                     ...strip,
                     ...Object.keys(updatedStripData).reduce((acc, key) => {
-                      const typedKey = key as keyof AudioStrip;
+                      const typedKey = key as keyof TAudioStrip;
                       const updatedValue = updatedStripData[typedKey];
                       const currentValue = strip[typedKey];
 
@@ -83,8 +83,8 @@ export const useData = () => {
                         ...acc,
                         [typedKey]: updatedValue
                       };
-                    }, {} as Partial<AudioStrip>)
-                  } satisfies AudioStrip;
+                    }, {} as Partial<TAudioStrip>)
+                  } satisfies TAudioStrip;
                 }
                 return strip;
               })

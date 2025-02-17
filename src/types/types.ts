@@ -116,32 +116,7 @@ export interface Filters {
   };
 }
 
-interface BaseStrip {
-  stripId: number;
-  label: string;
-  selected: boolean;
-  pfl: boolean;
-  fader: {
-    muted: boolean;
-    volume: number;
-  };
-  filters: Filters;
-  input_meter: {
-    peak?: number;
-    peak_left?: number;
-    peak_right?: number;
-  };
-  post_fader_meter: {
-    peak_left: number;
-    peak_right: number;
-  };
-  pre_fader_meter: {
-    peak_left: number;
-    peak_right: number;
-  };
-}
-
-export interface AudioStrip {
+interface TBaseStrip {
   [key: string]: unknown;
   stripId: number;
   label: string;
@@ -152,12 +127,6 @@ export interface AudioStrip {
     volume: number;
   };
   filters: Filters;
-  input: {
-    first_channel: number;
-    input_slot: number;
-    is_stereo: boolean;
-    second_channel: number;
-  };
   input_meter: {
     peak?: number;
     peak_left?: number;
@@ -173,7 +142,16 @@ export interface AudioStrip {
   };
 }
 
-export interface MixStrip extends BaseStrip {
+export interface TAudioStrip extends TBaseStrip {
+  input: {
+    first_channel: number;
+    input_slot: number;
+    is_stereo: boolean;
+    second_channel: number;
+  };
+}
+
+export interface TMixStrip extends TBaseStrip {
   inputs: {
     mixes: {
       stripId: number;
