@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import Icons from '../../../assets/icons/Icons';
 import { SideNavTooltip } from '../SideNavTooltip';
 import { useWebSocket } from '../../../context/WebSocketContext';

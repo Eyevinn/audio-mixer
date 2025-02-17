@@ -1,3 +1,4 @@
+import React from 'react';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { WebSocketDialog } from './WebSocketDialog';
 

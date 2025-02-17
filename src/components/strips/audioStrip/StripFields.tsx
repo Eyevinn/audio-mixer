@@ -2,11 +2,11 @@ import React from 'react';
 import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { StripInput } from '../../ui/input/Input';
 
-type TInputFieldsProps = {
+type TStripFieldsProps = {
   slot: string;
   isStereo: boolean;
-  channel1: string;
-  channel2: string;
+  channel1: number;
+  channel2: number;
   stripId: number;
   handleStripChange: (
     stripId: number,
@@ -15,14 +15,14 @@ type TInputFieldsProps = {
   ) => void;
 };
 
-export const InputFields = ({
+export const StripFields = ({
   slot,
   isStereo,
   channel1,
   channel2,
   stripId,
   handleStripChange
-}: TInputFieldsProps) => {
+}: TStripFieldsProps) => {
   return (
     <div className="flex flex-col">
       {/* Slot Input */}
@@ -43,7 +43,7 @@ export const InputFields = ({
         type="Mode"
         options={['Mono', 'Stereo']}
         value={isStereo ? 'stereo' : 'mono'}
-        onChange={(mode: string) =>
+        onChange={(mode) =>
           handleStripChange(stripId, 'is_stereo', mode === 'stereo')
         }
       />
@@ -52,8 +52,8 @@ export const InputFields = ({
       <StripDropdown
         type="Left Ch"
         options={['0', '1']}
-        value={channel1.toString()}
-        onChange={(channel1: string) =>
+        value={channel1 !== undefined ? channel1.toString() : ''}
+        onChange={(channel1) =>
           handleStripChange(stripId, 'first_channel', parseInt(channel1, 10))
         }
       />
@@ -62,8 +62,8 @@ export const InputFields = ({
       <StripDropdown
         type="Right Ch"
         options={['0', '1']}
-        value={channel2.toString()}
-        onChange={(channel2: string) =>
+        value={channel2 !== undefined ? channel2.toString() : ''}
+        onChange={(channel2) =>
           handleStripChange(stripId, 'second_channel', parseInt(channel2, 10))
         }
         hidden={!isStereo}

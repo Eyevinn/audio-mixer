@@ -1,3 +1,4 @@
+import React from 'react';
 import Icons from '../../../assets/icons/Icons';
 import { PageHeader } from '../../../components/pageLayout/pageHeader/PageHeader';
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import { MeterField } from './MeterField';
 
 type TEbuMetersProps = {

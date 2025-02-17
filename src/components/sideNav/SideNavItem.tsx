@@ -1,3 +1,4 @@
+import React from 'react';
 import { SideNavTooltip } from './SideNavTooltip';
 import Icons, { PickIconNames } from '../../assets/icons/Icons';
 

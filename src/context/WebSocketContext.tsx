@@ -2,10 +2,8 @@ import React, { createContext, useContext, useState } from 'react';
 import { showError, showInfo } from '../utils/notifications';
 
 interface WebSocketContextType {
-  // Todo: define the message type
   wsUrl: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  sendMessage: (message: any) => void;
+  sendMessage: (message: Record<string, unknown>) => void;
   isConnected: boolean;
   connect: (address: string) => void;
   lastMessage: string | null;

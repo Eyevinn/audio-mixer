@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { SliderLegend } from '../../../assets/icons/SliderLegend';
 import debounce from 'lodash/debounce';
 

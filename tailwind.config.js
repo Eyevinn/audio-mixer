@@ -14,9 +14,11 @@ module.exports = {
         'filter-bg': '#262829',
         'filter-highlited-bg': '#2a2c2e',
         'dark-grey': '#a9a9a9',
-        // Strip colors:
+        // Strip & Mix colors:
         'strip-bg': '#2b2c2e',
         'strip-hover': '#3a3b3d',
+        'mix-bg': '#1a273f',
+        'selected-mix-bg': '#291531',
         'slider-green': '#04aa6d',
         'label-field': '#f9fada',
         'input-field': '#d9d9d9',
@@ -25,13 +27,22 @@ module.exports = {
         'meter-green': '#0e0',
         'select-btn': '#63b65f',
         'pfl-btn': '#b6b15f',
+        'select-btn': '#63b65f',
+        'pfl-btn': '#b6b15f',
         'mute-btn': '#b15f5f',
         'default-btn': '#a9a9a9',
+        'copy-btn': '#d9d9d9',
+        'copy-btn-hover': '#ffffff',
         // Filter-settings colors:
         'grid-bg': '#151515',
         // Mix colors:
-        'mix-bg': '#1a273f',
-        'selected-mix-bg': '#291531',
+        'mute-btn': '#b15f5f',
+        'default-btn': '#a9a9a9',
+        'copy-btn': '#d9d9d9',
+        'copy-btn-hover': '#ffffff',
+        // Filter-settings colors:
+        'grid-bg': '#151515',
+        //
         'input-bg': '#374151',
         'input-hover': '#3f3f46',
         'border-bg': '#535151',

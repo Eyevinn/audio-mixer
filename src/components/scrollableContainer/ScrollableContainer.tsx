@@ -3,15 +3,13 @@ import { AudioStrip } from '../strips/audioStrip/AudioStrip';
 import { useGlobalState } from '../../context/GlobalStateContext';
 
 interface ScrollableContainerProps {
-  selectedStrip: number | null;
-  setSelectedStrip: (value: React.SetStateAction<number | null>) => void;
   handleRemoveStrip: (stripId: number) => void;
+  onStripSelect: (stripId: number | null) => void;
 }
 
 export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
-  selectedStrip,
   handleRemoveStrip,
-  setSelectedStrip
+  onStripSelect
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -51,11 +49,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         <AudioStrip
           key={strip.stripId}
           {...strip}
-          onSelect={() => {
-            setSelectedStrip(
-              selectedStrip !== strip.stripId ? strip.stripId : null
-            );
-          }}
+          onStripSelect={onStripSelect}
           onRemove={() => handleRemoveStrip(strip.stripId)}
         />
       ))}
