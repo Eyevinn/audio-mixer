@@ -10,6 +10,8 @@ import {
 } from '../../components/ui/buttons/Buttons';
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
+import { Strip } from '../../types/types';
+import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { useData } from '../../hooks/useData';
