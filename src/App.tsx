@@ -8,7 +8,7 @@ import { ConfigureMixPage } from './pages/mixes/mix';
 import { WebSocketProvider } from './context/WebSocketContext';
 import { WebSocketLogOn } from './components/webSocket/WebSocketLogOn';
 import { GlobalStateProvider } from './context/GlobalStateContext';
-import { OutputMappingPage } from './pages/strips/OutputMapping';
+import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping';
 
 function App() {
   return (
