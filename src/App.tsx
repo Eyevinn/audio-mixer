@@ -8,7 +8,7 @@ import { WebSocketProvider } from './context/WebSocketContext';
 import './index.css';
 import { ConfigureMixPage } from './pages/mixes/Mix_temp';
 import { MixesPage } from './pages/mixes/Mixes';
-import { OutputMappingPage } from './pages/outputs/OutputMapping';
+import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping';
 import { StripsPage } from './pages/strips/Strips';
 
 function App() {
@@ -24,7 +24,10 @@ function App() {
                 <Route path="/strips" element={<StripsPage />} />
                 <Route path="/mixes" element={<MixesPage />} />
                 <Route path="/mixes/:mixId" element={<ConfigureMixPage />} />
-                <Route path="/outputs" element={<OutputMappingPage />} />
+                <Route
+                  path="/outputs/outputMapping"
+                  element={<OutputMappingPage />}
+                />
               </>
             </Routes>
             <Toaster

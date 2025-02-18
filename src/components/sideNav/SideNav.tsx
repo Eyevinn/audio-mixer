@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Icons from '../../assets/icons/Icons';
 import logoSrc from '../../assets/images/ateliere-logo.png';
-import SideNavWebSocketStatus from './CustomSideNavItems/SideNavWebSocketStatus';
-import { SideNavLinkItemComponent, TSideNavLinkItem } from './SideNavLinkItem';
 import SideNavExport from './CustomSideNavItems/SideNavExport';
 import SideNavImport from './CustomSideNavItems/SideNavImport';
+import SideNavWebSocketStatus from './CustomSideNavItems/SideNavWebSocketStatus';
+import { SideNavLinkItemComponent, TSideNavLinkItem } from './SideNavLinkItem';
 
 const sideNavItems: TSideNavLinkItem[] = [
   {
