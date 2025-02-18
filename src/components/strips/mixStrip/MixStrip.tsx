@@ -1,77 +1,72 @@
 import React from 'react';
 import { BaseStrip } from '../BaseStrip';
-// import { useWebSocket } from '../../../context/WebSocketContext';
-// import { useGlobalState } from '../../../context/GlobalStateContext';
 import { MixFields } from './MixFields';
-import { Filters } from '../../../types/types';
+import { TMixStrip } from '../../../types/types';
+import { useGlobalState } from '../../../context/GlobalStateContext';
+import { useWebSocket } from '../../../context/WebSocketContext';
 
-interface MixStripProps {
-  stripId: number;
-  label: string;
-  selected: boolean;
-  pfl: boolean;
-  fader: {
-    muted: boolean;
-    volume: number;
-  };
-  filters: Filters;
-  input: {
-    first_channel: number;
-    input_slot: number;
-    is_stereo: boolean;
-    second_channel: number;
-  };
-  input_meter: {
-    peak?: number;
-    peak_left?: number;
-    peak_right?: number;
-  };
-  post_fader_meter: {
-    peak_left: number;
-    peak_right: number;
-  };
-  pre_fader_meter: {
-    peak_left: number;
-    peak_right: number;
-  };
-  onStripSelect: (stripId: number) => void;
+interface MixStripProps extends TMixStrip {
+  onStripSelect: (stripId: number | null) => void;
   onRemove: () => void;
 }
 
 export const MixStrip: React.FC<MixStripProps> = (props) => {
-  const mix = 1;
+  const { sendMessage } = useWebSocket();
+  const { savedMixes, setSavedMixes } = useGlobalState();
 
   const handleSelection = () => {
-    props.onStripSelect(props.stripId);
+    props.onStripSelect(props.selected ? null : props.stripId);
   };
 
-  const handleStripChange = (
+  const handleMixChange = (
     stripId: number,
     property: string,
     value: number | boolean | string | undefined
   ) => {
-    console.log('handleStripChange', stripId, property, value);
-    // Implement mix-specific handling logic here
-    // ...
+    setSavedMixes(
+      savedMixes.map((mix) =>
+        mix.stripId === stripId ? { ...mix, [property]: value } : mix
+      )
+    );
+
+    // If the value is undefined, do not send the message.
+    // Needed for the input fields, so the input fields can be cleared
+    if (value === undefined) return;
+
+    // Local states are not needed to be sent
+    if (property === 'pfl') return;
+
+    if (property === 'label') {
+      sendMessage({
+        type: 'set',
+        resource: `/audio/mixes/${stripId}`,
+        body: { [property]: value }
+      });
+    } else if (property === 'volume' || property === 'muted') {
+      sendMessage({
+        type: 'set',
+        resource: `/audio/mixes/${stripId}/fader`,
+        body: { [property]: value }
+      });
+    } else if (property === 'panning') {
+      sendMessage({
+        type: 'set',
+        resource: `/audio/mixes/${stripId}/filters/pan`,
+        body: { value: value }
+      });
+    }
   };
 
   return (
     <BaseStrip
       {...props}
       backgroundColor="bg-mix-bg"
-      header={`Mix #${mix}`}
+      header={`Mix #${props.stripId}`}
       copyButton={true}
-      handleStripChange={handleStripChange}
+      handleStripChange={handleMixChange}
       handleSelection={handleSelection}
     >
-      <MixFields
-        stripId={props.stripId}
-        handleStripChange={handleStripChange}
-        slot={props.input.input_slot.toString()}
-        mode={props.input.is_stereo ? 'stereo' : 'mono'}
-        channel1={props.input.first_channel.toString()}
-        channel2={props.input.second_channel.toString()}
-      />
+      <MixFields stripId={props.stripId} />
     </BaseStrip>
   );
 };

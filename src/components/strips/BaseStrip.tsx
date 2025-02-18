@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Filters } from '../../types/types';
+import { TBaseStrip } from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { LabelInput } from '../ui/input/Input';
 import { AudioLevel } from './audioLevel/AudioLevel';
@@ -7,34 +7,22 @@ import { PanningSlider } from './panningSlider/PanningSlider';
 import { StripHeader } from './stripHeader/StripHeader';
 import { VolumeSlider } from './volumeSlider/VolumeSlider';
 
-interface BaseStripProps {
-  stripId: number;
-  label: string;
-  selected: boolean;
-  pfl: boolean;
-  fader: {
-    muted: boolean;
-    volume: number;
-  };
-  filters: Filters;
-  input: {
+interface BaseStripProps extends TBaseStrip {
+  input?: {
     first_channel: number;
     input_slot: number;
     is_stereo: boolean;
     second_channel: number;
   };
-  input_meter: {
-    peak?: number;
-    peak_left?: number;
-    peak_right?: number;
+  mixes?: {
+    muted: boolean;
+    volume: number;
+    origin: 'pre_fader' | 'post_fader';
   };
-  post_fader_meter: {
-    peak_left: number;
-    peak_right: number;
-  };
-  pre_fader_meter: {
-    peak_left: number;
-    peak_right: number;
+  strips?: {
+    muted: boolean;
+    volume: number;
+    origin: 'pre_fader' | 'post_fader';
   };
   backgroundColor: string;
   header: string;
@@ -89,7 +77,6 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
     >
       {/* Strip Info */}
       <StripHeader label={header} copyButton={copyButton} onRemove={onRemove} />
-
       {/* Label Input */}
       <LabelInput
         value={label === '' ? stripLabel : label}
@@ -98,15 +85,13 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
           handleStripChange(stripId, 'label', updatedLabel);
         }}
       />
-
       {/* Audio Strip Fields */}
       {children}
-
-      <div className="flex flex-col items-center flex-wrap w-full mt-5 mb-3">
+      <div className="flex flex-col items-center flex-wrap w-full mt-5">
         <div className="w-full flex justify-evenly mb-5">
           {/* Audio Levels */}
           <AudioLevel
-            isStereo={input.is_stereo}
+            isStereo={input?.is_stereo ?? true}
             audioBarData={{
               peak_left: pre_fader_meter.peak_left,
               peak_right: pre_fader_meter.peak_right

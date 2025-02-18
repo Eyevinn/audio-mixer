@@ -24,7 +24,7 @@ export const StripFields = ({
   handleStripChange
 }: TStripFieldsProps) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-1">
       {/* Slot Input */}
       <StripInput
         type="Slot"

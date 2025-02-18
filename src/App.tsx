@@ -4,11 +4,11 @@ import './index.css';
 import { SideNav } from './components/sideNav/SideNav';
 import { MixesPage } from './pages/mixes/Mixes';
 import { StripsPage } from './pages/strips/Strips';
-import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping';
 import { ConfigureMixPage } from './pages/mixes/mix';
 import { WebSocketProvider } from './context/WebSocketContext';
 import { WebSocketLogOn } from './components/webSocket/WebSocketLogOn';
 import { GlobalStateProvider } from './context/GlobalStateContext';
+import { OutputMappingPage } from './pages/strips/OutputMapping';
 
 function App() {
   return (

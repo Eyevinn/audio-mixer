@@ -1,39 +1,11 @@
 import React from 'react';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { useGlobalState } from '../../../context/GlobalStateContext';
-import { Filters } from '../../../types/types';
+import { TAudioStrip } from '../../../types/types';
 import { BaseStrip } from '../BaseStrip';
 import { StripFields } from './StripFields';
 
-interface AudioStripProps {
-  stripId: number;
-  label: string;
-  selected: boolean;
-  pfl: boolean;
-  fader: {
-    volume: number;
-    muted: boolean;
-  };
-  filters: Filters;
-  input: {
-    first_channel: number;
-    input_slot: number;
-    is_stereo: boolean;
-    second_channel: number;
-  };
-  input_meter: {
-    peak?: number;
-    peak_left?: number;
-    peak_right?: number;
-  };
-  post_fader_meter: {
-    peak_left: number;
-    peak_right: number;
-  };
-  pre_fader_meter: {
-    peak_left: number;
-    peak_right: number;
-  };
+interface AudioStripProps extends TAudioStrip {
   onStripSelect: (stripId: number | null) => void;
   onRemove: () => void;
 }

@@ -1,33 +1,22 @@
 import React from 'react';
 import Icons from '../../../assets/icons/Icons';
-
+import { MixFieldsBtn } from './MixFieldBtn';
 type TMixFieldsProps = {
-  slot: string;
-  mode: string;
-  channel1: string;
-  channel2: string;
   stripId: number;
-  handleStripChange: (
-    stripId: number,
-    key: string,
-    value: string | number
-  ) => void;
 };
 
-export const MixFields = ({ stripId, handleStripChange }: TMixFieldsProps) => {
+export const MixFields = ({ stripId }: TMixFieldsProps) => {
+  // TODO: connect id to the configure mix-page
+  console.log('stripId', stripId);
   return (
-    <div
-      className="w-full px-4 items-center"
-      // onClick={() => handleStripChange(stripId, 'mode', 'stereo')}
-    >
-      <button
-        type="button"
-        className="flex w-full px-4 gap-1 items-center bg-input-field text-black outline-none text-center py-1 text-sm rounded mb-2"
-        onClick={() => handleStripChange(stripId, 'mode', 'stereo')}
-      >
-        <Icons name="IconSettings" className="w-6 h-6" />
+    <div>
+      <MixFieldsBtn type="configure">
+        <Icons name="IconSettings" className="w-5 h-5" />
         Configure
-      </button>
+      </MixFieldsBtn>
+      <MixFieldsBtn type="dummy">|</MixFieldsBtn>
+      <MixFieldsBtn type="dummy">|</MixFieldsBtn>
+      <MixFieldsBtn type="dummy">|</MixFieldsBtn>
     </div>
   );
 };

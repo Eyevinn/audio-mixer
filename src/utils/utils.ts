@@ -1,3 +1,4 @@
+// Strips
 export const addStrip = (
   sendMessage: (message: Record<string, unknown>) => void,
   index: number
@@ -26,6 +27,38 @@ export const getAllStrips = (
   sendMessage({
     type: 'get',
     resource: '/audio/strips'
+  });
+};
+
+// Mixes
+export const addMix = (
+  sendMessage: (message: Record<string, unknown>) => void,
+  index: number
+) => {
+  sendMessage({
+    type: 'command',
+    resource: '/audio/mixes',
+    body: { command: 'add_mix', parameters: { index: index } }
+  });
+};
+
+export const removeMix = (
+  index: number,
+  sendMessage: (message: Record<string, unknown>) => void
+) => {
+  sendMessage({
+    type: 'command',
+    resource: '/audio/mixes',
+    body: { command: 'remove_mix', parameters: { index: index } }
+  });
+};
+
+export const getAllMixes = (
+  sendMessage: (message: Record<string, unknown>) => void
+) => {
+  sendMessage({
+    type: 'get',
+    resource: '/audio/mixes'
   });
 };
 

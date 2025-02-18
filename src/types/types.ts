@@ -1,35 +1,3 @@
-export interface AudioStripProps {
-  label: string;
-  selected: boolean;
-  slot: number;
-  channel1: number;
-  channel2: number;
-  mode: 'mono' | 'stereo';
-  panning: number;
-  muted: boolean;
-  pfl: boolean;
-  volume: number;
-  onLabelChange: (label: string) => void;
-  onPanningChange: (panning: number) => void;
-  onMuteChange: (muted: boolean) => void;
-  onPflChange: (pfl: boolean) => void;
-  onVolumeChange: (volume: number) => void;
-}
-
-export interface AudioLevelProps {
-  isStereo: boolean;
-  audioBarData?: {
-    peak?: number;
-    peak_left?: number;
-    peak_right?: number;
-  };
-}
-
-export interface EffectsPanelProps {
-  label: string;
-  stripId: number;
-}
-
 export interface Compressor {
   attack: number;
   gain: number;
@@ -116,7 +84,7 @@ export interface Filters {
   };
 }
 
-interface TBaseStrip {
+export interface TBaseStrip {
   [key: string]: unknown;
   stripId: number;
   label: string;
@@ -153,17 +121,15 @@ export interface TAudioStrip extends TBaseStrip {
 
 export interface TMixStrip extends TBaseStrip {
   inputs: {
-    mixes: {
-      stripId: number;
+    mixes: Array<{
       muted: boolean;
       volume: number;
       origin: 'pre_fader' | 'post_fader';
-    }[];
-    strips: {
-      stripId: number;
+    }>;
+    strips: Array<{
       muted: boolean;
       volume: number;
       origin: 'pre_fader' | 'post_fader';
-    }[];
+    }>;
   };
 }
