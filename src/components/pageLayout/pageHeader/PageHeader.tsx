@@ -5,7 +5,7 @@ export const PageHeader = ({
   children,
   titleElement
 }: {
-  title: string | any;
+  title: string;
   children?: React.ReactNode;
   titleElement?: React.ReactNode;
 }) => {

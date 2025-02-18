@@ -45,6 +45,10 @@ export const MixesPage = () => {
 
   const handleRemoveMix = (mixId: number) => {
     removeMix(mixId, sendMessage);
+
+    if (selectedMix === mixId) {
+      setSelectedMix(null);
+    }
   };
 
   const handleRemoveAllMixes = () => {

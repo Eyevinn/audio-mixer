@@ -63,7 +63,7 @@ export const getAllMixes = (
 };
 
 export const getMixByIndex = (
-  sendMessage: (message: any) => void,
+  sendMessage: (message: Record<string, unknown>) => void,
   index: number
 ) => {
   sendMessage({
@@ -73,7 +73,7 @@ export const getMixByIndex = (
 };
 
 export const addStripToMix = (
-  sendMessage: (message: any) => void,
+  sendMessage: (message: Record<string, unknown>) => void,
   index: number,
   indexToAdd: number
 ) => {
@@ -85,7 +85,7 @@ export const addStripToMix = (
 };
 
 export const removeStripFromMix = (
-  sendMessage: (message: any) => void,
+  sendMessage: (message: Record<string, unknown>) => void,
   index: number,
   indexToRemove: number
 ) => {
@@ -97,7 +97,7 @@ export const removeStripFromMix = (
 };
 
 export const addMixToMix = (
-  sendMessage: (message: any) => void,
+  sendMessage: (message: Record<string, unknown>) => void,
   index: number,
   indexToAdd: number
 ) => {
@@ -109,7 +109,7 @@ export const addMixToMix = (
 };
 
 export const removeMixFromMix = (
-  sendMessage: (message: any) => void,
+  sendMessage: (message: Record<string, unknown>) => void,
   index: number,
   indexToRemove: number
 ) => {
@@ -121,7 +121,9 @@ export const removeMixFromMix = (
 };
 
 // Outputs
-export const getAllOutputs = (sendMessage: (message: any) => void) => {
+export const getAllOutputs = (
+  sendMessage: (message: Record<string, unknown>) => void
+) => {
   sendMessage({
     type: 'get',
     resource: '/audio/outputs'
@@ -129,7 +131,7 @@ export const getAllOutputs = (sendMessage: (message: any) => void) => {
 };
 
 export const setOutputLabel = (
-  sendMessage: (message: any) => void,
+  sendMessage: (message: Record<string, unknown>) => void,
   outputName: string,
   label: string
 ) => {
@@ -145,16 +147,12 @@ export const setOutputLabel = (
 };
 
 export const addInputToOutput = (
-  sendMessage: (message: any) => void,
+  sendMessage: (message: Record<string, unknown>) => void,
   outputName: string,
   inputIndex: number,
   origin: 'pre_fader' | 'post_fader',
   source: 'strip' | 'mix'
 ) => {
-  console.log('URL: ', `/audio/outputs/${outputName}/input`);
-  console.log('inputIndex: ', inputIndex);
-  console.log('origin: ', origin);
-  console.log('source: ', source);
   sendMessage({
     type: 'set',
     resource: `/audio/outputs/${outputName}/input`,
