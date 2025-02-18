@@ -4,10 +4,11 @@ import { CompressorVisualisation } from './CompressorVisualisation';
 import { EffectsSlider } from './EffectsSlider';
 import { EQVisualisation } from './EQVisualisation';
 import { useWebSocket } from '../../../context/WebSocketContext';
-import { TAudioStrip } from '../../../types/types';
+import { TAudioStrip, TMixStrip } from '../../../types/types';
 import { addEQBand, removeEQBand } from '../../../utils/utils';
+
 interface EffectsPanelProps {
-  strip: TAudioStrip | undefined;
+  strip: TAudioStrip | TMixStrip | undefined;
 }
 
 interface EQBand {

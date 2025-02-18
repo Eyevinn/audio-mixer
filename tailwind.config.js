@@ -27,19 +27,12 @@ module.exports = {
         'meter-green': '#0e0',
         'select-btn': '#63b65f',
         'pfl-btn': '#b6b15f',
-        'select-btn': '#63b65f',
-        'pfl-btn': '#b6b15f',
         'mute-btn': '#b15f5f',
         'default-btn': '#a9a9a9',
         'copy-btn': '#d9d9d9',
         'copy-btn-hover': '#ffffff',
-        // Filter-settings colors:
-        'grid-bg': '#151515',
-        // Mix colors:
-        'mute-btn': '#b15f5f',
-        'default-btn': '#a9a9a9',
-        'copy-btn': '#d9d9d9',
-        'copy-btn-hover': '#ffffff',
+        'dark-purple': '#291531',
+        'almost-white': '#f5f5f4',
         // Filter-settings colors:
         'grid-bg': '#151515',
         //
