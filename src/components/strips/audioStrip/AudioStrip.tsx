@@ -1,11 +1,12 @@
 import React from 'react';
-import { useWebSocket } from '../../../context/WebSocketContext';
 import { useGlobalState } from '../../../context/GlobalStateContext';
+import { useWebSocket } from '../../../context/WebSocketContext';
 import { TAudioStrip } from '../../../types/types';
 import { BaseStrip } from '../BaseStrip';
 import { StripFields } from './StripFields';
 
 interface AudioStripProps extends TAudioStrip {
+  isRemovingFromMix?: boolean;
   onStripSelect: (stripId: number | null) => void;
   onRemove: () => void;
 }
@@ -73,6 +74,7 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
       {...props}
       backgroundColor="bg-strip-bg"
       header={`Strip #${props.input.input_slot}`}
+      isRemovingFromMix={props.isRemovingFromMix}
       handleStripChange={handleChange}
       handleSelection={handleSelection}
     >

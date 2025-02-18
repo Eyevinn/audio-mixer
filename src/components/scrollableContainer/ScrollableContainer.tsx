@@ -1,21 +1,29 @@
 import React, { useRef, useState } from 'react';
+import { TAudioStrip, TMixStrip } from '../../types/types';
 import { AudioStrip } from '../strips/audioStrip/AudioStrip';
-import { useGlobalState } from '../../context/GlobalStateContext';
+import { MixStrip } from '../strips/mixStrip/MixStrip';
 
 interface ScrollableContainerProps {
-  handleRemoveStrip: (stripId: number) => void;
+  audioStrips?: TAudioStrip[];
+  mixStrips?: TMixStrip[];
+  isRemovingFromMix?: boolean;
+  handleRemoveStrip?: (stripId: number) => void;
+  handleRemoveStripFromMix?: (input: TAudioStrip | TMixStrip) => void;
   onStripSelect: (stripId: number | null) => void;
 }
 
 export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
+  audioStrips,
+  mixStrips,
+  isRemovingFromMix,
   handleRemoveStrip,
+  handleRemoveStripFromMix,
   onStripSelect
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [startX, setStartX] = useState<number>(0);
   const [scrollLeft, setScrollLeft] = useState<number>(0);
-  const { savedStrips } = useGlobalState();
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
@@ -38,19 +46,41 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
 
   return (
     <div
-      className="overflow-x-auto w-[97%] flex space-x-4 cursor-grab active:cursor-grabbing select-none"
+      className="overflow-x-auto w-[97%] flex space-x-4 cursor-grab active:cursor-grabbing select-none scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin"
       ref={containerRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      {savedStrips.map((strip) => (
+      {audioStrips?.map((strip) => (
         <AudioStrip
-          key={strip.stripId}
+          isRemovingFromMix={isRemovingFromMix}
+          key={`${strip.stripId}-strip`}
           {...strip}
           onStripSelect={onStripSelect}
-          onRemove={() => handleRemoveStrip(strip.stripId)}
+          onRemove={
+            isRemovingFromMix && handleRemoveStripFromMix
+              ? () => handleRemoveStripFromMix(strip)
+              : handleRemoveStrip
+                ? () => handleRemoveStrip(strip.stripId)
+                : () => console.warn('No remove function provided')
+          }
+        />
+      ))}
+      {mixStrips?.map((mix) => (
+        <MixStrip
+          isRemovingFromMix={isRemovingFromMix}
+          key={`${mix.stripId}-mix`}
+          {...mix}
+          onStripSelect={onStripSelect}
+          onRemove={
+            isRemovingFromMix && handleRemoveStripFromMix
+              ? () => handleRemoveStripFromMix(mix)
+              : handleRemoveStrip
+                ? () => handleRemoveStrip(mix.stripId)
+                : () => console.warn('No remove function provided')
+          }
         />
       ))}
     </div>

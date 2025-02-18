@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { addStrip, removeStrip } from '../../utils/utils';
-import { useWebSocket } from '../../context/WebSocketContext';
-import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
+import { useEffect, useState } from 'react';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
-import { useGlobalState } from '../../context/GlobalStateContext';
+import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
+import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
 import {
-  PrimaryButton,
-  DeleteButton
+  DeleteButton,
+  PrimaryButton
 } from '../../components/ui/buttons/Buttons';
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
-import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
-import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
+import { useGlobalState } from '../../context/GlobalStateContext';
+import { useWebSocket } from '../../context/WebSocketContext';
 import { useData } from '../../hooks/useData';
+import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
+import { addStrip, removeStrip } from '../../utils/utils';
 
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
@@ -42,20 +42,12 @@ export const StripsPage = () => {
 
   const handleRemoveStrip = (stripId: number) => {
     removeStrip(stripId, sendMessage);
-
-    const filteredStrips = savedStrips.filter(
-      (strip) => strip.stripId !== stripId
-    );
-    setSavedStrips(filteredStrips);
-    if (selectedStrip === stripId) {
-      setSelectedStrip(null);
-    }
   };
 
   const handleRemoveAllStrips = () => {
-    savedStrips.forEach((strip) => handleRemoveStrip(strip.stripId));
-    setSelectedStrip(null);
-    setSavedStrips([]);
+    savedStrips.forEach((strip) => {
+      handleRemoveStrip(strip.stripId);
+    });
   };
 
   const onModalOpen = () => {
@@ -68,7 +60,6 @@ export const StripsPage = () => {
 
   const handleStripSelection = (stripId: number | null) => {
     setSelectedStrip(stripId);
-
     setSavedStrips((prevStrips) =>
       prevStrips.map((strip) => ({
         ...strip,
@@ -100,6 +91,7 @@ export const StripsPage = () => {
         {/* Audio Strips Container */}
         <div className="ml-8 mt-4 w-full max-w-full overflow-hidden">
           <ScrollableContainer
+            audioStrips={savedStrips}
             handleRemoveStrip={handleRemoveStrip}
             onStripSelect={handleStripSelection}
           />

@@ -1,11 +1,13 @@
 import React from 'react';
-import { BaseStrip } from '../BaseStrip';
-import { MixFields } from './MixFields';
-import { TMixStrip } from '../../../types/types';
 import { useGlobalState } from '../../../context/GlobalStateContext';
 import { useWebSocket } from '../../../context/WebSocketContext';
+import { TMixStrip } from '../../../types/types';
+import { BaseStrip } from '../BaseStrip';
+import { MixFields } from './MixFields';
 
 interface MixStripProps extends TMixStrip {
+  isRemovingFromMix?: boolean;
+  isBeingConfigured?: boolean;
   onStripSelect: (stripId: number | null) => void;
   onRemove: () => void;
 }
@@ -60,13 +62,20 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
   return (
     <BaseStrip
       {...props}
-      backgroundColor="bg-mix-bg"
+      backgroundColor={
+        props.isBeingConfigured ? 'bg-selected-mix-bg' : 'bg-mix-bg'
+      }
       header={`Mix #${props.stripId}`}
       copyButton={true}
+      isRemovingFromMix={props.isRemovingFromMix}
       handleStripChange={handleMixChange}
       handleSelection={handleSelection}
+      isBeingConfigured={props.isBeingConfigured}
     >
-      <MixFields stripId={props.stripId} />
+      <MixFields
+        isBeingConfigured={props.isBeingConfigured}
+        stripId={props.stripId}
+      />
     </BaseStrip>
   );
 };

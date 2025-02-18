@@ -1,18 +1,19 @@
-import React from 'react';
 import {
-  IconMenu2,
-  IconMenuDeep,
   IconAdjustments,
   IconAdjustmentsPlus,
   IconArrowsShuffle,
-  IconSTurnRight,
-  IconTrash,
-  IconPlugConnected,
-  IconPlugConnectedX,
+  IconCheck,
+  IconChevronDown,
+  IconCopy,
   IconDeviceFloppy,
   IconFileUpload,
+  IconMenu2,
+  IconMenuDeep,
+  IconPlugConnected,
+  IconPlugConnectedX,
   IconSettings,
-  IconCopy
+  IconSTurnRight,
+  IconTrash
 } from '@tabler/icons-react';
 
 interface IClassName {
@@ -48,6 +49,10 @@ const pickIcon = {
   ),
   IconUpload: ({ className }: IClassName) => (
     <IconFileUpload className={className} />
+  ),
+  IconCheck: ({ className }: IClassName) => <IconCheck className={className} />,
+  IconChevronDown: ({ className }: IClassName) => (
+    <IconChevronDown className={className} />
   ),
   IconSettings: ({ className }: IClassName) => (
     <IconSettings className={className} />

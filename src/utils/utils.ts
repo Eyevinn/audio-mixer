@@ -62,7 +62,113 @@ export const getAllMixes = (
   });
 };
 
-// Other
+export const getMixByIndex = (
+  sendMessage: (message: any) => void,
+  index: number
+) => {
+  sendMessage({
+    type: 'get',
+    resource: `/audio/mixes/${index}`
+  });
+};
+
+export const addStripToMix = (
+  sendMessage: (message: any) => void,
+  index: number,
+  indexToAdd: number
+) => {
+  sendMessage({
+    type: 'command',
+    resource: `/audio/mixes/${index}/inputs/strips`,
+    body: { command: 'add_strip', parameters: { index: indexToAdd } }
+  });
+};
+
+export const removeStripFromMix = (
+  sendMessage: (message: any) => void,
+  index: number,
+  indexToRemove: number
+) => {
+  sendMessage({
+    type: 'command',
+    resource: `/audio/mixes/${index}/inputs/strips`,
+    body: { command: 'remove_strip', parameters: { index: indexToRemove } }
+  });
+};
+
+export const addMixToMix = (
+  sendMessage: (message: any) => void,
+  index: number,
+  indexToAdd: number
+) => {
+  sendMessage({
+    type: 'command',
+    resource: `/audio/mixes/${index}/inputs/mixes`,
+    body: { command: 'add_mix', parameters: { index: indexToAdd } }
+  });
+};
+
+export const removeMixFromMix = (
+  sendMessage: (message: any) => void,
+  index: number,
+  indexToRemove: number
+) => {
+  sendMessage({
+    type: 'command',
+    resource: `/audio/mixes/${index}/inputs/mixes`,
+    body: { command: 'remove_mix', parameters: { index: indexToRemove } }
+  });
+};
+
+// Outputs
+export const getAllOutputs = (sendMessage: (message: any) => void) => {
+  sendMessage({
+    type: 'get',
+    resource: '/audio/outputs'
+  });
+};
+
+export const setOutputLabel = (
+  sendMessage: (message: any) => void,
+  outputName: string,
+  label: string
+) => {
+  sendMessage({
+    type: 'set',
+    resource: `/audio/outputs/${outputName}`,
+    body: {
+      parameters: {
+        label: label
+      }
+    }
+  });
+};
+
+export const addInputToOutput = (
+  sendMessage: (message: any) => void,
+  outputName: string,
+  inputIndex: number,
+  origin: 'pre_fader' | 'post_fader',
+  source: 'strip' | 'mix'
+) => {
+  console.log('URL: ', `/audio/outputs/${outputName}/input`);
+  console.log('inputIndex: ', inputIndex);
+  console.log('origin: ', origin);
+  console.log('source: ', source);
+  sendMessage({
+    type: 'set',
+    resource: `/audio/outputs/${outputName}/input`,
+    body: {
+      parameters: {
+        index: inputIndex,
+        origin: origin,
+        source: source
+      }
+    }
+  });
+};
+
+// Subscriptions
 export const resync = (
   sendMessage: (message: Record<string, unknown>) => void
 ) => {
@@ -72,24 +178,7 @@ export const resync = (
   });
 };
 
-export const subscribeToStrips = (
-  sendMessage: (message: Record<string, unknown>) => void
-) => {
-  sendMessage({
-    type: 'subscribe',
-    resource: '/audio/strips'
-  });
-};
-
-export const subscribeToMixes = (
-  sendMessage: (message: Record<string, unknown>) => void
-) => {
-  sendMessage({
-    type: 'subscribe',
-    resource: '/audio/mixes'
-  });
-};
-
+// Other
 export const loadConfig = (
   file: File,
   sendMessage: (message: Record<string, unknown>) => void
