@@ -42,12 +42,14 @@ export const StripsPage = () => {
 
   const handleRemoveStrip = (stripId: number) => {
     removeStrip(stripId, sendMessage);
+
+    if (selectedStrip === stripId) {
+      setSelectedStrip(null);
+    }
   };
 
   const handleRemoveAllStrips = () => {
-    savedStrips.forEach((strip) => {
-      handleRemoveStrip(strip.stripId);
-    });
+    savedStrips.forEach((strip) => handleRemoveStrip(strip.stripId));
   };
 
   const onModalOpen = () => {
