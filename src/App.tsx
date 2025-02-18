@@ -6,7 +6,7 @@ import { WebSocketLogOn } from './components/webSocket/WebSocketLogOn';
 import { GlobalStateProvider } from './context/GlobalStateContext';
 import { WebSocketProvider } from './context/WebSocketContext';
 import './index.css';
-import { ConfigureMixPage } from './pages/mixes/Mix_temp';
+import { ConfigureMixPage } from './pages/mixes/ConfigureMix';
 import { MixesPage } from './pages/mixes/Mixes';
 import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping';
 import { StripsPage } from './pages/strips/Strips';
