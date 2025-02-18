@@ -157,12 +157,10 @@ export const addInputToOutput = (
     type: 'set',
     resource: `/audio/outputs/${outputName}/input`,
     body: {
-      parameters: {
         index: inputIndex,
         origin: origin,
         source: source
       }
-    }
   });
 };
 

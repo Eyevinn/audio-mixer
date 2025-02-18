@@ -50,6 +50,9 @@ export const StripsPage = () => {
 
   const handleRemoveAllStrips = () => {
     savedStrips.forEach((strip) => handleRemoveStrip(strip.stripId));
+    savedStrips.forEach((strip) => {
+      handleRemoveStrip(strip.stripId);
+    });
   };
 
   const onModalOpen = () => {

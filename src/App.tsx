@@ -8,7 +8,6 @@ import { WebSocketProvider } from './context/WebSocketContext';
 import './index.css';
 import { ConfigureMixPage } from './pages/mixes/ConfigureMix';
 import { MixesPage } from './pages/mixes/Mixes';
-import { OutputMappingPage } from './pages/outputs/outputMapping/OutputMapping';
 import { StripsPage } from './pages/strips/Strips';
 
 function App() {
