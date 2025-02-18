@@ -43,10 +43,6 @@ export const StripsPage = () => {
   const handleRemoveStrip = (stripId: number) => {
     removeStrip(stripId, sendMessage);
 
-    const filteredStrips = savedStrips.filter(
-      (strip) => strip.stripId !== stripId
-    );
-    setSavedStrips(filteredStrips);
     if (selectedStrip === stripId) {
       setSelectedStrip(null);
     }
@@ -54,8 +50,6 @@ export const StripsPage = () => {
 
   const handleRemoveAllStrips = () => {
     savedStrips.forEach((strip) => handleRemoveStrip(strip.stripId));
-    setSelectedStrip(null);
-    setSavedStrips([]);
   };
 
   const onModalOpen = () => {
