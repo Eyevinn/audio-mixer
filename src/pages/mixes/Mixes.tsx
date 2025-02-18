@@ -51,6 +51,10 @@ export const MixesPage = () => {
     }
 
     setIsModalOpen(!isModalOpen);
+
+    if (selectedMix === mixId) {
+      setSelectedMix(null);
+    }
   };
 
   const handleRemoveAllMixes = () => {
