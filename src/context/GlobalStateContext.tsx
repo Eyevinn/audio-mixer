@@ -9,27 +9,27 @@ import { TAudioStrip, TMixStrip } from '../types/types';
 
 // TODO: Update to real output type
 interface Output {
-  [outputName: string]: {
-    input: {
-      index: number;
-      origin: 'pre_fader' | 'post_fader';
-      source: 'strip' | 'mix';
-    };
-    label: string;
-    meters: {
-      enable_ebu_meters: boolean;
-    };
+  input: {
+    index: number;
+    origin: 'pre_fader' | 'post_fader';
+    source: 'strip' | 'mix';
+  };
+  label: string;
+  meters: {
+    enable_ebu_meters: boolean;
   };
 }
 
 interface GlobalStateContextType {
   savedStrips: TAudioStrip[];
   savedMixes: TMixStrip[];
-  savedOutputs: Output[];
+  savedOutputs: { [key: string]: Output };
   errorMessage: string;
   setSavedStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>;
   setSavedMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>;
-  setSavedOutputs: React.Dispatch<React.SetStateAction<Output[]>>;
+  setSavedOutputs: React.Dispatch<
+    React.SetStateAction<{ [key: string]: Output }>
+  >;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -40,7 +40,9 @@ export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
 }) => {
   const [savedStrips, setSavedStrips] = useState<TAudioStrip[]>([]);
   const [savedMixes, setSavedMixes] = useState<TMixStrip[]>([]);
-  const [savedOutputs, setSavedOutputs] = useState<Output[]>([]);
+  const [savedOutputs, setSavedOutputs] = useState<{ [key: string]: Output }>(
+    {}
+  );
   const [errorMessage, setErrorMessage] = useState<string>('');
   return (
     <GlobalStateContext.Provider

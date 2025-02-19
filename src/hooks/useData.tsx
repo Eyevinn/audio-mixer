@@ -78,8 +78,6 @@ export const useData = () => {
       console.log('data', data);
       switch (data.type) {
         case 'get-response':
-          console.log('get-response', data.body);
-          console.log('resource?', data.resource);
           if (data.resource === '/audio/strips') {
             setSavedStrips((prevStrips) =>
               mapStripsData(data.body, prevStrips)
@@ -216,6 +214,7 @@ export const useData = () => {
           }
           break;
         case 'set-response':
+          console.log('data.resource', data.resource);
           if (data.resource.includes('/audio/outputs')) {
             getAllOutputs(sendMessage);
           }
