@@ -13,7 +13,8 @@ export const MixFields = ({ stripId, isBeingConfigured }: TMixFieldsProps) => {
   return (
     <div>
       <MixFieldsBtn
-        type="configure"
+        isBeingConfigured={isBeingConfigured}
+        type={isBeingConfigured ? 'dummy' : 'configure'}
         onClick={() => navigate(`/mixes/${stripId}`, { replace: true })}
       >
         <Icons name="IconSettings" className="w-5 h-5" />
