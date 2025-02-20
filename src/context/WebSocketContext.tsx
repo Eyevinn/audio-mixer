@@ -6,7 +6,8 @@ interface WebSocketContextType {
   sendMessage: (message: Record<string, unknown>) => void;
   isConnected: boolean;
   connect: (address: string) => void;
-  lastMessage: string | null;
+  messages: string[];
+  setMessages: React.Dispatch<React.SetStateAction<string[]>>;
   connectionFailed?: boolean;
 }
 
@@ -17,7 +18,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [lastMessage, setLastMessage] = useState<string | null>(null);
+  const [messages, setMessages] = useState<string[]>([]);
   const [wsUrl, setWsUrl] = useState<string>('');
   const [connectionFailed, setConnectionFailed] = useState<boolean>(false);
 
@@ -28,7 +29,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       const websocket = new WebSocket(address);
 
       websocket.onmessage = (event) => {
-        setLastMessage(event.data);
+        setMessages((prev) => [...prev, event.data]);
         try {
           const jsonData = JSON.parse(event.data);
           if ('error' in jsonData) {
@@ -89,7 +90,8 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         sendMessage,
         isConnected,
         connect,
-        lastMessage,
+        messages,
+        setMessages,
         connectionFailed
       }}
     >

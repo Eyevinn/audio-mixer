@@ -96,9 +96,11 @@ export const MixesPage = () => {
 
         {/* Effects Panel */}
         {selectedMix !== null && (
-          <EffectsPanel
-            strip={savedMixes.find((m) => m.stripId === selectedMix)}
-          />
+          <div className="mt-4">
+            <EffectsPanel
+              strip={savedMixes.find((m) => m.stripId === selectedMix)}
+            />
+          </div>
         )}
       </div>
 
