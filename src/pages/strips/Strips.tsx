@@ -101,9 +101,11 @@ export const StripsPage = () => {
 
         {/* Effects Panel */}
         {selectedStrip !== null && (
-          <EffectsPanel
-            strip={savedStrips.find((s) => s.stripId === selectedStrip)}
-          />
+          <div className="mt-4">
+            <EffectsPanel
+              strip={savedStrips.find((s) => s.stripId === selectedStrip)}
+            />
+          </div>
         )}
       </div>
     </div>

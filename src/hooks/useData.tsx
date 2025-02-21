@@ -2,10 +2,15 @@ import { useEffect } from 'react';
 import { useGlobalState } from '../context/GlobalStateContext';
 import { useWebSocket } from '../context/WebSocketContext';
 import { TAudioStrip, TMixStrip } from '../types/types';
-import { getAllMixes, getAllStrips, resync } from '../utils/utils';
+import {
+  getAllMixes,
+  getAllOutputs,
+  getAllStrips,
+  resync
+} from '../utils/utils';
 
 export const useData = () => {
-  const { sendMessage, lastMessage } = useWebSocket();
+  const { sendMessage, messages, setMessages } = useWebSocket();
   const { setSavedStrips, setSavedMixes, setSavedOutputs, setErrorMessage } =
     useGlobalState();
 
@@ -62,10 +67,13 @@ export const useData = () => {
   };
 
   useEffect(() => {
-    if (!lastMessage || !sendMessage || !setSavedStrips) return;
+    if (messages.length === 0 || !sendMessage || !setSavedStrips) return;
+
+    const latestMessage = messages[0];
+    setMessages((prevMessages) => prevMessages.slice(1));
 
     try {
-      const data = JSON.parse(lastMessage);
+      const data = JSON.parse(latestMessage);
       console.log('type', data.type);
       console.log('data', data);
       switch (data.type) {
@@ -208,6 +216,9 @@ export const useData = () => {
           }
           break;
         case 'set-response':
+          if (data.resource.includes('/audio/outputs')) {
+            getAllOutputs(sendMessage);
+          }
           if (!data.body && data.error) {
             setErrorMessage(data.error);
           }
@@ -216,11 +227,12 @@ export const useData = () => {
       console.error('Error processing WebSocket message:', error);
     }
   }, [
-    lastMessage,
+    messages,
     sendMessage,
     setSavedStrips,
     setSavedMixes,
     setSavedOutputs,
-    setErrorMessage
+    setErrorMessage,
+    setMessages
   ]);
 };
