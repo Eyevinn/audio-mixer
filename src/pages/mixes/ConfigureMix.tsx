@@ -9,7 +9,6 @@ import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/
 import { Select } from '../../components/ui/select/Select';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
-import { useData } from '../../hooks/useData';
 import { TAudioStrip, TMixStrip } from '../../types/types';
 import {
   addMixToMix,
@@ -34,8 +33,6 @@ export const ConfigureMixPage = () => {
   const { sendMessage } = useWebSocket();
   const { savedStrips, savedMixes, setSavedMixes, setSavedStrips } =
     useGlobalState();
-
-  useData();
 
   useEffect(() => {
     const selectedStrip = savedStrips.find((strip) => strip.selected === true);

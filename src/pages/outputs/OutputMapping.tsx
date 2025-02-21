@@ -3,7 +3,6 @@ import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { Select } from '../../components/ui/select/Select';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
-import { useData } from '../../hooks/useData';
 import { TAudioStrip, TMixStrip } from '../../types/types';
 import { addInputToOutput } from '../../utils/utils';
 
@@ -11,8 +10,6 @@ export const OutputMappingPage = () => {
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
   const { savedStrips, savedMixes, savedOutputs } = useGlobalState();
   const { sendMessage } = useWebSocket();
-
-  useData();
 
   useEffect(() => {
     setAllInputs([...savedStrips, ...savedMixes]);

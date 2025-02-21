@@ -9,7 +9,6 @@ import {
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
-import { useData } from '../../hooks/useData';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addStrip, removeStrip } from '../../utils/utils';
 
@@ -20,7 +19,6 @@ export const StripsPage = () => {
   const { sendMessage } = useWebSocket();
   const { savedStrips, setSavedStrips } = useGlobalState();
   const nextStripIndex = useNextAvailableIndex(savedStrips);
-  useData();
 
   useEffect(() => {
     setIsDeleteAllDisabled(savedStrips.length === 0);
