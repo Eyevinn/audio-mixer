@@ -8,9 +8,13 @@ export const WebSocketLogOn = ({ children }: { children: React.ReactNode }) => {
   useData();
 
   return (
-    <div className="text-white text-2xl">
+    <div className="text-white text-2xl ">
       {!isConnected && <WebSocketDialog />}
-      <div className="bg-zinc-900 min-h-screen flex">{children}</div>
+      <div
+        className={`${!isConnected ? 'pointer-events-none fixed w-full h-full bg-black opacity-80 z-30' : 'bg-zinc-900 min-h-screen flex'}`}
+      >
+        {children}
+      </div>
     </div>
   );
 };

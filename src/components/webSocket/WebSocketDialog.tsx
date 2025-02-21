@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PrimaryButton } from '../ui/buttons/Buttons';
 import { Input } from '../ui/input/Input';
 import { useWebSocket } from '../../context/WebSocketContext';
+import Loader from '../ui/loader/Loader';
 
 const WS_URL = process.env.REACT_APP_WS_URL;
 
@@ -9,11 +10,20 @@ export const WebSocketDialog = () => {
   const [address, setAddress] = useState<string>(
     WS_URL || 'ws://localhost:8000'
   );
+  const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const { connect, connectionFailed } = useWebSocket();
 
+  useEffect(() => {
+    if (connectionFailed) {
+      setLoading(false);
+      setErrorMessage('Connection failed. Please try again.');
+    }
+  }, [connectionFailed]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
+    setLoading(false);
     if (errorMessage) {
       setErrorMessage('');
     }
@@ -24,10 +34,7 @@ export const WebSocketDialog = () => {
       setErrorMessage('WebSocket URL is required.');
       return;
     }
-
-    if (connectionFailed) {
-      setErrorMessage('Connection failed. Please try again.');
-    }
+    setLoading(true);
     connect(address);
   };
 
@@ -59,8 +66,9 @@ export const WebSocketDialog = () => {
           onClick={() => {
             handleConnect(address);
           }}
+          className="w-24 h-10"
         >
-          Connect
+          {loading ? <Loader /> : 'Connect'}
         </PrimaryButton>
       </div>
     </dialog>
