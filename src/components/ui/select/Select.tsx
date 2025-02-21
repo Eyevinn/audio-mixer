@@ -6,7 +6,6 @@ import { TAudioStrip, TMixStrip } from '../../../types/types';
 
 interface SelectProps {
   className?: string;
-  nothingSelected?: string;
   value: string;
   options: (TAudioStrip | TMixStrip)[];
   onChange?: (value: TAudioStrip | TMixStrip) => void;
