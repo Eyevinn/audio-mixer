@@ -1,4 +1,3 @@
-import { Toaster } from 'react-hot-toast';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { SideNav } from './components/sideNav/SideNav';
 import { ErrorToast } from './components/ui/errorToast/ErrorToast';
@@ -27,18 +26,6 @@ function App() {
                 <Route path="/outputs" element={<OutputMappingPage />} />
               </>
             </Routes>
-            <Toaster
-              position="bottom-right"
-              toastOptions={{
-                error: {
-                  style: {
-                    fontSize: '14px',
-                    background: '#52525b',
-                    color: 'white'
-                  }
-                }
-              }}
-            />
             <ErrorToast />
           </WebSocketLogOn>
         </WebSocketProvider>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useGlobalState } from '../../../context/GlobalStateContext';
 
 export const ErrorToast: React.FC = () => {
@@ -15,5 +15,18 @@ export const ErrorToast: React.FC = () => {
     }
   }, [errorMessage, setErrorMessage]);
 
-  return null;
+  return (
+    <Toaster
+      position="bottom-right"
+      toastOptions={{
+        error: {
+          style: {
+            fontSize: '14px',
+            background: '#52525b',
+            color: 'white'
+          }
+        }
+      }}
+    />
+  );
 };
