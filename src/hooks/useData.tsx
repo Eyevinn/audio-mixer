@@ -8,6 +8,7 @@ import {
   getAllStrips,
   resync
 } from '../utils/utils';
+import Logger from '../utils/logger';
 
 export const useData = () => {
   const { sendMessage, messages, setMessages } = useWebSocket();
@@ -74,12 +75,12 @@ export const useData = () => {
 
     try {
       const data = JSON.parse(latestMessage);
-      console.log('type', data.type);
-      console.log('data', data);
+      Logger.data('Type', data.type);
+      Logger.data('Data', data);
       switch (data.type) {
         case 'get-response':
-          console.log('get-response', data.body);
-          console.log('resource?', data.resource);
+          Logger.data('Get-response', data.body);
+          Logger.data('Resource', data.resource);
           if (data.resource === '/audio/strips') {
             setSavedStrips((prevStrips) =>
               mapStripsData(data.body, prevStrips)
@@ -94,7 +95,7 @@ export const useData = () => {
           break;
 
         case 'state-change':
-          console.log('state-change', data.body);
+          Logger.data('State-change', data.body);
           if (data.body?.strips) {
             setSavedStrips((prevStrips: TAudioStrip[]) =>
               prevStrips.map((strip) => {
@@ -173,13 +174,13 @@ export const useData = () => {
 
         case 'subscribe-response':
           if (data.body?.strips) {
-            console.log('subscribe-response Strips: ', data.body);
+            Logger.data('Subscribe-response Strips: ', data.body);
             setSavedStrips((prevStrips) =>
               mapStripsData(data.body.strips, prevStrips)
             );
           }
           if (data.body?.mixes) {
-            console.log('subscribe-response Mixes: ', data.body);
+            Logger.data('Subscribe-response Mixes: ', data.body);
             setSavedMixes((prevMixes) =>
               mapMixesData(data.body.mixes, prevMixes)
             );
@@ -191,13 +192,13 @@ export const useData = () => {
 
         case 'event':
           if (data.event === 'connect') {
-            console.log('event -> connect', data.body);
+            Logger.data('Event -> connect', data.body);
             resync(sendMessage);
           }
           break;
 
         case 'state-add':
-          console.log('state-add', data.body);
+          Logger.data('State-add', data.body);
           getAllStrips(sendMessage);
           getAllMixes(sendMessage);
           break;
@@ -216,7 +217,7 @@ export const useData = () => {
           }
           break;
         case 'set-response':
-          console.log('data.resource', data.resource);
+          Logger.data('Data-resource', data.resource);
           if (data.resource.includes('/audio/outputs')) {
             getAllOutputs(sendMessage);
           }
