@@ -24,7 +24,7 @@ function App() {
                 <Route path="/strips" element={<StripsPage />} />
                 <Route path="/mixes" element={<MixesPage />} />
                 <Route path="/mixes/:mixId" element={<ConfigureMixPage />} />
-                <Route path="/outputs/" element={<OutputMappingPage />} />
+                <Route path="/outputs" element={<OutputMappingPage />} />
               </>
             </Routes>
             <Toaster
