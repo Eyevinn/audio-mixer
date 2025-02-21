@@ -1,4 +1,3 @@
-import React from 'react';
 import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { StripInput } from '../../ui/input/Input';
 

@@ -1,23 +1,30 @@
 import React from 'react';
-import { DeleteButton, CancelButton } from '../../buttons/Buttons';
+import { TAudioStrip, TMixStrip } from '../../../../types/types';
+import { CancelButton, DeleteButton } from '../../buttons/Buttons';
 
 interface ConfirmationModalProps {
+  input?: TAudioStrip | TMixStrip;
   title: string;
   message: string;
   isOpen: boolean;
   errorMessage?: string | null;
   confirmText: string;
-  onConfirm: () => void;
+  isConfiguringMix?: boolean;
+  onConfirm?: () => void;
+  onConfirmMixConfig?: (input: TAudioStrip | TMixStrip) => void;
   onClose: () => void;
 }
 
 export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+  input,
   title,
   message,
   isOpen,
   errorMessage,
   confirmText,
+  isConfiguringMix,
   onConfirm,
+  onConfirmMixConfig,
   onClose
 }) => {
   if (!isOpen) {
@@ -29,7 +36,11 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   };
 
   const handleConfirm = () => {
-    onConfirm();
+    if (isConfiguringMix && input && onConfirmMixConfig) {
+      onConfirmMixConfig(input);
+    } else {
+      onConfirm && onConfirm();
+    }
     onClose();
   };
 

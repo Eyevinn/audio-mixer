@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
-import { useWebSocket } from '../context/WebSocketContext';
 import { useGlobalState } from '../context/GlobalStateContext';
+import { useWebSocket } from '../context/WebSocketContext';
 import { TAudioStrip, TMixStrip } from '../types/types';
-import { resync, getAllStrips, getAllMixes } from '../utils/utils';
+import { getAllMixes, getAllStrips, resync } from '../utils/utils';
 
 export const useData = () => {
   const { sendMessage, lastMessage } = useWebSocket();
-  const { setSavedStrips, setSavedMixes } = useGlobalState();
+  const { setSavedStrips, setSavedMixes, setSavedOutputs, setErrorMessage } =
+    useGlobalState();
 
   const mapStripsData = (
     data: Record<string, TAudioStrip>,
@@ -78,6 +79,9 @@ export const useData = () => {
           }
           if (data.resource === '/audio/mixes') {
             setSavedMixes((prevMixes) => mapMixesData(data.body, prevMixes));
+          }
+          if (data.resource === '/audio/outputs') {
+            setSavedOutputs(data.body);
           }
           break;
 
@@ -172,6 +176,9 @@ export const useData = () => {
               mapMixesData(data.body.mixes, prevMixes)
             );
           }
+          if (data.body?.outputs) {
+            setSavedOutputs(data.body.outputs);
+          }
           break;
 
         case 'event':
@@ -186,6 +193,7 @@ export const useData = () => {
           getAllStrips(sendMessage);
           getAllMixes(sendMessage);
           break;
+
         case 'state-remove':
           if (data.body.resource.startsWith('/strips/')) {
             getAllStrips(sendMessage);
@@ -194,9 +202,25 @@ export const useData = () => {
             getAllMixes(sendMessage);
           }
           break;
+        case 'command-response':
+          if (!data.body && data.error) {
+            setErrorMessage(data.error);
+          }
+          break;
+        case 'set-response':
+          if (!data.body && data.error) {
+            setErrorMessage(data.error);
+          }
       }
     } catch (error) {
       console.error('Error processing WebSocket message:', error);
     }
-  }, [lastMessage, sendMessage, setSavedMixes, setSavedStrips]);
+  }, [
+    lastMessage,
+    sendMessage,
+    setSavedStrips,
+    setSavedMixes,
+    setSavedOutputs,
+    setErrorMessage
+  ]);
 };

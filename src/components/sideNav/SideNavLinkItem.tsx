@@ -1,5 +1,4 @@
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SideNavItemComponent, TSideNavItem } from './SideNavItem';
 
 export type TSideNavLinkItem = TSideNavItem & {

@@ -1,19 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
-import { MixStrip } from '../../components/strips/mixStrip/MixStrip';
-import { useGlobalState } from '../../context/GlobalStateContext';
-import { addMix, removeMix } from '../../utils/utils';
-import { useWebSocket } from '../../context/WebSocketContext';
-import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
-import { useData } from '../../hooks/useData';
+import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
 import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
+import {
+  DeleteButton,
+  PrimaryButton
+} from '../../components/ui/buttons/Buttons';
+import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
+import { useGlobalState } from '../../context/GlobalStateContext';
+import { useWebSocket } from '../../context/WebSocketContext';
+import { useData } from '../../hooks/useData';
+import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
+import { addMix, removeMix } from '../../utils/utils';
 
 export const MixesPage = () => {
   const [selectedMix, setSelectedMix] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const { sendMessage } = useWebSocket();
   const { savedMixes, setSavedMixes } = useGlobalState();
   const nextMixIndex = useNextAvailableIndex(savedMixes);
+  const navigate = useNavigate();
   useData();
+
+  useEffect(() => {
+    setIsDeleteAllDisabled(savedMixes.length === 0);
+  }, [savedMixes]);
 
   useEffect(() => {
     const isSelected = savedMixes.find((mix) => {
@@ -27,45 +40,60 @@ export const MixesPage = () => {
 
   const handleAddMix = () => {
     addMix(sendMessage, nextMixIndex);
+    navigate(`/mixes/${nextMixIndex}`);
   };
 
-  const handleRemoveMix = (stripId: number) => {
-    removeMix(stripId, sendMessage);
-    if (selectedMix === stripId) {
+  const handleRemoveMix = (mixId: number) => {
+    removeMix(mixId, sendMessage);
+
+    if (selectedMix === mixId) {
       setSelectedMix(null);
     }
   };
 
-  const handleMixSelection = (stripId: number | null) => {
-    setSelectedMix(stripId);
+  const handleRemoveAllMixes = () => {
+    savedMixes.forEach((mix) => handleRemoveMix(mix.stripId));
+  };
 
-    setSavedMixes((prevStrips) =>
-      prevStrips.map((strip) => ({
-        ...strip,
-        selected: strip.stripId === stripId || false
+  const onModalOpen = () => {
+    if (isDeleteAllDisabled) {
+      return;
+    }
+
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleMixSelection = (mixId: number | null) => {
+    setSelectedMix(mixId);
+
+    setSavedMixes((prevMixes) =>
+      prevMixes.map((mix) => ({
+        ...mix,
+        selected: mix.stripId === mixId || false
       }))
     );
   };
 
   return (
-    <div className="text-white text-2xl flex flex-col w-full">
+    <div className="text-white text-2xl flex flex-col w-full overflow-hidden">
       <PageHeader title="Audio Mixes">
-        <button
-          onClick={handleAddMix}
-          className="p-2 bg-green-600 rounded hover:bg-green-700"
-        >
-          Add Mix
-        </button>
+        <div className="space-x-4">
+          <DeleteButton disabled={isDeleteAllDisabled} onClick={onModalOpen}>
+            Delete all mixes
+          </DeleteButton>
+          <PrimaryButton onClick={handleAddMix}>Add Mix</PrimaryButton>
+        </div>
       </PageHeader>
-      <div className="overflow-x-auto w-[97%] flex space-x-4 cursor-grab active:cursor-grabbing select-none">
-        {savedMixes.map((mix) => (
-          <MixStrip
-            key={mix.stripId}
-            {...mix}
+      {/* Audio Strips Container */}
+      <div className="text-white text-2xl flex flex-row justify-between w-full">
+        <div className="ml-8 mt-4 w-full max-w-full overflow-hidden">
+          <ScrollableContainer
+            mixStrips={savedMixes}
+            handleRemoveStrip={handleRemoveMix}
             onStripSelect={handleMixSelection}
-            onRemove={() => handleRemoveMix(mix.stripId)}
           />
-        ))}
+        </div>
+
         {/* Effects Panel */}
         {selectedMix !== null && (
           <EffectsPanel
@@ -73,6 +101,15 @@ export const MixesPage = () => {
           />
         )}
       </div>
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Delete all mixes"
+        message="Are you sure you want to delete all mixes?"
+        confirmText="Yes, delete all"
+        onConfirm={handleRemoveAllMixes}
+      />
     </div>
   );
 };

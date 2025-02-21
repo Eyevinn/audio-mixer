@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TBaseStrip } from '../../types/types';
+import { TAudioStrip, TBaseStrip, TMixStrip } from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { LabelInput } from '../ui/input/Input';
 import { AudioLevel } from './audioLevel/AudioLevel';
@@ -8,6 +8,8 @@ import { StripHeader } from './stripHeader/StripHeader';
 import { VolumeSlider } from './volumeSlider/VolumeSlider';
 
 interface BaseStripProps extends TBaseStrip {
+  isBeingConfigured?: boolean;
+  isRemovingFromMix?: boolean;
   input?: {
     first_channel: number;
     input_slot: number;
@@ -28,6 +30,7 @@ interface BaseStripProps extends TBaseStrip {
   header: string;
   copyButton?: boolean;
   onRemove: () => void;
+  onRemoveFromMix?: (input: TAudioStrip | TMixStrip) => void;
   handleSelection: () => void;
   handleStripChange: (
     stripId: number,
@@ -38,6 +41,8 @@ interface BaseStripProps extends TBaseStrip {
 }
 
 export const BaseStrip: React.FC<BaseStripProps> = ({
+  isBeingConfigured,
+  isRemovingFromMix,
   stripId,
   label,
   selected,
@@ -50,6 +55,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
   header,
   copyButton,
   onRemove,
+  onRemoveFromMix,
   handleStripChange,
   handleSelection,
   children
@@ -73,10 +79,17 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
 
   return (
     <div
-      className={`flex flex-col w-fit h-fit relative rounded-lg ${backgroundColor} ${selected ? 'border-[1px] border-gray-400' : ''}`}
+      className={`flex flex-col w-fit h-fit relative rounded-lg ${isBeingConfigured ? 'border-2 border-white' : ''} ${backgroundColor} ${selected && !isBeingConfigured ? 'border-[1px] border-gray-400' : ''}`}
     >
       {/* Strip Info */}
-      <StripHeader label={header} copyButton={copyButton} onRemove={onRemove} />
+      <StripHeader
+        label={header}
+        copyButton={copyButton}
+        isRemovingFromMix={isRemovingFromMix}
+        onRemove={onRemove}
+        onRemoveFromMix={onRemoveFromMix}
+      />
+
       {/* Label Input */}
       <LabelInput
         value={label === '' ? stripLabel : label}

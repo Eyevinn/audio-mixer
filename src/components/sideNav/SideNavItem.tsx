@@ -1,6 +1,5 @@
-import React from 'react';
-import { SideNavTooltip } from './SideNavTooltip';
 import Icons, { PickIconNames } from '../../assets/icons/Icons';
+import { SideNavTooltip } from './SideNavTooltip';
 
 export type TSideNavItem = {
   id: string;

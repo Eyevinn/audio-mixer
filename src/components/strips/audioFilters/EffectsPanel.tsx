@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import styles from './filterComponents.module.css';
 import { CompressorVisualisation } from './CompressorVisualisation';
 import { EffectsSlider } from './EffectsSlider';
 import { EQVisualisation } from './EQVisualisation';
+import styles from './filterComponents.module.css';
+
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { TAudioStrip, TMixStrip } from '../../../types/types';
 import { addEQBand, removeEQBand } from '../../../utils/utils';
@@ -185,10 +186,13 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
     }
   };
 
+  const isMix = strip.input === undefined;
+
   return (
     <div className="h-[50rem] min-w-max overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg mt-4 p-2 text-white">
       <h1 className="text-xl font-semibold mb-4">
-        Settings for {strip.label || strip.stripId.toString()}
+        Settings for {isMix ? 'Mix' : 'Strip'}{' '}
+        {strip.label || strip.stripId.toString()}
       </h1>
 
       <section className={styles.settingsItem}>
