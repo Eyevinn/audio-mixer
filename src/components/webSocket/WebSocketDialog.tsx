@@ -6,7 +6,9 @@ import { useWebSocket } from '../../context/WebSocketContext';
 const WS_URL = process.env.REACT_APP_WS_URL;
 
 export const WebSocketDialog = () => {
-  const [address, setAddress] = useState<string>('');
+  const [address, setAddress] = useState<string>(
+    WS_URL || 'ws://localhost:8000'
+  );
   const [errorMessage, setErrorMessage] = useState<string>('');
   const { connect, connectionFailed } = useWebSocket();
 
@@ -48,7 +50,6 @@ export const WebSocketDialog = () => {
         onChange={handleInputChange}
         value={address}
         onKeyDown={handleKeyDown}
-        placeholder={WS_URL || 'ws://localhost:8000'}
       />
       {!!errorMessage && (
         <p className="text-delete text-sm mt-2">{errorMessage}</p>
