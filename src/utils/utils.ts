@@ -165,10 +165,10 @@ export const addInputToOutput = (
     type: 'set',
     resource: `/audio/outputs/${outputName}/input`,
     body: {
-        index: inputIndex,
-        origin: origin,
-        source: source
-      }
+      index: inputIndex,
+      origin: origin,
+      source: source
+    }
   });
 };
 

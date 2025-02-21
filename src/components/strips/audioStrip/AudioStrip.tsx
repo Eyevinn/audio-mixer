@@ -7,7 +7,6 @@ import { StripFields } from './StripFields';
 
 interface AudioStripProps extends TAudioStrip {
   isRemovingFromMix?: boolean;
-  isRemovingFromMix?: boolean;
   onStripSelect: (stripId: number | null) => void;
   onRemove: () => void;
 }

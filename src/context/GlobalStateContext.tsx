@@ -17,6 +17,11 @@ interface Output {
   label: string;
   meters: {
     enable_ebu_meters: boolean;
+    ebu_i: number;
+    ebu_m: number;
+    ebu_s: number;
+    peak_left: number;
+    peak_right: number;
   };
 }
 

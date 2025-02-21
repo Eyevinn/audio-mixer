@@ -157,19 +157,19 @@ export const ConfigureMixPage = () => {
         />
       </PageHeader>
 
-      <div className="flex flex-row space-x-8 mt-8 ml-8 items-center">
-        {mixToConfigure && (
-          <MixStrip
-            key={`mix-${mixToConfigure.stripId}`}
-            {...mixToConfigure}
-            onStripSelect={handleSelection}
-            onRemove={handleRemoveMix}
-            isBeingConfigured={true}
-          />
-        )}
-        {/* Inputs that belong to the conf-mix */}
-        <div className="text-white text-2xl flex flex-row justify-between w-full">
-          <div className="ml-8 w-full max-w-full overflow-hidden">
+      <div className="text-white text-2xl justify-between w-full">
+        <div className="flex flex-row mt-8 ml-8 items-center">
+          {mixToConfigure && (
+            <MixStrip
+              key={`mix-${mixToConfigure.stripId}`}
+              {...mixToConfigure}
+              onStripSelect={handleSelection}
+              onRemove={handleRemoveMix}
+              isBeingConfigured={true}
+            />
+          )}
+          {/* Inputs that belong to the conf-mix */}
+          <div className="ml-4 w-full max-w-full overflow-hidden">
             <ScrollableContainer
               mixStrips={mixesToPass}
               audioStrips={audioStripsToPass}
