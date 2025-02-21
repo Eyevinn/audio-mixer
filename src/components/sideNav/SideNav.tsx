@@ -22,7 +22,7 @@ const sideNavItems: TSideNavLinkItem[] = [
   {
     id: 'outputs',
     label: 'Outputs',
-    link: '/outputs/',
+    link: '/outputs',
     icon: 'IconArrowsShuffle'
   }
 ];

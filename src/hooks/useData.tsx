@@ -216,6 +216,7 @@ export const useData = () => {
           }
           break;
         case 'set-response':
+          console.log('data.resource', data.resource);
           if (data.resource.includes('/audio/outputs')) {
             getAllOutputs(sendMessage);
           }

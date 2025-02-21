@@ -130,6 +130,16 @@ export const getAllOutputs = (
   });
 };
 
+export const getOutputInput = (
+  sendMessage: (message: Record<string, unknown>) => void,
+  outputName: string
+) => {
+  sendMessage({
+    type: 'get',
+    resource: `/audio/outputs/${outputName}/input`
+  });
+};
+
 export const setOutputLabel = (
   sendMessage: (message: Record<string, unknown>) => void,
   outputName: string,
@@ -139,9 +149,7 @@ export const setOutputLabel = (
     type: 'set',
     resource: `/audio/outputs/${outputName}`,
     body: {
-      parameters: {
-        label: label
-      }
+      label: label
     }
   });
 };
@@ -157,11 +165,9 @@ export const addInputToOutput = (
     type: 'set',
     resource: `/audio/outputs/${outputName}/input`,
     body: {
-      parameters: {
-        index: inputIndex,
-        origin: origin,
-        source: source
-      }
+      index: inputIndex,
+      origin: origin,
+      source: source
     }
   });
 };
