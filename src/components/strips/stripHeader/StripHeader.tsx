@@ -9,6 +9,7 @@ type StripHeaderProps = {
   isRemovingFromMix?: boolean;
   onRemove?: () => void;
   onRemoveFromMix?: (input: TAudioStrip | TMixStrip) => void;
+  onCopy?: () => void;
 };
 
 export const StripHeader: React.FC<StripHeaderProps> = ({
@@ -16,7 +17,8 @@ export const StripHeader: React.FC<StripHeaderProps> = ({
   copyButton,
   isRemovingFromMix,
   onRemove,
-  onRemoveFromMix
+  onRemoveFromMix,
+  onCopy
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -24,7 +26,7 @@ export const StripHeader: React.FC<StripHeaderProps> = ({
     <div className="flex justify-between flex-wrap items-center w-full px-4 py-3">
       <div className="text-base text-center text-white">{label}</div>
       {copyButton && (
-        <button onClick={() => console.log('Should copy')} className="w-[2rem]">
+        <button onClick={onCopy} className="w-[2rem]">
           <Icons
             name="IconCopy"
             className="text-copy-btn rounded place-self-end hover:text-copy-btn-hover hover:cursor-pointer"

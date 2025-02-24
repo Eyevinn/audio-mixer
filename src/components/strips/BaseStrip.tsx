@@ -10,6 +10,7 @@ import { VolumeSlider } from './volumeSlider/VolumeSlider';
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;
   isRemovingFromMix?: boolean;
+  isHighlighted?: boolean;
   input?: {
     first_channel: number;
     input_slot: number;
@@ -37,12 +38,14 @@ interface BaseStripProps extends TBaseStrip {
     property: string,
     value: number | boolean | string | undefined
   ) => void;
+  onCopy?: () => void;
   children?: React.ReactNode;
 }
 
 export const BaseStrip: React.FC<BaseStripProps> = ({
   isBeingConfigured,
   isRemovingFromMix,
+  isHighlighted,
   stripId,
   label,
   selected,
@@ -58,6 +61,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
   onRemoveFromMix,
   handleStripChange,
   handleSelection,
+  onCopy,
   children
 }) => {
   const [stripLabel, setStripLabel] = useState(stripId.toString());
@@ -79,7 +83,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
 
   return (
     <div
-      className={`flex flex-col w-fit h-[55rem] relative rounded-lg ${isBeingConfigured ? 'border-2 border-white' : ''} ${backgroundColor} ${selected && !isBeingConfigured ? 'border-[1px] border-gray-400' : ''}`}
+      className={`box-border flex flex-col w-fit h-[55rem] relative rounded-lg ${isHighlighted ? 'border-2 border-white' : ''} ${isBeingConfigured ? 'border-2 border-white' : ''} ${backgroundColor} ${selected && !isBeingConfigured ? 'border-[1px] border-gray-400' : ''}`}
     >
       {/* Strip Info */}
       <StripHeader
@@ -88,6 +92,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         isRemovingFromMix={isRemovingFromMix}
         onRemove={onRemove}
         onRemoveFromMix={onRemoveFromMix}
+        onCopy={onCopy}
       />
 
       {/* Label Input */}
