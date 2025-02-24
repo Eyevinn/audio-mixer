@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 import { useGlobalState } from '../context/GlobalStateContext';
 import { useWebSocket } from '../context/WebSocketContext';
 import { TAudioStrip, TMixStrip } from '../types/types';
+import Logger from '../utils/logger';
 import {
   getAllMixes,
   getAllOutputs,
   getAllStrips,
   resync
 } from '../utils/utils';
-import Logger from '../utils/logger';
 
 export const useData = () => {
   const { sendMessage, messages, setMessages } = useWebSocket();
