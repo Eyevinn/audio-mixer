@@ -27,6 +27,7 @@ export const ConfigureMixPage = () => {
     type: 'mixes' | 'strips';
   } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isFirstMount, setIsFirstMount] = useState(true);
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
   const [usedInputs, setUsedInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
   const [mixToConfigure, setMixToConfigure] = useState<TMixStrip | undefined>(
@@ -39,6 +40,29 @@ export const ConfigureMixPage = () => {
   useData();
 
   useEffect(() => {
+    if (!isFirstMount) return;
+
+    setSavedStrips((prevStrips) =>
+      prevStrips.map((strip) => ({
+        ...strip,
+        selected: false
+      }))
+    );
+
+    setSavedMixes((prevMixes) =>
+      prevMixes.map((mix) => ({
+        ...mix,
+        selected: false
+      }))
+    );
+
+    setSelectedStrip(null);
+    setIsFirstMount(false);
+  }, [isFirstMount, setSavedMixes, setSavedStrips]);
+
+  useEffect(() => {
+    if (isFirstMount) return;
+
     const selStrip = savedStrips.find((strip) => strip.selected === true);
     const selMix = savedMixes.find((mix) => mix.selected === true);
 
@@ -47,7 +71,7 @@ export const ConfigureMixPage = () => {
     } else if (selMix) {
       setSelectedStrip({ id: selMix.stripId, type: 'mixes' });
     }
-  }, [savedStrips, savedMixes]);
+  }, [savedStrips, savedMixes, isFirstMount]);
 
   useEffect(() => {
     if (savedMixes && mixId) {
