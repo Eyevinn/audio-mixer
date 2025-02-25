@@ -24,7 +24,7 @@ const SideNavExport: FC<SideNavExportProps> = (props) => {
 
   useEffect(() => {
     if (audioState && clearAudioState) {
-      saveToFile(JSON.stringify(audioState));
+      saveToFile(audioState);
       clearAudioState();
     }
   }, [audioState, clearAudioState]);

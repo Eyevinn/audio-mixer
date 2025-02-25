@@ -2,10 +2,13 @@ import React, { createContext, useContext, useState } from 'react';
 import { showError, showInfo } from '../utils/notifications';
 import { AudioState } from '../types/types';
 import logger from '../utils/logger';
+import toast from 'react-hot-toast';
 
 interface WebSocketContextType {
   wsUrl: string;
-  sendMessage: (message: Record<string, unknown>) => void;
+  sendMessage: (
+    message: Record<string, unknown> | Record<string, unknown>[]
+  ) => void;
   isConnected: boolean;
   connect: (address: string) => void;
   messages: string[];
@@ -80,14 +83,22 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const sendMessage = (message: Record<string, unknown>) => {
+  const sendMessage = (
+    message: Record<string, unknown> | Record<string, unknown>[]
+  ) => {
     if (!ws) {
-      showError('Websocket is not connected yet!');
+      toast.error('Websocket is not connected', {
+        duration: 3000,
+        position: 'bottom-right'
+      });
       return;
     }
 
     if (ws.readyState !== WebSocket.OPEN) {
-      showError('Websocket lost connection');
+      toast.error('Websocket lost connection', {
+        duration: 3000,
+        position: 'bottom-right'
+      });
       setIsConnected(false);
       return;
     }

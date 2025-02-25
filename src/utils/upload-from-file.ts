@@ -1,0 +1,133 @@
+import toast from 'react-hot-toast';
+import {
+  currentAudioMixerName,
+  currentAudioMixerVersion,
+  SaveConfig
+} from './save-to-file';
+import { resetAudioRoot, resync, unsubscribeToAudio } from './utils';
+import { ChangeEvent } from 'react';
+
+const uploadFromFile = (
+  event: ChangeEvent<HTMLInputElement>,
+  sendMessage: (
+    message: Record<string, unknown> | Record<string, unknown>[]
+  ) => void
+) => {
+  const file = (event.target as HTMLInputElement)?.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onloadend = function (event) {
+    if (!event.target || typeof event.target.result !== 'string') return;
+    const config: SaveConfig = JSON.parse(event.target.result);
+
+    if (!config.sw || config.sw != currentAudioMixerName) {
+      toast.error('Not a config file for this control panel', {
+        duration: 3000,
+        position: 'bottom-right'
+      });
+      return;
+    }
+    if (!config.version || config.version < currentAudioMixerVersion) {
+      toast.error('Cannot read this config file, too old version', {
+        duration: 3000,
+        position: 'bottom-right'
+      });
+      return;
+    }
+
+    unsubscribeToAudio(sendMessage);
+    resetAudioRoot(sendMessage);
+    const requests = [];
+
+    const audio = config.audio;
+    for (const stripIndex in audio.body.strips) {
+      const strip = audio.body.strips[stripIndex];
+      requests.push({
+        type: 'command',
+        resource: '/audio/strips',
+        body: {
+          command: 'add_strip',
+          parameters: {
+            index: Number(stripIndex)
+          }
+        }
+      });
+
+      const bands = strip.filters.eq.bands;
+      for (const bandIndex in bands) {
+        requests.push({
+          type: 'command',
+          resource: '/audio/strips/' + stripIndex + '/filters/eq',
+          body: {
+            command: 'add_band',
+            parameters: {
+              index: Number(bandIndex)
+            }
+          }
+        });
+      }
+    }
+
+    // Set all the strips config
+    requests.push({
+      type: 'set',
+      resource: '/audio',
+      body: {
+        strips: audio.body.strips
+      }
+    });
+
+    for (const mixIndex in audio.body.mixes) {
+      const mix = audio.body.mixes[mixIndex];
+      requests.push({
+        type: 'command',
+        resource: '/audio/mixes',
+        body: {
+          command: 'add_mix',
+          parameters: {
+            index: Number(mixIndex)
+          }
+        }
+      });
+
+      const bands = mix.filters.eq.bands;
+      for (const bandIndex in bands) {
+        requests.push({
+          type: 'command',
+          resource: '/audio/mixes/' + mixIndex + '/filters/eq',
+          body: {
+            command: 'add_band',
+            parameters: {
+              index: Number(bandIndex)
+            }
+          }
+        });
+      }
+    }
+
+    // Set all the mixes config
+    requests.push({
+      type: 'set',
+      resource: '/audio',
+      body: {
+        mixes: audio.body.mixes
+      }
+    });
+
+    // Send each output in a separate request, since some outputs
+    // may not exist any longer.
+    for (const outputIndex in audio.body.outputs) {
+      requests.push({
+        type: 'set',
+        resource: '/audio/outputs/' + outputIndex,
+        body: audio.body.outputs[outputIndex]
+      });
+    }
+
+    sendMessage(requests);
+    resync(sendMessage);
+  };
+  reader.readAsText(file);
+};
+
+export default uploadFromFile;

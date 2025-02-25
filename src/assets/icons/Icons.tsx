@@ -5,15 +5,15 @@ import {
   IconCheck,
   IconChevronDown,
   IconCopy,
-  IconDeviceFloppy,
-  IconFileUpload,
+  IconDownload,
   IconMenu2,
   IconMenuDeep,
   IconPlugConnected,
   IconPlugConnectedX,
   IconSettings,
   IconSTurnRight,
-  IconTrash
+  IconTrash,
+  IconUpload
 } from '@tabler/icons-react';
 
 interface IClassName {
@@ -45,10 +45,10 @@ const pickIcon = {
     <IconPlugConnectedX className={className} />
   ),
   IconSave: ({ className }: IClassName) => (
-    <IconDeviceFloppy className={className} />
+    <IconDownload className={className} />
   ),
   IconUpload: ({ className }: IClassName) => (
-    <IconFileUpload className={className} />
+    <IconUpload className={className} />
   ),
   IconCheck: ({ className }: IClassName) => <IconCheck className={className} />,
   IconChevronDown: ({ className }: IClassName) => (

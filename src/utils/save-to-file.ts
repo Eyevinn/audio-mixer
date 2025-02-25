@@ -1,6 +1,22 @@
-const saveToFile = (data: BlobPart) => {
+import { AudioState } from './../types/types';
+
+export interface SaveConfig {
+  version: number;
+  sw: string;
+  audio: AudioState;
+}
+
+export const currentAudioMixerName = 'Ateliere Live Audio Mixer Config';
+export const currentAudioMixerVersion = 1;
+
+const saveToFile = (state: AudioState) => {
+  const config: SaveConfig = {
+    version: currentAudioMixerVersion,
+    sw: currentAudioMixerName,
+    audio: state
+  };
   const link = document.createElement('a');
-  const file = new Blob([data], { type: 'text/plain' });
+  const file = new Blob([JSON.stringify(config)], { type: 'text/plain' });
   link.href = URL.createObjectURL(file);
   const now = new Date();
   link.download =

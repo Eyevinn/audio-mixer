@@ -1,5 +1,7 @@
-import React, { FC } from 'react';
+import { FC, useRef } from 'react';
 import { SideNavItemComponent, TSideNavItem } from '../SideNavItem';
+import uploadFromFile from '../../../utils/upload-from-file';
+import { useWebSocket } from '../../../context/WebSocketContext';
 
 const ImportItem: TSideNavItem = {
   id: 'import',
@@ -13,8 +15,31 @@ interface SideNavImportProps {
 
 const SideNavImport: FC<SideNavImportProps> = (props) => {
   const { isOpen } = props;
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { sendMessage } = useWebSocket();
 
-  return <SideNavItemComponent item={ImportItem} isOpen={isOpen} />;
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+
+  return (
+    <>
+      <input
+        type="file"
+        id="file-input"
+        hidden
+        ref={inputRef}
+        onChange={(event) => {
+          uploadFromFile(event, sendMessage);
+        }}
+      />
+      <SideNavItemComponent
+        item={ImportItem}
+        isOpen={isOpen}
+        onClick={handleClick}
+      />
+    </>
+  );
 };
 
 export default SideNavImport;
