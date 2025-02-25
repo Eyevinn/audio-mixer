@@ -203,8 +203,6 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
     }
   };
 
-  const isMix = strip.input === undefined;
-
   return (
     <div className="h-[55rem] min-w-[38rem] overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg p-2 text-white">
       <h1 className="text-xl font-semibold mb-4">
