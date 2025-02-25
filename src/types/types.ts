@@ -134,4 +134,4 @@ export interface TMixStrip extends TBaseStrip {
   };
 }
 
-export type AudioState = Record<string, any>;
+export type AudioState = Record<string, unknown>;
