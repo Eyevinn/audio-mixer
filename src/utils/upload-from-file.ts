@@ -14,7 +14,13 @@ const uploadFromFile = (
   ) => void
 ) => {
   const file = (event.target as HTMLInputElement)?.files?.[0];
-  if (!file) return;
+  if (!file) {
+    toast.error('Could not find config file', {
+      duration: 3000,
+      position: 'bottom-right'
+    });
+    return;
+  }
   const reader = new FileReader();
   reader.onloadend = function (event) {
     if (!event.target || typeof event.target.result !== 'string') return;
@@ -128,6 +134,7 @@ const uploadFromFile = (
     resync(sendMessage);
   };
   reader.readAsText(file);
+  event.target.value = '';
 };
 
 export default uploadFromFile;
