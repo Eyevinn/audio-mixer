@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { showError, showInfo } from '../utils/notifications';
+import { AudioState } from '../types/types';
+import logger from '../utils/logger';
 
 interface WebSocketContextType {
   wsUrl: string;
@@ -8,6 +10,8 @@ interface WebSocketContextType {
   connect: (address: string) => void;
   messages: string[];
   setMessages: React.Dispatch<React.SetStateAction<string[]>>;
+  audioState?: AudioState;
+  clearAudioState: () => void;
   connectionFailed?: boolean;
 }
 
@@ -19,6 +23,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
+  const [audioState, setAudioState] = useState<AudioState | undefined>();
   const [wsUrl, setWsUrl] = useState<string>('');
   const [connectionFailed, setConnectionFailed] = useState<boolean>(false);
 
@@ -29,13 +34,21 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       const websocket = new WebSocket(address);
 
       websocket.onmessage = (event) => {
-        setMessages((prev) => [...prev, event.data]);
         try {
           const jsonData = JSON.parse(event.data);
           if ('error' in jsonData) {
             showError(
               `${jsonData.type} error for ${jsonData.resource}: ${jsonData.error}`
             );
+          }
+          if (
+            jsonData.resource === '/audio' &&
+            jsonData.type === 'get-response'
+          ) {
+            logger.data('Exporting', event.data);
+            setAudioState(jsonData);
+          } else {
+            setMessages((prev) => [...prev, event.data]);
           }
         } catch (error) {
           showError('Failed to parse WebSocket message');
@@ -83,6 +96,10 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
     ws.send(messageString);
   };
 
+  const clearAudioState = () => {
+    setAudioState(undefined);
+  };
+
   return (
     <WebSocketContext.Provider
       value={{
@@ -92,6 +109,8 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         connect,
         messages,
         setMessages,
+        audioState,
+        clearAudioState,
         connectionFailed
       }}
     >

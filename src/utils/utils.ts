@@ -224,3 +224,13 @@ export const removeEQBand = (
     body: { command: 'remove_band', parameters: { index: index } }
   });
 };
+
+// Saving and exporting audio state
+export const getAudioRoot = (
+  sendMessage: (message: Record<string, unknown>) => void
+) => {
+  sendMessage({
+    type: 'get',
+    resource: '/audio'
+  });
+};

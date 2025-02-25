@@ -1,5 +1,8 @@
-import React, { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { SideNavItemComponent, TSideNavItem } from '../SideNavItem';
+import { useWebSocket } from '../../../context/WebSocketContext';
+import { getAudioRoot } from '../../../utils/utils';
+import saveToFile from '../../../utils/save-to-file';
 
 const ExportItem: TSideNavItem = {
   id: 'export',
@@ -13,8 +16,26 @@ interface SideNavExportProps {
 
 const SideNavExport: FC<SideNavExportProps> = (props) => {
   const { isOpen } = props;
+  const { sendMessage, audioState, clearAudioState } = useWebSocket();
 
-  return <SideNavItemComponent item={ExportItem} isOpen={isOpen} />;
+  const handleClick = () => {
+    getAudioRoot(sendMessage);
+  };
+
+  useEffect(() => {
+    if (audioState && clearAudioState) {
+      saveToFile(JSON.stringify(audioState));
+      clearAudioState();
+    }
+  }, [audioState, clearAudioState]);
+
+  return (
+    <SideNavItemComponent
+      item={ExportItem}
+      isOpen={isOpen}
+      onClick={handleClick}
+    />
+  );
 };
 
 export default SideNavExport;
