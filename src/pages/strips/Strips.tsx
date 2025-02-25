@@ -9,6 +9,7 @@ import {
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
+import { useData } from '../../hooks/useData';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addStrip, removeStrip } from '../../utils/utils';
 
@@ -48,9 +49,6 @@ export const StripsPage = () => {
 
   const handleRemoveAllStrips = () => {
     savedStrips.forEach((strip) => handleRemoveStrip(strip.stripId));
-    savedStrips.forEach((strip) => {
-      handleRemoveStrip(strip.stripId);
-    });
   };
 
   const onModalOpen = () => {
@@ -102,11 +100,10 @@ export const StripsPage = () => {
 
         {/* Effects Panel */}
         {selectedStrip !== null && (
-          <div className="mt-4">
-            <EffectsPanel
-              strip={savedStrips.find((s) => s.stripId === selectedStrip)}
-            />
-          </div>
+          <EffectsPanel
+            strip={savedStrips.find((s) => s.stripId === selectedStrip)}
+            type="strips"
+          />
         )}
       </div>
     </div>

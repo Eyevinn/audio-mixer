@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CompressorVisualisation } from './CompressorVisualisation';
 import { EffectsSlider } from './EffectsSlider';
 import { EQVisualisation } from './EQVisualisation';
@@ -10,6 +10,7 @@ import { addEQBand, removeEQBand } from '../../../utils/utils';
 
 interface EffectsPanelProps {
   strip: TAudioStrip | TMixStrip | undefined;
+  type: 'mixes' | 'strips';
 }
 
 interface EQBand {
@@ -30,7 +31,7 @@ type EQState = {
   band7: EQBand;
 };
 
-export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
+export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
   const [eqState, setEqState] = useState<EQState>({
     band0: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
     band1: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
@@ -97,6 +98,24 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
     }
   ];
 
+  useEffect(() => {
+    setTrimValue(strip?.filters.gain.value || 0);
+    setEqBandsArray(
+      eqBandFilters[Object.keys(strip?.filters.eq.bands || {}).length].array
+    );
+    Object.entries(strip?.filters.eq.bands || {}).forEach(([key, band]) => {
+      setEqState((prev) => ({
+        ...prev,
+        [`band${key}`]: {
+          ...prev[`band${key}` as keyof EQState],
+          ...band
+        }
+      }));
+    });
+    // TODO: Fix this circular dependency
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [strip]);
+
   if (!strip) return null;
 
   const compressorArray = [
@@ -151,23 +170,21 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
   ];
 
   const handleEQBandChange = (newBandsArray: number[]) => {
-    if (strip.filters.eq.bands.length < newBandsArray.length) {
+    const currentBandsCount = Object.keys(strip?.filters.eq.bands || {}).length;
+
+    if (currentBandsCount < newBandsArray.length) {
       // Add each missing band one by one
-      for (
-        let i = strip.filters.eq.bands.length;
-        i < newBandsArray.length;
-        i++
-      ) {
-        addEQBand(sendMessage, strip.stripId, i);
+      for (let i = currentBandsCount; i < newBandsArray.length; i++) {
+        addEQBand(sendMessage, type, strip.stripId, i);
       }
-    } else if (strip.filters.eq.bands.length > newBandsArray.length) {
+    } else if (currentBandsCount > newBandsArray.length) {
       // Remove each extra band one by one, starting from the end
-      for (
-        let i = strip.filters.eq.bands.length - 1;
-        i >= newBandsArray.length;
-        i--
-      ) {
-        removeEQBand(sendMessage, strip.stripId, i);
+      for (let i = currentBandsCount - 1; i >= newBandsArray.length; i--) {
+        setEqState((prev) => ({
+          ...prev,
+          [`band${i}`]: { type: 'none', freq: 1000, gain: 0, q: 0.707 }
+        }));
+        removeEQBand(sendMessage, type, strip.stripId, i);
       }
     }
   };
@@ -180,7 +197,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
     if (isConnected) {
       sendMessage({
         type: 'set',
-        resource: `/audio/strips/${strip.stripId}/filters/${filter}`,
+        resource: `/audio/${type}/${strip.stripId}/filters/${filter}`,
         body: { [parameter]: value }
       });
     }
@@ -191,7 +208,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
   return (
     <div className="h-[55rem] min-w-[38rem] overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg p-2 text-white">
       <h1 className="text-xl font-semibold mb-4">
-        Settings for {isMix ? 'Mix' : 'Strip'}{' '}
+        Settings for {type === 'mixes' ? 'Mix' : 'Strip'}{' '}
         {strip.label || strip.stripId.toString()}
       </h1>
 
@@ -210,7 +227,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip }) => {
             parameter="value"
             onChange={(value) => {
               setTrimValue(value);
-              handleEffectChange('trim', 'value', value);
+              handleEffectChange('gain', 'value', value);
             }}
           />
         </div>

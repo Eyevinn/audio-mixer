@@ -9,6 +9,7 @@ import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/
 import { Select } from '../../components/ui/select/Select';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
+import { useData } from '../../hooks/useData';
 import { TAudioStrip, TMixStrip } from '../../types/types';
 import {
   addMixToMix,
@@ -21,11 +22,12 @@ import {
 export const ConfigureMixPage = () => {
   const { mixId } = useParams();
   const navigate = useNavigate();
-  const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
+  const [selectedStrip, setSelectedStrip] = useState<{
+    id: number;
+    type: 'mixes' | 'strips';
+  } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
-  const [mixesToPass, setMixesToPass] = useState<TMixStrip[]>([]);
-  const [audioStripsToPass, setAudioStripsToPass] = useState<TAudioStrip[]>([]);
   const [usedInputs, setUsedInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
   const [mixToConfigure, setMixToConfigure] = useState<TMixStrip | undefined>(
     undefined
@@ -34,14 +36,16 @@ export const ConfigureMixPage = () => {
   const { savedStrips, savedMixes, setSavedMixes, setSavedStrips } =
     useGlobalState();
 
-  useEffect(() => {
-    const selectedStrip = savedStrips.find((strip) => strip.selected === true);
-    const selectedMix = savedMixes.find((mix) => mix.selected === true);
+  useData();
 
-    if (selectedStrip) {
-      setSelectedStrip(selectedStrip.stripId);
-    } else if (selectedMix) {
-      setSelectedStrip(selectedMix.stripId);
+  useEffect(() => {
+    const selStrip = savedStrips.find((strip) => strip.selected === true);
+    const selMix = savedMixes.find((mix) => mix.selected === true);
+
+    if (selStrip) {
+      setSelectedStrip({ id: selStrip.stripId, type: 'strips' });
+    } else if (selMix) {
+      setSelectedStrip({ id: selMix.stripId, type: 'mixes' });
     }
   }, [savedStrips, savedMixes]);
 
@@ -72,9 +76,6 @@ export const ConfigureMixPage = () => {
       );
 
       setUsedInputs([...mixesUsed, ...stripsUsed]);
-
-      setMixesToPass(mixesUsed);
-      setAudioStripsToPass(stripsUsed);
     }
   }, [mixToConfigure, savedMixes, savedStrips]);
 
@@ -96,12 +97,18 @@ export const ConfigureMixPage = () => {
     }
   };
 
-  const handleRemoveInputFromMix = (input: TAudioStrip | TMixStrip) => {
+  const handleRemoveInputFromMix = ({
+    stripId,
+    type
+  }: {
+    stripId: number;
+    type: 'mixes' | 'strips';
+  }) => {
     if (mixId) {
-      if (input.inputs == undefined) {
-        removeStripFromMix(sendMessage, parseInt(mixId), input.stripId);
+      if (type !== 'mixes') {
+        removeStripFromMix(sendMessage, parseInt(mixId), stripId);
       } else {
-        removeMixFromMix(sendMessage, parseInt(mixId), input.stripId);
+        removeMixFromMix(sendMessage, parseInt(mixId), stripId);
       }
     }
   };
@@ -113,20 +120,23 @@ export const ConfigureMixPage = () => {
     }
   };
 
-  const handleSelection = (stripId: number | null) => {
-    setSelectedStrip(stripId);
+  const handleSelection = (
+    stripId: number | null,
+    type: 'mixes' | 'strips'
+  ) => {
+    setSelectedStrip(stripId ? { id: stripId, type: type } : null);
 
     setSavedMixes((prevMixes) =>
       prevMixes.map((mix) => ({
         ...mix,
-        selected: stripId === mix.stripId || false
+        selected: (stripId === mix.stripId && type === 'mixes') || false
       }))
     );
 
     setSavedStrips((prevStrips) =>
       prevStrips.map((strip) => ({
         ...strip,
-        selected: stripId === strip.stripId || false
+        selected: (stripId === strip.stripId && type === 'strips') || false
       }))
     );
   };
@@ -155,7 +165,7 @@ export const ConfigureMixPage = () => {
       </PageHeader>
 
       <div className="text-white text-2xl justify-between w-full">
-        <div className="flex flex-row mt-8 ml-8 items-center">
+        <div className="flex flex-row space-x-8 mt-8 ml-8 items-center">
           {mixToConfigure && (
             <MixStrip
               key={`mix-${mixToConfigure.stripId}`}
@@ -166,10 +176,10 @@ export const ConfigureMixPage = () => {
             />
           )}
           {/* Inputs that belong to the conf-mix */}
-          <div className="ml-4 w-full max-w-full overflow-hidden">
+          {/* <div className="text-white text-2xl flex flex-row justify-between w-full"> */}
+          <div className="ml-8 w-full max-w-full overflow-hidden">
             <ScrollableContainer
-              mixStrips={mixesToPass}
-              audioStrips={audioStripsToPass}
+              configurableMixStrips={mixToConfigure}
               isRemovingFromMix={true}
               onStripSelect={handleSelection}
               handleRemoveStripFromMix={handleRemoveInputFromMix}
@@ -178,7 +188,10 @@ export const ConfigureMixPage = () => {
 
           {selectedStrip !== null && (
             <EffectsPanel
-              strip={allInputs.find((strip) => strip.stripId === selectedStrip)}
+              strip={allInputs.find(
+                (strip) => strip.stripId === selectedStrip.id
+              )}
+              type={selectedStrip.type}
             />
           )}
         </div>

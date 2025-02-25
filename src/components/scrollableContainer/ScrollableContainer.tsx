@@ -2,19 +2,28 @@ import React, { useEffect, useRef, useState } from 'react';
 import { TAudioStrip, TMixStrip } from '../../types/types';
 import { AudioStrip } from '../strips/audioStrip/AudioStrip';
 import { MixStrip } from '../strips/mixStrip/MixStrip';
+import { ConfigureMixStrip } from '../strips/configure/ConfigureMixStrip';
 
 interface ScrollableContainerProps {
   audioStrips?: TAudioStrip[];
   mixStrips?: TMixStrip[];
+  configurableMixStrips?: TMixStrip;
   isRemovingFromMix?: boolean;
   handleRemoveStrip?: (stripId: number) => void;
-  handleRemoveStripFromMix?: (input: TAudioStrip | TMixStrip) => void;
-  onStripSelect: (stripId: number | null) => void;
+  handleRemoveStripFromMix?: ({
+    stripId,
+    type
+  }: {
+    stripId: number;
+    type: 'mixes' | 'strips';
+  }) => void;
+  onStripSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
 }
 
 export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   audioStrips,
   mixStrips,
+  configurableMixStrips,
   isRemovingFromMix,
   handleRemoveStrip,
   handleRemoveStripFromMix,
@@ -82,12 +91,10 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
           key={`${strip.stripId}-strip`}
           {...strip}
           onStripSelect={onStripSelect}
-          onRemove={
-            isRemovingFromMix && handleRemoveStripFromMix
-              ? () => handleRemoveStripFromMix(strip)
-              : handleRemoveStrip
-                ? () => handleRemoveStrip(strip.stripId)
-                : () => console.warn('No remove function provided')
+          onRemove={() =>
+            handleRemoveStrip
+              ? handleRemoveStrip(strip.stripId)
+              : () => console.warn('No remove function provided')
           }
         />
       ))}
@@ -104,16 +111,62 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
             isRemovingFromMix={isRemovingFromMix}
             {...mix}
             onStripSelect={onStripSelect}
-            onRemove={
-              isRemovingFromMix && handleRemoveStripFromMix
-                ? () => handleRemoveStripFromMix(mix)
-                : handleRemoveStrip
-                  ? () => handleRemoveStrip(mix.stripId)
-                  : () => console.warn('No remove function provided')
+            onRemove={() =>
+              handleRemoveStrip
+                ? handleRemoveStrip(mix.stripId)
+                : () => console.warn('No remove function provided')
             }
           />
         </div>
       ))}
+      {configurableMixStrips?.inputs?.strips && (
+        <>
+          {Object.entries(configurableMixStrips.inputs.strips).map(
+            ([key, strip]) => (
+              <ConfigureMixStrip
+                key={key}
+                stripId={configurableMixStrips.stripId}
+                configId={parseInt(key, 10)}
+                sendLevels={strip}
+                type="strips"
+                onStripSelect={onStripSelect}
+                onRemove={() =>
+                  handleRemoveStripFromMix
+                    ? handleRemoveStripFromMix({
+                        stripId: parseInt(key, 10),
+                        type: 'strips'
+                      })
+                    : () => console.warn('No remove function provided')
+                }
+              />
+            )
+          )}
+        </>
+      )}
+      {configurableMixStrips && (
+        <>
+          {Object.entries(configurableMixStrips.inputs.mixes).map(
+            ([key, mix]) => (
+              <ConfigureMixStrip
+                key={key}
+                stripId={configurableMixStrips.stripId}
+                configId={parseInt(key, 10)}
+                sendLevels={mix}
+                type="mixes"
+                onStripSelect={onStripSelect}
+                onRemove={() =>
+                  handleRemoveStripFromMix
+                    ? handleRemoveStripFromMix({
+                        stripId: parseInt(key, 10),
+                        type: 'mixes'
+                      })
+                    : () => console.warn('No remove function provided')
+                }
+              />
+            )
+          )}
+        </>
+      )}
     </div>
   );
 };

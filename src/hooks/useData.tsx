@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from 'react';
 import { useGlobalState } from '../context/GlobalStateContext';
 import { useWebSocket } from '../context/WebSocketContext';
@@ -9,7 +10,6 @@ import {
   getAllStrips,
   resync
 } from '../utils/utils';
-
 export const useData = () => {
   const { sendMessage, messages, setMessages } = useWebSocket();
   const { setSavedStrips, setSavedMixes, setSavedOutputs, setErrorMessage } =
@@ -29,6 +29,8 @@ export const useData = () => {
         selected: existingStrip?.selected ?? false,
         pfl: existingStrip?.pfl ?? false,
         stripId: parseInt(index),
+        // TODO: Redo the stripId to be a uniquestring
+        // stripId: 'Strip#' + index,
         fader: strip.fader ?? existingStrip?.fader,
         filters: strip.filters ?? existingStrip?.filters,
         input: strip.input ?? existingStrip?.input ?? undefined,
@@ -55,6 +57,8 @@ export const useData = () => {
         selected: existingStrip?.selected ?? false,
         pfl: existingStrip?.pfl ?? false,
         stripId: parseInt(index),
+        // TODO: Redo the stripId to be a uniquestring
+        // stripId: 'Mix#' + index, stripId.split('#')[1]
         fader: strip.fader ?? existingStrip?.fader,
         filters: strip.filters ?? existingStrip?.filters,
         inputs: strip.inputs ?? existingStrip?.inputs ?? undefined,
@@ -108,6 +112,49 @@ export const useData = () => {
                       const updatedValue = updatedStripData[typedKey];
                       const currentValue = strip[typedKey];
 
+                      const deepMerge = (target: any, source: any): any => {
+                        if (typeof source !== 'object' || source === null) {
+                          return source;
+                        }
+                        if (typeof target !== 'object' || target === null) {
+                          return source;
+                        }
+
+                        // Handle arrays specially
+                        if (Array.isArray(source)) {
+                          if (!Array.isArray(target)) return source;
+                          return target.map((item, index) =>
+                            index < source.length
+                              ? deepMerge(item, source[index])
+                              : item
+                          );
+                        }
+
+                        const result = { ...target };
+                        Object.keys(source).forEach((key) => {
+                          // Special handling for eq.bands - treat as an object with numeric keys
+                          if (
+                            typeof source[key] === 'object' &&
+                            source[key] !== null
+                          ) {
+                            if (
+                              target[key] &&
+                              !Array.isArray(target[key]) &&
+                              !Array.isArray(source[key])
+                            ) {
+                              // If both are objects and not arrays, merge them
+                              result[key] = deepMerge(target[key], source[key]);
+                            } else {
+                              // If one is not an object or they're arrays, replace with source
+                              result[key] = source[key];
+                            }
+                          } else {
+                            result[key] = source[key];
+                          }
+                        });
+                        return result;
+                      };
+
                       if (
                         typeof updatedValue === 'object' &&
                         updatedValue !== null &&
@@ -116,10 +163,7 @@ export const useData = () => {
                       ) {
                         return {
                           ...acc,
-                          [typedKey]: {
-                            ...(currentValue as Record<string, unknown>),
-                            ...(updatedValue as Record<string, unknown>)
-                          }
+                          [typedKey]: deepMerge(currentValue, updatedValue)
                         };
                       }
                       return {
@@ -145,6 +189,49 @@ export const useData = () => {
                       const updatedValue = updatedStripData[typedKey];
                       const currentValue = mix[typedKey];
 
+                      const deepMerge = (target: any, source: any): any => {
+                        if (typeof source !== 'object' || source === null) {
+                          return source;
+                        }
+                        if (typeof target !== 'object' || target === null) {
+                          return source;
+                        }
+
+                        // Handle arrays specially
+                        if (Array.isArray(source)) {
+                          if (!Array.isArray(target)) return source;
+                          return target.map((item, index) =>
+                            index < source.length
+                              ? deepMerge(item, source[index])
+                              : item
+                          );
+                        }
+
+                        const result = { ...target };
+                        Object.keys(source).forEach((key) => {
+                          // Special handling for eq.bands - treat as an object with numeric keys
+                          if (
+                            typeof source[key] === 'object' &&
+                            source[key] !== null
+                          ) {
+                            if (
+                              target[key] &&
+                              !Array.isArray(target[key]) &&
+                              !Array.isArray(source[key])
+                            ) {
+                              // If both are objects and not arrays, merge them
+                              result[key] = deepMerge(target[key], source[key]);
+                            } else {
+                              // If one is not an object or they're arrays, replace with source
+                              result[key] = source[key];
+                            }
+                          } else {
+                            result[key] = source[key];
+                          }
+                        });
+                        return result;
+                      };
+
                       if (
                         typeof updatedValue === 'object' &&
                         updatedValue !== null &&
@@ -153,10 +240,7 @@ export const useData = () => {
                       ) {
                         return {
                           ...acc,
-                          [typedKey]: {
-                            ...(currentValue as Record<string, unknown>),
-                            ...(updatedValue as Record<string, unknown>)
-                          }
+                          [typedKey]: deepMerge(currentValue, updatedValue)
                         };
                       }
                       return {

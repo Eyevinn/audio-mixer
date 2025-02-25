@@ -33,7 +33,13 @@ export const StripDropdown = ({
       >
         {options.map((option) => (
           <option key={option} value={option.toLowerCase()}>
-            {option}
+            {option
+              .split('_')
+              .map(
+                (word) =>
+                  word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+              )
+              .join(' ')}
           </option>
         ))}
       </select>

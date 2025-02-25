@@ -203,24 +203,26 @@ export const loadConfig = (
 
 export const addEQBand = (
   sendMessage: (message: Record<string, unknown>) => void,
+  type: 'strips' | 'mixes',
   stripId: number,
   index: number
 ) => {
   sendMessage({
     type: 'command',
-    resource: `/audio/strips/${stripId}/filters/eq`,
+    resource: `/audio/${type}/${stripId}/filters/eq/bands`,
     body: { command: 'add_band', parameters: { index: index } }
   });
 };
 
 export const removeEQBand = (
   sendMessage: (message: Record<string, unknown>) => void,
+  type: 'strips' | 'mixes',
   stripId: number,
   index: number
 ) => {
   sendMessage({
     type: 'command',
-    resource: `/audio/strips/${stripId}/filters/eq`,
+    resource: `/audio/${type}/${stripId}/filters/eq/bands`,
     body: { command: 'remove_band', parameters: { index: index } }
   });
 };

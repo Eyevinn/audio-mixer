@@ -9,7 +9,13 @@ interface InputDropdownProps {
   selectedInputs?: (TAudioStrip | TMixStrip)[];
   mixToConfigure?: number | null;
   addInput: (input: TAudioStrip | TMixStrip) => void;
-  removeInput: (input: TAudioStrip | TMixStrip) => void;
+  removeInput: ({
+    stripId,
+    type
+  }: {
+    stripId: number;
+    type: 'mixes' | 'strips';
+  }) => void;
 }
 
 export const InputDropdown: React.FC<InputDropdownProps> = ({
@@ -56,7 +62,12 @@ export const InputDropdown: React.FC<InputDropdownProps> = ({
                 }`}
                 onClick={
                   isSelected
-                    ? () => removeInput(option)
+                    ? () => {
+                        removeInput({
+                          stripId: option.stripId,
+                          type: isMix ? 'mixes' : 'strips'
+                        });
+                      }
                     : () => addInput(option)
                 }
               >
