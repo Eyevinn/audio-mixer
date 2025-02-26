@@ -30,7 +30,7 @@ export const Select: React.FC<SelectProps> = ({
   return (
     <div className={`relative w-64 ${className}`} ref={selectRef}>
       <button
-        className={`${isOpen ? 'border-b-0 rounded-b-none' : ''} w-full px-4 py-2 text-white bg-modal-bg border-2 border-border-bg rounded-lg focus:outline-none flex justify-between items-center`}
+        className={`${isOpen ? 'border-b-0 rounded-b-none' : ''} text-xl w-full pl-4 pr-2 py-2 text-white bg-modal-bg border-2 border-border-bg rounded-lg focus:outline-none flex justify-between items-center h-10`}
         onClick={() => setIsOpen(!isOpen)}
       >
         {value}
@@ -46,7 +46,7 @@ export const Select: React.FC<SelectProps> = ({
               : `Strip ${option.stripId} ${option.label}`;
             return (
               <li
-                className={`px-4 py-2 cursor-pointer text-white hover:bg-zinc-700 ${value === (option.label || option.stripId.toString()) ? 'relative bg-slider-green mx-2 rounded-lg' : 'mx-2'}`}
+                className={`text-xl px-4 py-2 cursor-pointer text-white hover:bg-zinc-700 ${value === (option.label || option.stripId.toString()) ? 'relative bg-slider-green mx-2 rounded-lg' : 'mx-2'} h-10 flex items-center`}
                 key={`${option.stripId}-${isMix ? 'mix' : 'strip'}`}
                 onClick={() => handleSelect(option)}
               >

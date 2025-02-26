@@ -5,6 +5,7 @@ import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { TAudioStrip, TMixStrip } from '../../types/types';
 import { addInputToOutput } from '../../utils/utils';
+import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 
 export const OutputMappingPage = () => {
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
@@ -43,7 +44,7 @@ export const OutputMappingPage = () => {
   };
 
   return (
-    <div className="text-white text-2xl flex flex-col w-full">
+    <PageContainer>
       <PageHeader title="Outputs" />
       <div className="flex flex-wrap gap-6 ml-8 mt-8">
         {Object.entries(savedOutputs).map(([key, output]) => {
@@ -66,6 +67,6 @@ export const OutputMappingPage = () => {
           );
         })}
       </div>
-    </div>
+    </PageContainer>
   );
 };

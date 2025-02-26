@@ -12,6 +12,8 @@ import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addMix, removeMix } from '../../utils/utils';
+import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
+import PageBody from '../../components/pageLayout/pageBody/pageBody';
 
 export const MixesPage = () => {
   const [selectedMix, setSelectedMix] = useState<number | null>(null);
@@ -89,7 +91,7 @@ export const MixesPage = () => {
   };
 
   return (
-    <div className="text-white text-2xl flex flex-col w-full overflow-hidden">
+    <PageContainer>
       <PageHeader title="Audio Mixes">
         <div className="space-x-4">
           <DeleteButton disabled={isDeleteAllDisabled} onClick={onModalOpen}>
@@ -99,8 +101,8 @@ export const MixesPage = () => {
         </div>
       </PageHeader>
       {/* Audio Strips Container */}
-      <div className="text-white text-2xl flex flex-row justify-between w-full">
-        <div className="ml-8 mt-4 w-full max-w-full overflow-hidden">
+      <PageBody>
+        <div className="p-4 pr-0 w-full max-w-full h-full overflow-hidden">
           <ScrollableContainer
             mixStrips={savedMixes}
             handleRemoveStrip={handleRemoveMix}
@@ -115,7 +117,7 @@ export const MixesPage = () => {
             type="mixes"
           />
         )}
-      </div>
+      </PageBody>
 
       <ConfirmationModal
         isOpen={isModalOpen}
@@ -125,6 +127,6 @@ export const MixesPage = () => {
         confirmText="Yes, delete all"
         onConfirm={handleRemoveAllMixes}
       />
-    </div>
+    </PageContainer>
   );
 };

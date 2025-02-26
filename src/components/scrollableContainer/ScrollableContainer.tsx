@@ -77,7 +77,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
 
   return (
     <div
-      className="overflow-x-auto w-[97%] flex space-x-4 cursor-grab active:cursor-grabbing select-none scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin"
+      className="overflow-x-auto w-full h-full flex space-x-4 cursor-grab active:cursor-grabbing select-none scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin"
       ref={containerRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
