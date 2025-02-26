@@ -133,3 +133,29 @@ export interface TMixStrip extends TBaseStrip {
     }>;
   };
 }
+
+// TODO: Update to real output type
+export interface Output {
+  input: {
+    index: number;
+    origin: 'pre_fader' | 'post_fader';
+    source: 'strip' | 'mix';
+  };
+  label: string;
+  meters: {
+    enable_ebu_meters: boolean;
+    ebu_i: number;
+    ebu_m: number;
+    ebu_s: number;
+    peak_left: number;
+    peak_right: number;
+  };
+}
+
+export interface AudioState {
+  body: {
+    mixes: { [key: string]: TMixStrip };
+    strips: { [key: string]: TAudioStrip };
+    outputs: { [key: string]: Output };
+  };
+}

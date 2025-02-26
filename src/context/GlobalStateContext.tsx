@@ -5,25 +5,7 @@ import React, {
   useContext,
   useState
 } from 'react';
-import { TAudioStrip, TMixStrip } from '../types/types';
-
-// TODO: Update to real output type
-interface Output {
-  input: {
-    index: number;
-    origin: 'pre_fader' | 'post_fader';
-    source: 'strip' | 'mix';
-  };
-  label: string;
-  meters: {
-    enable_ebu_meters: boolean;
-    ebu_i: number;
-    ebu_m: number;
-    ebu_s: number;
-    peak_left: number;
-    peak_right: number;
-  };
-}
+import { Output, TAudioStrip, TMixStrip } from '../types/types';
 
 interface GlobalStateContextType {
   savedStrips: TAudioStrip[];

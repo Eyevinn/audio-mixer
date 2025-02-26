@@ -1,13 +1,20 @@
 import React, { createContext, useContext, useState } from 'react';
 import { showError, showInfo } from '../utils/notifications';
+import { AudioState } from '../types/types';
+import logger from '../utils/logger';
+import toast from 'react-hot-toast';
 
 interface WebSocketContextType {
   wsUrl: string;
-  sendMessage: (message: Record<string, unknown>) => void;
+  sendMessage: (
+    message: Record<string, unknown> | Record<string, unknown>[]
+  ) => void;
   isConnected: boolean;
   connect: (address: string) => void;
   messages: string[];
   setMessages: React.Dispatch<React.SetStateAction<string[]>>;
+  audioState?: AudioState;
+  clearAudioState: () => void;
   connectionFailed?: boolean;
 }
 
@@ -19,6 +26,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
+  const [audioState, setAudioState] = useState<AudioState | undefined>();
   const [wsUrl, setWsUrl] = useState<string>('');
   const [connectionFailed, setConnectionFailed] = useState<boolean>(false);
 
@@ -29,13 +37,21 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       const websocket = new WebSocket(address);
 
       websocket.onmessage = (event) => {
-        setMessages((prev) => [...prev, event.data]);
         try {
           const jsonData = JSON.parse(event.data);
           if ('error' in jsonData) {
             showError(
               `${jsonData.type} error for ${jsonData.resource}: ${jsonData.error}`
             );
+          }
+          if (
+            jsonData.resource === '/audio' &&
+            jsonData.type === 'get-response'
+          ) {
+            logger.data('Exporting', event.data);
+            setAudioState(jsonData);
+          } else {
+            setMessages((prev) => [...prev, event.data]);
           }
         } catch (error) {
           showError('Failed to parse WebSocket message');
@@ -67,20 +83,32 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const sendMessage = (message: Record<string, unknown>) => {
+  const sendMessage = (
+    message: Record<string, unknown> | Record<string, unknown>[]
+  ) => {
     if (!ws) {
-      showError('Websocket is not connected yet!');
+      toast.error('Websocket is not connected', {
+        duration: 3000,
+        position: 'bottom-right'
+      });
       return;
     }
 
     if (ws.readyState !== WebSocket.OPEN) {
-      showError('Websocket lost connection');
+      toast.error('Websocket lost connection', {
+        duration: 3000,
+        position: 'bottom-right'
+      });
       setIsConnected(false);
       return;
     }
 
     const messageString = JSON.stringify(message);
     ws.send(messageString);
+  };
+
+  const clearAudioState = () => {
+    setAudioState(undefined);
   };
 
   return (
@@ -92,6 +120,8 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         connect,
         messages,
         setMessages,
+        audioState,
+        clearAudioState,
         connectionFailed
       }}
     >
