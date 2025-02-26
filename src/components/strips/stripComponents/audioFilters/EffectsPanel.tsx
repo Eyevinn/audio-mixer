@@ -4,9 +4,9 @@ import { EffectsSlider } from './EffectsSlider';
 import { EQVisualisation } from './EQVisualisation';
 import styles from './filterComponents.module.css';
 
-import { useWebSocket } from '../../../context/WebSocketContext';
-import { TAudioStrip, TMixStrip } from '../../../types/types';
-import { addEQBand, removeEQBand } from '../../../utils/utils';
+import { useWebSocket } from '../../../../context/WebSocketContext';
+import { TAudioStrip, TMixStrip } from '../../../../types/types';
+import { addEQBand, removeEQBand } from '../../../../utils/utils';
 
 interface EffectsPanelProps {
   strip: TAudioStrip | TMixStrip | undefined;

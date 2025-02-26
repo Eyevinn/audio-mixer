@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { TAudioStrip, TMixStrip } from '../../types/types';
 import { AudioStrip } from '../strips/audioStrip/AudioStrip';
-import { ConfigureMixStrip } from '../strips/configure/ConfigureMixStrip';
 import { MixStrip } from '../strips/mixStrip/MixStrip';
+import { ConfigureMixStrip } from '../strips/stripComponents/configure/ConfigureMixStrip';
 
 interface ScrollableContainerProps {
   audioStrips?: TAudioStrip[];

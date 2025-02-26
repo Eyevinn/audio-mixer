@@ -3,10 +3,10 @@ import { TAudioStrip, TBaseStrip, TMixStrip } from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { StripDropdown } from '../ui/dropdown/Dropdown';
 import { LabelInput } from '../ui/input/Input';
-import { AudioLevel } from './audioLevel/AudioLevel';
-import { PanningSlider } from './panningSlider/PanningSlider';
-import { StripHeader } from './stripHeader/StripHeader';
-import { VolumeSlider } from './volumeSlider/VolumeSlider';
+import { AudioLevel } from './stripComponents/audioLevel/AudioLevel';
+import { PanningSlider } from './stripComponents/panningSlider/PanningSlider';
+import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
+import { StripHeader } from './stripComponents/stripHeader/StripHeader';
 
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;

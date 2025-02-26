@@ -1,7 +1,7 @@
 import React from 'react';
-import { BaseStrip } from '../BaseStrip';
-import { useGlobalState } from '../../../context/GlobalStateContext';
-import { useWebSocket } from '../../../context/WebSocketContext';
+import { BaseStrip } from '../../BaseStrip';
+import { useGlobalState } from '../../../../context/GlobalStateContext';
+import { useWebSocket } from '../../../../context/WebSocketContext';
 
 interface MixStripProps {
   stripId: number;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Icons from '../../../assets/icons/Icons';
-import { TAudioStrip, TMixStrip } from '../../../types/types';
-import { ConfirmationModal } from '../../ui/modals/confirmationModal/ConfirmationModal';
+import { TAudioStrip, TMixStrip } from '../../../../types/types';
+import Icons from '../../../../assets/icons/Icons';
+import { ConfirmationModal } from '../../../ui/modals/confirmationModal/ConfirmationModal';
 
 type StripHeaderProps = {
   label: string;

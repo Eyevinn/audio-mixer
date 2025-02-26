@@ -4,7 +4,7 @@ import PageBody from '../../components/pageLayout/pageBody/pageBody';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
-import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
+import { EffectsPanel } from '../../components/strips/stripComponents/audioFilters/EffectsPanel';
 import {
   DeleteButton,
   PrimaryButton

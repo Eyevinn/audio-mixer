@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { SliderLegend } from '../../../assets/icons/SliderLegend';
 import debounce from 'lodash/debounce';
+import { SliderLegend } from '../../../../assets/icons/SliderLegend';
 
 type VolumeSliderProps = {
   type: 'mixer' | 'master';
