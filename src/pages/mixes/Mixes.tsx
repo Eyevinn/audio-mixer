@@ -10,7 +10,6 @@ import {
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
-import { useData } from '../../hooks/useData';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addMix, removeMix } from '../../utils/utils';
 
@@ -23,7 +22,6 @@ export const MixesPage = () => {
   const { savedMixes, setSavedMixes } = useGlobalState();
   const nextMixIndex = useNextAvailableIndex(savedMixes);
   const navigate = useNavigate();
-  useData();
 
   useEffect(() => {
     if (!isFirstMount) return;
