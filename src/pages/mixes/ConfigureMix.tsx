@@ -185,7 +185,7 @@ export const ConfigureMixPage = () => {
         <InputDropdown
           selectedInputs={usedInputs}
           options={allInputs}
-          label="Add input to mix"
+          label="Add input"
           mixToConfigure={mixToConfigure?.stripId}
           addInput={handleAddInput}
           removeInput={handleRemoveInputFromMix}

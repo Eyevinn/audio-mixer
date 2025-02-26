@@ -37,7 +37,7 @@ export const InputDropdown: React.FC<InputDropdownProps> = ({
         onClick={() => setIsOpen(!isOpen)}
         className={`${isOpen ? 'border-b-0 rounded-b-none' : ''} bg-button-green hover:bg-button-green-hover flex items-center flex-row justify-between w-fit px-8 py-2 text-white rounded focus:outline-none`}
       >
-        <span>{label}</span>
+        <span className="font-bold">{label}</span>
       </button>
       {isOpen && (
         <ul className="absolute w-full bg-modal-bg border-t-0 border-2 border-border-bg rounded-b-lg shadow-lg max-h-60 overflow-y-auto text-center scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin z-20">

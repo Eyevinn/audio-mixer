@@ -97,7 +97,7 @@ export const MixesPage = () => {
           <DeleteButton disabled={isDeleteAllDisabled} onClick={onModalOpen}>
             Delete all mixes
           </DeleteButton>
-          <PrimaryButton onClick={handleAddMix}>Add Mix</PrimaryButton>
+          <PrimaryButton onClick={handleAddMix}>Create Mix</PrimaryButton>
         </div>
       </PageHeader>
       {/* Audio Strips Container */}

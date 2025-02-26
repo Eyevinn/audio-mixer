@@ -92,7 +92,7 @@ export const StripsPage = () => {
           <DeleteButton disabled={isDeleteAllDisabled} onClick={onModalOpen}>
             Delete all strips
           </DeleteButton>
-          <PrimaryButton onClick={handleAddStrip}>Add Strip</PrimaryButton>
+          <PrimaryButton onClick={handleAddStrip}>Create Strip</PrimaryButton>
         </div>
         <ConfirmationModal
           title="Delete all strips"
