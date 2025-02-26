@@ -18,7 +18,7 @@ const env = process.env.NODE_ENV;
 // 3 = data logs
 
 const productionLoggerLevel = 1;
-const devLoggerLevel = 3;
+const devLoggerLevel = Number(process.env.REACT_APP_DEV_LOGGER_LEVEL) || 3;
 const loggerLevel =
   env === 'production' ? productionLoggerLevel : devLoggerLevel;
 
