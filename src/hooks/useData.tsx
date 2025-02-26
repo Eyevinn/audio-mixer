@@ -174,13 +174,11 @@ export const useData = () => {
 
         case 'subscribe-response':
           if (data.body?.strips) {
-            Logger.data('Subscribe-response Strips: ', data.body);
             setSavedStrips((prevStrips) =>
               mapStripsData(data.body.strips, prevStrips)
             );
           }
           if (data.body?.mixes) {
-            Logger.data('Subscribe-response Mixes: ', data.body);
             setSavedMixes((prevMixes) =>
               mapMixesData(data.body.mixes, prevMixes)
             );

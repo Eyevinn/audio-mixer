@@ -96,6 +96,34 @@ const uploadFromFile = (
         }
       });
 
+      const subMixes = mix.inputs.mixes;
+      for (const subMixId in subMixes) {
+        requests.push({
+          type: 'command',
+          resource: '/audio/mixes/' + mixIndex + '/inputs/mixes',
+          body: {
+            command: 'add_mix',
+            parameters: {
+              index: Number(subMixId)
+            }
+          }
+        });
+      }
+
+      const strips = mix.inputs.strips;
+      for (const stripId in strips) {
+        requests.push({
+          type: 'command',
+          resource: '/audio/mixes/' + mixIndex + '/inputs/strips',
+          body: {
+            command: 'add_strip',
+            parameters: {
+              index: Number(stripId)
+            }
+          }
+        });
+      }
+
       const bands = mix.filters.eq.bands;
       for (const bandIndex in bands) {
         requests.push({
