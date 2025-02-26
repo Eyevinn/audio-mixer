@@ -106,7 +106,7 @@ export const StripsPage = () => {
 
       <PageBody>
         {/* Audio Strips Container */}
-        <div className="pl-4 pt-4 w-full max-w-full overflow-hidden h-full">
+        <div className="p-4 pr-0 w-full max-w-full overflow-hidden h-full">
           <ScrollableContainer
             audioStrips={savedStrips}
             handleRemoveStrip={handleRemoveStrip}

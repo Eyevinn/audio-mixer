@@ -104,7 +104,7 @@ export const MixesPage = () => {
       </PageHeader>
       {/* Audio Strips Container */}
       <PageBody>
-        <div className="pl-4 pt-4 w-full max-w-full h-full overflow-hidden">
+        <div className="p-4 pr-0 w-full max-w-full h-full overflow-hidden">
           <ScrollableContainer
             mixStrips={savedMixes}
             handleRemoveStrip={handleRemoveMix}
