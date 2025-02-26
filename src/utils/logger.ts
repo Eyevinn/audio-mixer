@@ -9,45 +9,59 @@ export enum Colors {
   white = '37'
 }
 
+const env = process.env.NODE_ENV;
+
+// LOGGER LEVELS
+// 0 = no logs
+// 1 = basic logs
+// 2 = colored logs
+// 3 = data logs
+
+const productionLoggerLevel = 1;
+const devLoggerLevel = 3;
+const loggerLevel =
+  env === 'production' ? productionLoggerLevel : devLoggerLevel;
+
 class Logger {
   log(colorCode: string, msg: string) {
-    console.log(`\x1b[${colorCode}m${msg}\x1b[0m`);
+    if (loggerLevel > 0) console.log(`\x1b[${colorCode}m${msg}\x1b[0m`);
   }
 
   black(msg: string) {
-    this.log(Colors.black, msg);
+    if (loggerLevel > 1) this.log(Colors.black, msg);
   }
 
   red(msg: string) {
-    this.log(Colors.red, msg);
+    if (loggerLevel > 1) this.log(Colors.red, msg);
   }
 
   green(msg: string) {
-    this.log(Colors.green, msg);
+    if (loggerLevel > 1) this.log(Colors.green, msg);
   }
 
   yellow(msg: string) {
-    this.log(Colors.yellow, msg);
+    if (loggerLevel > 1) this.log(Colors.yellow, msg);
   }
 
   blue(msg: string) {
-    this.log(Colors.blue, msg);
+    if (loggerLevel > 1) this.log(Colors.blue, msg);
   }
 
   magenta(msg: string) {
-    this.log(Colors.magenta, msg);
+    if (loggerLevel > 1) this.log(Colors.magenta, msg);
   }
 
   cyan(msg: string) {
-    this.log(Colors.cyan, msg);
+    if (loggerLevel > 1) this.log(Colors.cyan, msg);
   }
 
   white(msg: string) {
-    this.log(Colors.white, msg);
+    if (loggerLevel > 1) this.log(Colors.white, msg);
   }
 
   data(msgType: string, msg: string) {
-    console.log(`\x1b[36m${msgType + ': '}\x1b[0m${JSON.stringify(msg)}`);
+    if (loggerLevel > 2)
+      console.log(`\x1b[36m${msgType + ': '}\x1b[0m${JSON.stringify(msg)}`);
   }
 }
 
