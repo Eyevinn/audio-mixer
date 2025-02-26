@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Icons from '../../../assets/icons/Icons';
 import { useOutsideClick } from '../../../hooks/useOutsideClick';
 import { TAudioStrip, TMixStrip } from '../../../types/types';
@@ -9,7 +8,7 @@ interface SelectProps {
   nothingSelected?: string;
   value: string;
   options: (TAudioStrip | TMixStrip)[];
-  onChange?: (value: TAudioStrip | TMixStrip) => void;
+  onChange: (value: TAudioStrip | TMixStrip) => void;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -20,16 +19,11 @@ export const Select: React.FC<SelectProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const selectRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
 
   useOutsideClick(selectRef, () => setIsOpen(false));
 
   const handleSelect = (input: TAudioStrip | TMixStrip) => {
-    if (onChange) {
-      onChange(input);
-    } else {
-      navigate(`/mixes/${input.stripId}`, { replace: true });
-    }
+    onChange(input);
     setIsOpen(false);
   };
 

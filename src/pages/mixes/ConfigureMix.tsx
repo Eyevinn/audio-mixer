@@ -175,6 +175,10 @@ export const ConfigureMixPage = () => {
               mixToConfigure?.label || mixToConfigure?.stripId.toString() || ''
             }
             options={savedMixes}
+            onChange={(value) => {
+              setIsFirstMount(true);
+              navigate(`/mixes/${value.stripId}`, { replace: true });
+            }}
           />
         }
       >
@@ -200,7 +204,6 @@ export const ConfigureMixPage = () => {
             />
           )}
           {/* Inputs that belong to the conf-mix */}
-          {/* <div className="text-white text-2xl flex flex-row justify-between w-full"> */}
           <div className="ml-8 w-full max-w-full overflow-hidden">
             <ScrollableContainer
               configurableMixStrips={mixToConfigure}
