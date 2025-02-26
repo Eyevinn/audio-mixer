@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { TAudioStrip, TBaseStrip, TMixStrip } from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
+import { StripDropdown } from '../ui/dropdown/Dropdown';
 import { LabelInput } from '../ui/input/Input';
 import { AudioLevel } from './audioLevel/AudioLevel';
 import { PanningSlider } from './panningSlider/PanningSlider';
 import { StripHeader } from './stripHeader/StripHeader';
 import { VolumeSlider } from './volumeSlider/VolumeSlider';
-import { StripDropdown } from '../ui/dropdown/Dropdown';
 
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;
@@ -170,7 +170,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         </div>
         {/* Volume Slider */}
         <div
-          className={`flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'border border-almost-white rounded-b-lg bg-dark-purple' : ''}`}
+          className={`flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'border border-almost-white rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''}`}
         >
           {configMode && <p className="text-base pb-2">Send Level</p>}
           <VolumeSlider
