@@ -7,7 +7,7 @@ import { StripFields } from './StripFields';
 
 interface AudioStripProps extends TAudioStrip {
   isRemovingFromMix?: boolean;
-  onStripSelect: (stripId: number | null) => void;
+  onStripSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
   onRemove: () => void;
 }
 
@@ -16,7 +16,7 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
   const { savedStrips, setSavedStrips } = useGlobalState();
 
   const handleSelection = () => {
-    props.onStripSelect(props.selected ? null : props.stripId);
+    props.onStripSelect(props.selected ? null : props.stripId, 'strips');
   };
 
   const handleChange = (
@@ -73,7 +73,7 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
     <BaseStrip
       {...props}
       backgroundColor="bg-strip-bg"
-      header={`Strip #${props.stripId}`}
+      header={`Strip #${props.input.input_slot}`}
       isRemovingFromMix={props.isRemovingFromMix}
       handleStripChange={handleChange}
       handleSelection={handleSelection}

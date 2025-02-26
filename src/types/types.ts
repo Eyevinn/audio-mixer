@@ -121,16 +121,20 @@ export interface TAudioStrip extends TBaseStrip {
 
 export interface TMixStrip extends TBaseStrip {
   inputs: {
-    mixes: Array<{
-      muted: boolean;
-      volume: number;
-      origin: 'pre_fader' | 'post_fader';
-    }>;
-    strips: Array<{
-      muted: boolean;
-      volume: number;
-      origin: 'pre_fader' | 'post_fader';
-    }>;
+    mixes: {
+      [id: number]: {
+        muted: boolean;
+        volume: number;
+        origin: 'pre_fader' | 'post_fader';
+      };
+    };
+    strips: {
+      [id: number]: {
+        muted: boolean;
+        volume: number;
+        origin: 'pre_fader' | 'post_fader';
+      };
+    };
   };
 }
 

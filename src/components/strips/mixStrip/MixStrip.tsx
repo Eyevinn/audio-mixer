@@ -11,7 +11,7 @@ interface MixStripProps extends TMixStrip {
   isRemovingFromMix?: boolean;
   isBeingConfigured?: boolean;
   highlightedMixId?: number | null;
-  onStripSelect: (stripId: number | null) => void;
+  onStripSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
   onRemove: () => void;
   setHighlightedMixId?: (stripId: number | null) => void;
 }
@@ -58,7 +58,7 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
   };
 
   const handleSelection = () => {
-    props.onStripSelect(props.selected ? null : props.stripId);
+    props.onStripSelect(props.selected ? null : props.stripId, 'mixes');
   };
 
   const handleMixChange = (

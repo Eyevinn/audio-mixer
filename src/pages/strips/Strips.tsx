@@ -19,12 +19,14 @@ export const StripsPage = () => {
   const { sendMessage } = useWebSocket();
   const { savedStrips, setSavedStrips } = useGlobalState();
   const nextStripIndex = useNextAvailableIndex(savedStrips);
-
+  const [isFirstMount, setIsFirstMount] = useState(true);
   useEffect(() => {
     setIsDeleteAllDisabled(savedStrips.length === 0);
   }, [savedStrips]);
 
   useEffect(() => {
+    if (isFirstMount) return;
+
     const isSelected = savedStrips.find((strip) => {
       return strip.selected === true;
     })?.stripId;
@@ -32,7 +34,20 @@ export const StripsPage = () => {
     if (isSelected) {
       setSelectedStrip(isSelected);
     }
-  }, [savedStrips]);
+  }, [savedStrips, isFirstMount]);
+
+  useEffect(() => {
+    if (!isFirstMount) return;
+
+    setSavedStrips((prevStrips) =>
+      prevStrips.map((strip) => ({
+        ...strip,
+        selected: false
+      }))
+    );
+    setSelectedStrip(null);
+    setIsFirstMount(false);
+  }, [isFirstMount, setSavedStrips]);
 
   const handleAddStrip = () => {
     addStrip(sendMessage, nextStripIndex);
@@ -48,9 +63,6 @@ export const StripsPage = () => {
 
   const handleRemoveAllStrips = () => {
     savedStrips.forEach((strip) => handleRemoveStrip(strip.stripId));
-    savedStrips.forEach((strip) => {
-      handleRemoveStrip(strip.stripId);
-    });
   };
 
   const onModalOpen = () => {
@@ -102,11 +114,10 @@ export const StripsPage = () => {
 
         {/* Effects Panel */}
         {selectedStrip !== null && (
-          <div className="mt-4">
-            <EffectsPanel
-              strip={savedStrips.find((s) => s.stripId === selectedStrip)}
-            />
-          </div>
+          <EffectsPanel
+            strip={savedStrips.find((s) => s.stripId === selectedStrip)}
+            type="strips"
+          />
         )}
       </div>
     </div>

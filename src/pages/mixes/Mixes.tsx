@@ -10,6 +10,7 @@ import {
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
+import { useData } from '../../hooks/useData';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addMix, removeMix } from '../../utils/utils';
 
@@ -17,16 +18,33 @@ export const MixesPage = () => {
   const [selectedMix, setSelectedMix] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
+  const [isFirstMount, setIsFirstMount] = useState(true);
   const { sendMessage } = useWebSocket();
   const { savedMixes, setSavedMixes } = useGlobalState();
   const nextMixIndex = useNextAvailableIndex(savedMixes);
   const navigate = useNavigate();
+  useData();
+
+  useEffect(() => {
+    if (!isFirstMount) return;
+
+    setSavedMixes((prevMixes) =>
+      prevMixes.map((mix) => ({
+        ...mix,
+        selected: false
+      }))
+    );
+    setSelectedMix(null);
+    setIsFirstMount(false);
+  }, [isFirstMount, setSavedMixes]);
 
   useEffect(() => {
     setIsDeleteAllDisabled(savedMixes.length === 0);
   }, [savedMixes]);
 
   useEffect(() => {
+    if (isFirstMount) return;
+
     const isSelected = savedMixes.find((mix) => {
       return mix.selected === true;
     })?.stripId;
@@ -34,7 +52,7 @@ export const MixesPage = () => {
     if (isSelected) {
       setSelectedMix(isSelected);
     }
-  }, [savedMixes]);
+  }, [savedMixes, isFirstMount]);
 
   const handleAddMix = () => {
     addMix(sendMessage, nextMixIndex);
@@ -94,11 +112,10 @@ export const MixesPage = () => {
 
         {/* Effects Panel */}
         {selectedMix !== null && (
-          <div className="mt-4">
-            <EffectsPanel
-              strip={savedMixes.find((m) => m.stripId === selectedMix)}
-            />
-          </div>
+          <EffectsPanel
+            strip={savedMixes.find((m) => m.stripId === selectedMix)}
+            type="mixes"
+          />
         )}
       </div>
 
