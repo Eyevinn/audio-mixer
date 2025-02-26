@@ -17,6 +17,7 @@ import {
   removeMixFromMix,
   removeStripFromMix
 } from '../../utils/utils';
+import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 
 export const ConfigureMixPage = () => {
   const { mixId } = useParams();
@@ -163,7 +164,7 @@ export const ConfigureMixPage = () => {
   };
 
   return (
-    <div className="text-white text-2xl flex flex-col w-full overflow-hidden">
+    <PageContainer>
       <PageHeader
         title="Configure Mix:"
         titleElement={
@@ -229,6 +230,6 @@ export const ConfigureMixPage = () => {
           onClose={() => setIsModalOpen(false)}
         />
       </div>
-    </div>
+    </PageContainer>
   );
 };

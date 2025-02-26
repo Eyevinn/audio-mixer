@@ -11,6 +11,7 @@ import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addStrip, removeStrip } from '../../utils/utils';
+import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
@@ -84,7 +85,7 @@ export const StripsPage = () => {
   };
 
   return (
-    <div className="text-white text-2xl flex flex-col w-full overflow-hidden">
+    <PageContainer>
       <PageHeader title="Audio Strips">
         <div className="space-x-4">
           <DeleteButton disabled={isDeleteAllDisabled} onClick={onModalOpen}>
@@ -120,6 +121,6 @@ export const StripsPage = () => {
           />
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 };
