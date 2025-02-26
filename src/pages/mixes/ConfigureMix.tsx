@@ -18,6 +18,7 @@ import {
   removeStripFromMix
 } from '../../utils/utils';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
+import PageBody from '../../components/pageLayout/pageBody/pageBody';
 
 export const ConfigureMixPage = () => {
   const { mixId } = useParams();
@@ -177,6 +178,7 @@ export const ConfigureMixPage = () => {
               setIsFirstMount(true);
               navigate(`/mixes/${value.stripId}`, { replace: true });
             }}
+            className="ml-2"
           />
         }
       >
@@ -189,9 +191,8 @@ export const ConfigureMixPage = () => {
           removeInput={handleRemoveInputFromMix}
         />
       </PageHeader>
-
-      <div className="text-white text-2xl justify-between w-full">
-        <div className="flex flex-row space-x-8 mt-8 ml-8 items-center">
+      <PageBody>
+        <div className="flex flex-row p-4 pr-0 items-center h-full">
           {mixToConfigure && (
             <MixStrip
               key={`mix-${mixToConfigure.stripId}`}
@@ -202,7 +203,7 @@ export const ConfigureMixPage = () => {
             />
           )}
           {/* Inputs that belong to the conf-mix */}
-          <div className="ml-8 w-full max-w-full overflow-hidden">
+          <div className="pl-4 w-full max-w-full h-full overflow-hidden">
             <ScrollableContainer
               configurableMixStrips={mixToConfigure}
               isRemovingFromMix={true}
@@ -229,7 +230,7 @@ export const ConfigureMixPage = () => {
           onConfirm={handleRemoveMix}
           onClose={() => setIsModalOpen(false)}
         />
-      </div>
+      </PageBody>
     </PageContainer>
   );
 };

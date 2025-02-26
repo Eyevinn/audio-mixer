@@ -14,6 +14,7 @@ import { useData } from '../../hooks/useData';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addMix, removeMix } from '../../utils/utils';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
+import PageBody from '../../components/pageLayout/pageBody/pageBody';
 
 export const MixesPage = () => {
   const [selectedMix, setSelectedMix] = useState<number | null>(null);
@@ -102,8 +103,8 @@ export const MixesPage = () => {
         </div>
       </PageHeader>
       {/* Audio Strips Container */}
-      <div className="text-white text-2xl flex flex-row justify-between w-full">
-        <div className="ml-8 mt-4 w-full max-w-full overflow-hidden">
+      <PageBody>
+        <div className="pl-4 pt-4 w-full max-w-full h-full overflow-hidden">
           <ScrollableContainer
             mixStrips={savedMixes}
             handleRemoveStrip={handleRemoveMix}
@@ -118,7 +119,7 @@ export const MixesPage = () => {
             type="mixes"
           />
         )}
-      </div>
+      </PageBody>
 
       <ConfirmationModal
         isOpen={isModalOpen}

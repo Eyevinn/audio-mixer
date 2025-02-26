@@ -92,7 +92,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
 
   return (
     <div
-      className={`box-border flex flex-col w-fit h-[55rem] relative rounded-lg ${isHighlighted ? 'border-2 border-white' : ''} ${isBeingConfigured ? 'border-2 border-white' : ''} ${backgroundColor} ${selected && !isBeingConfigured ? 'border-[1px] border-gray-400' : ''}`}
+      className={`box-border flex flex-col w-fit h-full relative rounded-lg ${isHighlighted ? 'border-2 border-white' : ''} ${isBeingConfigured ? 'border-2 border-white' : ''} ${backgroundColor} ${selected && !isBeingConfigured ? 'border-[1px] border-gray-400' : ''}`}
     >
       {/* Strip Info */}
       <StripHeader

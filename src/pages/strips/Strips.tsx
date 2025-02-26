@@ -12,6 +12,7 @@ import { useWebSocket } from '../../context/WebSocketContext';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addStrip, removeStrip } from '../../utils/utils';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
+import PageBody from '../../components/pageLayout/pageBody/pageBody';
 
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
@@ -103,9 +104,9 @@ export const StripsPage = () => {
         />
       </PageHeader>
 
-      <div className="text-white text-2xl flex flex-row justify-between w-full">
+      <PageBody>
         {/* Audio Strips Container */}
-        <div className="ml-8 mt-4 w-full max-w-full overflow-hidden">
+        <div className="pl-4 pt-4 w-full max-w-full overflow-hidden h-full">
           <ScrollableContainer
             audioStrips={savedStrips}
             handleRemoveStrip={handleRemoveStrip}
@@ -120,7 +121,7 @@ export const StripsPage = () => {
             type="strips"
           />
         )}
-      </div>
+      </PageBody>
     </PageContainer>
   );
 };
