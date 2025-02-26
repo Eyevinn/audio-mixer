@@ -66,9 +66,13 @@ export const WebSocketDialog = () => {
           onClick={() => {
             handleConnect(address);
           }}
-          className="w-24 h-10"
+          className="min-w-24 max-w-24 max-h-10 min-h-10 flex justify-around"
         >
-          {loading ? <Loader /> : 'Connect'}
+          {loading ? (
+            <Loader />
+          ) : (
+            <span className="flex items-center">Connect</span>
+          )}
         </PrimaryButton>
       </div>
     </dialog>

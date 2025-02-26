@@ -21,7 +21,7 @@ export const CancelButton = ({
 }: TButtonProps) => {
   return (
     <button
-      className={`${className} cursor-pointer text-sm ${disabled ? 'cursor-auto bg-button-abort/50 text-black/50' : 'cursor-pointer text-black bg-button-abort hover:bg-button-abort-hover'} font-bold py-2 px-4 rounded h-fit w-fit`}
+      className={`cursor-pointer text-sm ${disabled ? 'cursor-auto bg-button-abort/50 text-black/50' : 'cursor-pointer text-black bg-button-abort hover:bg-button-abort-hover'} font-bold py-2 px-4 rounded h-fit w-fit ${className} `}
       disabled={disabled}
       onClick={onClick}
     >
@@ -38,7 +38,7 @@ export const PrimaryButton = ({
 }: TButtonProps) => {
   return (
     <button
-      className={`${className} ${disabled ? 'cursor-auto bg-button-green/50 text-white/50' : 'cursor-pointer text-white bg-button-green hover:bg-button-green-hover'} cursor-pointer text-sm font-bold py-2 px-4 rounded h-fit w-fit`}
+      className={`${disabled ? 'cursor-auto bg-button-green/50 text-white/50' : 'cursor-pointer text-white bg-button-green hover:bg-button-green-hover'} cursor-pointer text-sm font-bold py-2 px-4 rounded h-fit w-fit ${className} `}
       disabled={disabled}
       onClick={onClick}
     >
@@ -76,7 +76,7 @@ export const DeleteButton = ({
 }: TButtonProps) => {
   return (
     <button
-      className={`${className} ${disabled ? 'cursor-auto bg-button-delete/50 text-white/50' : 'cursor-pointer text-white bg-button-delete hover:bg-button-delete-hover'} font-bold py-2 px-4 rounded h-fit w-fit text-sm`}
+      className={`${disabled ? 'cursor-auto bg-button-delete/50 text-white/50' : 'cursor-pointer text-white bg-button-delete hover:bg-button-delete-hover'} font-bold py-2 px-4 rounded h-fit w-fit text-sm ${className}`}
       disabled={disabled}
       onClick={onClick}
     >
