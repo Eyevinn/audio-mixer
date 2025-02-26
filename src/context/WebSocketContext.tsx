@@ -35,6 +35,12 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       setConnectionFailed(false);
       setWsUrl(address);
       const websocket = new WebSocket(address);
+      const connectionTimeout = setTimeout(() => {
+        if (websocket.readyState !== WebSocket.OPEN) {
+          websocket.close();
+          setConnectionFailed(true);
+        }
+      }, 5000);
 
       websocket.onmessage = (event) => {
         try {
@@ -64,6 +70,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
         setConnectionFailed(true);
         setWsUrl('');
         setIsConnected(false);
+        clearTimeout(connectionTimeout);
       };
 
       websocket.onopen = () => {
@@ -74,6 +81,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       websocket.onclose = () => {
         showError(`Websocket connection to ${address} was closed`);
         setIsConnected(false);
+        clearTimeout(connectionTimeout);
         setWsUrl('');
       };
 
@@ -104,6 +112,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     const messageString = JSON.stringify(message);
+    logger.black('SENDING:' + messageString);
     ws.send(messageString);
   };
 

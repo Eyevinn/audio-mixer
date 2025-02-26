@@ -18,6 +18,8 @@ export const WebSocketDialog = () => {
     if (connectionFailed) {
       setLoading(false);
       setErrorMessage('Connection failed. Please try again.');
+    } else {
+      setErrorMessage('');
     }
   }, [connectionFailed]);
 
