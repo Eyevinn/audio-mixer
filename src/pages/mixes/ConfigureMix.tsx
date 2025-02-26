@@ -212,9 +212,13 @@ export const ConfigureMixPage = () => {
 
           {selectedStrip !== null && (
             <EffectsPanel
-              strip={allInputs.find(
-                (strip) => strip.stripId === selectedStrip.id
-              )}
+              strip={
+                selectedStrip.type === 'mixes'
+                  ? savedMixes.find((mix) => mix.stripId === selectedStrip.id)
+                  : savedStrips.find(
+                      (strip) => strip.stripId === selectedStrip.id
+                    )
+              }
               type={selectedStrip.type}
             />
           )}
