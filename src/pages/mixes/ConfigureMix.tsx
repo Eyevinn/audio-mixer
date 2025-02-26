@@ -35,20 +35,19 @@ export const ConfigureMixPage = () => {
     undefined
   );
   const { sendMessage } = useWebSocket();
-  const { savedStrips, savedMixes, setSavedMixes, setSavedStrips } =
-    useGlobalState();
+  const { strips, mixes, setMixes, setStrips } = useGlobalState();
 
   useEffect(() => {
     if (!isFirstMount) return;
 
-    setSavedStrips((prevStrips) =>
+    setStrips((prevStrips) =>
       prevStrips.map((strip) => ({
         ...strip,
         selected: false
       }))
     );
 
-    setSavedMixes((prevMixes) =>
+    setMixes((prevMixes) =>
       prevMixes.map((mix) => ({
         ...mix,
         selected: false
@@ -57,42 +56,40 @@ export const ConfigureMixPage = () => {
 
     setSelectedStrip(null);
     setIsFirstMount(false);
-  }, [isFirstMount, setSavedMixes, setSavedStrips]);
+  }, [isFirstMount, setMixes, setStrips]);
 
   useEffect(() => {
     if (isFirstMount) return;
 
-    const selStrip = savedStrips.find((strip) => strip.selected === true);
-    const selMix = savedMixes.find((mix) => mix.selected === true);
+    const selStrip = strips.find((strip) => strip.selected === true);
+    const selMix = mixes.find((mix) => mix.selected === true);
 
     if (selStrip) {
       setSelectedStrip({ id: selStrip.stripId, type: 'strips' });
     } else if (selMix) {
       setSelectedStrip({ id: selMix.stripId, type: 'mixes' });
     }
-  }, [savedStrips, savedMixes, isFirstMount]);
+  }, [strips, mixes, isFirstMount]);
 
   useEffect(() => {
-    if (savedMixes && mixId) {
-      const mixToConf = savedMixes.find(
-        (mix) => mix.stripId.toString() === mixId
-      );
+    if (mixes && mixId) {
+      const mixToConf = mixes.find((mix) => mix.stripId.toString() === mixId);
       setMixToConfigure(mixToConf);
     }
-  }, [mixId, savedMixes]);
+  }, [mixId, mixes]);
 
   useEffect(() => {
     if (mixToConfigure && mixToConfigure.inputs) {
       const mixesArray = Object.keys(mixToConfigure.inputs.mixes);
       const stripsArray = Object.keys(mixToConfigure.inputs.strips);
 
-      const mixesUsed = savedMixes.filter((mix) =>
+      const mixesUsed = mixes.filter((mix) =>
         mixesArray.some((m) => {
           return parseInt(m) === mix.stripId;
         })
       );
 
-      const stripsUsed = savedStrips.filter((strip) =>
+      const stripsUsed = strips.filter((strip) =>
         stripsArray.some((s) => {
           return parseInt(s) === strip.stripId;
         })
@@ -100,11 +97,11 @@ export const ConfigureMixPage = () => {
 
       setUsedInputs([...mixesUsed, ...stripsUsed]);
     }
-  }, [mixToConfigure, savedMixes, savedStrips]);
+  }, [mixToConfigure, mixes, strips]);
 
   useEffect(() => {
-    setAllInputs([...savedStrips, ...savedMixes]);
-  }, [savedStrips, savedMixes]);
+    setAllInputs([...strips, ...mixes]);
+  }, [strips, mixes]);
 
   const handleAddInput = (input: TAudioStrip | TMixStrip) => {
     const isMix = input.inputs !== undefined;
@@ -149,14 +146,14 @@ export const ConfigureMixPage = () => {
   ) => {
     setSelectedStrip(stripId ? { id: stripId, type: type } : null);
 
-    setSavedMixes((prevMixes) =>
+    setMixes((prevMixes) =>
       prevMixes.map((mix) => ({
         ...mix,
         selected: (stripId === mix.stripId && type === 'mixes') || false
       }))
     );
 
-    setSavedStrips((prevStrips) =>
+    setStrips((prevStrips) =>
       prevStrips.map((strip) => ({
         ...strip,
         selected: (stripId === strip.stripId && type === 'strips') || false
@@ -173,7 +170,7 @@ export const ConfigureMixPage = () => {
             value={
               mixToConfigure?.label || mixToConfigure?.stripId.toString() || ''
             }
-            options={savedMixes}
+            options={mixes}
             onChange={(value) => {
               setIsFirstMount(true);
               navigate(`/mixes/${value.stripId}`, { replace: true });
@@ -218,10 +215,8 @@ export const ConfigureMixPage = () => {
             <EffectsPanel
               strip={
                 selectedStrip.type === 'mixes'
-                  ? savedMixes.find((mix) => mix.stripId === selectedStrip.id)
-                  : savedStrips.find(
-                      (strip) => strip.stripId === selectedStrip.id
-                    )
+                  ? mixes.find((mix) => mix.stripId === selectedStrip.id)
+                  : strips.find((strip) => strip.stripId === selectedStrip.id)
               }
               type={selectedStrip.type}
             />

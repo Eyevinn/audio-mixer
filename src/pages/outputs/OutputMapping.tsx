@@ -9,12 +9,12 @@ import PageContainer from '../../components/pageLayout/pageContainer/PageContain
 
 export const OutputMappingPage = () => {
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
-  const { savedStrips, savedMixes, savedOutputs } = useGlobalState();
+  const { strips, mixes, outputs } = useGlobalState();
   const { sendMessage } = useWebSocket();
 
   useEffect(() => {
-    setAllInputs([...savedStrips, ...savedMixes]);
-  }, [savedStrips, savedMixes]);
+    setAllInputs([...strips, ...mixes]);
+  }, [strips, mixes]);
 
   const handleAddInputToOutput = (
     outputName: string,
@@ -33,10 +33,10 @@ export const OutputMappingPage = () => {
 
   const renderLabel = (stripId: number, inputType: 'strip' | 'mix') => {
     if (inputType === 'strip') {
-      const strip = savedStrips.find((strip) => strip.stripId === stripId);
+      const strip = strips.find((strip) => strip.stripId === stripId);
       return `Strip ${strip?.label || stripId.toString()}`;
     } else if (inputType === 'mix') {
-      const mix = savedMixes.find((mix) => mix.stripId === stripId);
+      const mix = mixes.find((mix) => mix.stripId === stripId);
       return `Mix ${mix?.label || stripId.toString()}`;
     } else {
       return 'Select input';
@@ -47,7 +47,7 @@ export const OutputMappingPage = () => {
     <PageContainer>
       <PageHeader title="Outputs" />
       <div className="flex flex-wrap gap-6 ml-8 mt-8">
-        {Object.entries(savedOutputs).map(([key, output]) => {
+        {Object.entries(outputs).map(([key, output]) => {
           return (
             <div key={key} className="flex flex-col space-y-2">
               <span>{key}</span>

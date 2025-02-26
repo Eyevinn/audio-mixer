@@ -21,14 +21,14 @@ export const MixesPage = () => {
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const [isFirstMount, setIsFirstMount] = useState(true);
   const { sendMessage } = useWebSocket();
-  const { savedMixes, setSavedMixes } = useGlobalState();
-  const nextMixIndex = useNextAvailableIndex(savedMixes);
+  const { mixes, setMixes } = useGlobalState();
+  const nextMixIndex = useNextAvailableIndex(mixes);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!isFirstMount) return;
 
-    setSavedMixes((prevMixes) =>
+    setMixes((prevMixes) =>
       prevMixes.map((mix) => ({
         ...mix,
         selected: false
@@ -36,23 +36,23 @@ export const MixesPage = () => {
     );
     setSelectedMix(null);
     setIsFirstMount(false);
-  }, [isFirstMount, setSavedMixes]);
+  }, [isFirstMount, setMixes]);
 
   useEffect(() => {
-    setIsDeleteAllDisabled(savedMixes.length === 0);
-  }, [savedMixes]);
+    setIsDeleteAllDisabled(mixes.length === 0);
+  }, [mixes]);
 
   useEffect(() => {
     if (isFirstMount) return;
 
-    const isSelected = savedMixes.find((mix) => {
+    const isSelected = mixes.find((mix) => {
       return mix.selected === true;
     })?.stripId;
 
     if (isSelected) {
       setSelectedMix(isSelected);
     }
-  }, [savedMixes, isFirstMount]);
+  }, [mixes, isFirstMount]);
 
   const handleAddMix = () => {
     addMix(sendMessage, nextMixIndex);
@@ -68,7 +68,7 @@ export const MixesPage = () => {
   };
 
   const handleRemoveAllMixes = () => {
-    savedMixes.forEach((mix) => handleRemoveMix(mix.stripId));
+    mixes.forEach((mix) => handleRemoveMix(mix.stripId));
   };
 
   const onModalOpen = () => {
@@ -82,7 +82,7 @@ export const MixesPage = () => {
   const handleMixSelection = (mixId: number | null) => {
     setSelectedMix(mixId);
 
-    setSavedMixes((prevMixes) =>
+    setMixes((prevMixes) =>
       prevMixes.map((mix) => ({
         ...mix,
         selected: mix.stripId === mixId || false
@@ -104,7 +104,7 @@ export const MixesPage = () => {
       <PageBody>
         <div className="p-4 w-full max-w-full h-full overflow-hidden">
           <ScrollableContainer
-            mixStrips={savedMixes}
+            mixStrips={mixes}
             handleRemoveStrip={handleRemoveMix}
             onStripSelect={handleMixSelection}
           />
@@ -114,7 +114,7 @@ export const MixesPage = () => {
         {selectedMix !== null && (
           <div className="p-4">
             <EffectsPanel
-              strip={savedMixes.find((m) => m.stripId === selectedMix)}
+              strip={mixes.find((m) => m.stripId === selectedMix)}
               type="mixes"
             />
           </div>

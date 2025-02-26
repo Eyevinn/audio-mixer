@@ -8,15 +8,13 @@ import React, {
 import { Output, TAudioStrip, TMixStrip } from '../types/types';
 
 interface GlobalStateContextType {
-  savedStrips: TAudioStrip[];
-  savedMixes: TMixStrip[];
-  savedOutputs: { [key: string]: Output };
+  strips: TAudioStrip[];
+  mixes: TMixStrip[];
+  outputs: { [key: string]: Output };
   errorMessage: string;
-  setSavedStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>;
-  setSavedMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>;
-  setSavedOutputs: React.Dispatch<
-    React.SetStateAction<{ [key: string]: Output }>
-  >;
+  setStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>;
+  setMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>;
+  setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: Output }>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -25,22 +23,20 @@ const GlobalStateContext = createContext<GlobalStateContextType | null>(null);
 export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
   children
 }) => {
-  const [savedStrips, setSavedStrips] = useState<TAudioStrip[]>([]);
-  const [savedMixes, setSavedMixes] = useState<TMixStrip[]>([]);
-  const [savedOutputs, setSavedOutputs] = useState<{ [key: string]: Output }>(
-    {}
-  );
+  const [strips, setStrips] = useState<TAudioStrip[]>([]);
+  const [mixes, setMixes] = useState<TMixStrip[]>([]);
+  const [outputs, setOutputs] = useState<{ [key: string]: Output }>({});
   const [errorMessage, setErrorMessage] = useState<string>('');
   return (
     <GlobalStateContext.Provider
       value={{
-        savedStrips,
-        savedMixes,
-        savedOutputs,
+        strips,
+        mixes,
+        outputs,
         errorMessage,
-        setSavedStrips,
-        setSavedMixes,
-        setSavedOutputs,
+        setStrips,
+        setMixes,
+        setOutputs,
         setErrorMessage
       }}
     >

@@ -13,7 +13,7 @@ interface AudioStripProps extends TAudioStrip {
 
 export const AudioStrip: React.FC<AudioStripProps> = (props) => {
   const { sendMessage } = useWebSocket();
-  const { savedStrips, setSavedStrips } = useGlobalState();
+  const { strips, setStrips } = useGlobalState();
 
   const handleSelection = () => {
     props.onStripSelect(props.selected ? null : props.stripId, 'strips');
@@ -24,8 +24,8 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
     property: string,
     value: number | boolean | string | undefined
   ) => {
-    setSavedStrips(
-      savedStrips.map((strip) =>
+    setStrips(
+      strips.map((strip) =>
         strip.stripId === stripId ? { ...strip, [property]: value } : strip
       )
     );

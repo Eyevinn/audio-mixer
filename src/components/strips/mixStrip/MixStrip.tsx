@@ -18,8 +18,8 @@ interface MixStripProps extends TMixStrip {
 
 export const MixStrip: React.FC<MixStripProps> = (props) => {
   const { sendMessage } = useWebSocket();
-  const { savedMixes, setSavedMixes } = useGlobalState();
-  const nextMixIndex = useNextAvailableIndex(savedMixes);
+  const { mixes, setMixes } = useGlobalState();
+  const nextMixIndex = useNextAvailableIndex(mixes);
 
   useEffect(() => {
     let highlightTimeout: NodeJS.Timeout;
@@ -34,7 +34,7 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
   });
 
   const handleCopyMix = (mixToCopy: number) => {
-    const mixToCopyData = savedMixes.find((mix) => mix.stripId === mixToCopy);
+    const mixToCopyData = mixes.find((mix) => mix.stripId === mixToCopy);
     if (!mixToCopyData) return;
 
     // Create new mix
@@ -66,8 +66,8 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
     property: string,
     value: number | boolean | string | undefined
   ) => {
-    setSavedMixes(
-      savedMixes.map((mix) =>
+    setMixes(
+      mixes.map((mix) =>
         mix.stripId === stripId ? { ...mix, [property]: value } : mix
       )
     );

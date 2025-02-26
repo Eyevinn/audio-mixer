@@ -25,13 +25,12 @@ export const ConfigureMixStrip: React.FC<MixStripProps> = ({
   onRemove
 }) => {
   const { sendMessage } = useWebSocket();
-  const { savedMixes, savedStrips, setSavedMixes, setSavedStrips } =
-    useGlobalState();
+  const { mixes, strips, setMixes, setStrips } = useGlobalState();
 
-  const originMix = savedMixes.find(
+  const originMix = mixes.find(
     (mix) => mix.stripId === configId && type === 'mixes'
   );
-  const originStrip = savedStrips.find(
+  const originStrip = strips.find(
     (strip) => strip.stripId === configId && type === 'strips'
   );
   const activeConfig = originMix || originStrip;
@@ -57,8 +56,8 @@ export const ConfigureMixStrip: React.FC<MixStripProps> = ({
       (property === 'volume' || property === 'muted' || property === 'origin');
 
     if (isSendLevelProperty) {
-      setSavedMixes(
-        savedMixes.map((mix) =>
+      setMixes(
+        mixes.map((mix) =>
           mix.stripId === stripId
             ? {
                 ...mix,
@@ -77,14 +76,14 @@ export const ConfigureMixStrip: React.FC<MixStripProps> = ({
         )
       );
     } else if (type === 'mixes') {
-      setSavedMixes(
-        savedMixes.map((mix) =>
+      setMixes(
+        mixes.map((mix) =>
           mix.stripId === id ? { ...mix, [property]: value } : mix
         )
       );
     } else if (type === 'strips') {
-      setSavedStrips(
-        savedStrips.map((strip) =>
+      setStrips(
+        strips.map((strip) =>
           strip.stripId === id ? { ...strip, [property]: value } : strip
         )
       );
