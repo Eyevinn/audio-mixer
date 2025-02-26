@@ -1,0 +1,5 @@
+services:
+  audio-mixer:
+    build: .
+    ports:
+      - 9000:9000
