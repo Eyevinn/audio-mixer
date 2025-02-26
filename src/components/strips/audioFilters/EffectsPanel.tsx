@@ -31,6 +31,17 @@ type EQState = {
   band7: EQBand;
 };
 
+const EQ_BAND_FILTERS = [
+  { select: 'No EQ', array: [] },
+  { select: '1 filter', array: [0] },
+  { select: '2 filters', array: [0, 1] },
+  { select: '3 filters', array: [0, 1, 2] },
+  { select: '4 filters', array: [0, 1, 2, 3] },
+  { select: '5 filters', array: [0, 1, 2, 3, 4] },
+  { select: '6 filters', array: [0, 1, 2, 3, 4, 5] },
+  { select: '7 filters', array: [0, 1, 2, 3, 4, 5, 6] }
+];
+
 export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
   const [eqState, setEqState] = useState<EQState>({
     band0: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
@@ -42,17 +53,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
     band6: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
     band7: { type: 'none', freq: 1000, gain: 0, q: 0.707 }
   });
-  const eqBandFilters = [
-    { select: 'No EQ', array: [] },
-    { select: '1 filter', array: [0] },
-    { select: '2 filters', array: [0, 1] },
-    { select: '3 filters', array: [0, 1, 2] },
-    { select: '4 filters', array: [0, 1, 2, 3] },
-    { select: '5 filters', array: [0, 1, 2, 3, 4] },
-    { select: '6 filters', array: [0, 1, 2, 3, 4, 5] },
-    { select: '7 filters', array: [0, 1, 2, 3, 4, 5, 6] }
-  ];
-  const [eqBandsArray, setEqBandsArray] = useState(eqBandFilters[0].array);
+  const [eqBandsArray, setEqBandsArray] = useState(EQ_BAND_FILTERS[0].array);
   const [trimValue, setTrimValue] = useState(0);
 
   const [compressorState, setCompressorState] = useState({
@@ -101,7 +102,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
   useEffect(() => {
     setTrimValue(strip?.filters.gain.value || 0);
     setEqBandsArray(
-      eqBandFilters[Object.keys(strip?.filters.eq.bands || {}).length].array
+      EQ_BAND_FILTERS[Object.keys(strip?.filters.eq.bands || {}).length].array
     );
     Object.entries(strip?.filters.eq.bands || {}).forEach(([key, band]) => {
       setEqState((prev) => ({
@@ -112,8 +113,6 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
         }
       }));
     });
-    // TODO: Fix this circular dependency
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [strip]);
 
   if (!strip) return null;
@@ -243,7 +242,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
           }}
           className="text-sm bg-gray-700 rounded px-2 py-1"
         >
-          {eqBandFilters.map((select) => (
+          {EQ_BAND_FILTERS.map((select) => (
             <option key={select.select} value={JSON.stringify(select.array)}>
               {select.select}
             </option>
