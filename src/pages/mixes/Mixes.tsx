@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PageBody from '../../components/pageLayout/pageBody/pageBody';
+import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
 import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
@@ -12,8 +14,6 @@ import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addMix, removeMix } from '../../utils/utils';
-import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
-import PageBody from '../../components/pageLayout/pageBody/pageBody';
 
 export const MixesPage = () => {
   const [selectedMix, setSelectedMix] = useState<number | null>(null);
@@ -102,7 +102,7 @@ export const MixesPage = () => {
       </PageHeader>
       {/* Audio Strips Container */}
       <PageBody>
-        <div className="p-4 pr-0 w-full max-w-full h-full overflow-hidden">
+        <div className="p-4 w-full max-w-full h-full overflow-hidden">
           <ScrollableContainer
             mixStrips={savedMixes}
             handleRemoveStrip={handleRemoveMix}
@@ -112,10 +112,12 @@ export const MixesPage = () => {
 
         {/* Effects Panel */}
         {selectedMix !== null && (
-          <EffectsPanel
-            strip={savedMixes.find((m) => m.stripId === selectedMix)}
-            type="mixes"
-          />
+          <div className="p-4">
+            <EffectsPanel
+              strip={savedMixes.find((m) => m.stripId === selectedMix)}
+              type="mixes"
+            />
+          </div>
         )}
       </PageBody>
 

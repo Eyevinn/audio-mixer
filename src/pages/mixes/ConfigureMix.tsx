@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import PageBody from '../../components/pageLayout/pageBody/pageBody';
+import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
 import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
@@ -17,8 +19,6 @@ import {
   removeMixFromMix,
   removeStripFromMix
 } from '../../utils/utils';
-import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
-import PageBody from '../../components/pageLayout/pageBody/pageBody';
 
 export const ConfigureMixPage = () => {
   const { mixId } = useParams();
@@ -192,8 +192,8 @@ export const ConfigureMixPage = () => {
         />
       </PageHeader>
       <PageBody>
-        <div className="flex flex-row p-4 pr-0 items-center h-full">
-          {mixToConfigure && (
+        {mixToConfigure && (
+          <div className="p-4">
             <MixStrip
               key={`mix-${mixToConfigure.stripId}`}
               {...mixToConfigure}
@@ -201,18 +201,20 @@ export const ConfigureMixPage = () => {
               onRemove={handleRemoveMix}
               isBeingConfigured={true}
             />
-          )}
-          {/* Inputs that belong to the conf-mix */}
-          <div className="pl-4 w-full max-w-full h-full overflow-hidden">
-            <ScrollableContainer
-              configurableMixStrips={mixToConfigure}
-              isRemovingFromMix={true}
-              onStripSelect={handleSelection}
-              handleRemoveStripFromMix={handleRemoveInputFromMix}
-            />
           </div>
+        )}
+        {/* Inputs that belong to the conf-mix */}
+        <div className="w-full max-w-full overflow-hidden h-full p-4">
+          <ScrollableContainer
+            configurableMixStrips={mixToConfigure}
+            isRemovingFromMix={true}
+            onStripSelect={handleSelection}
+            handleRemoveStripFromMix={handleRemoveInputFromMix}
+          />
+        </div>
 
-          {selectedStrip !== null && (
+        {selectedStrip !== null && (
+          <div className="p-4">
             <EffectsPanel
               strip={
                 selectedStrip.type === 'mixes'
@@ -223,9 +225,8 @@ export const ConfigureMixPage = () => {
               }
               type={selectedStrip.type}
             />
-          )}
-        </div>
-
+          </div>
+        )}
         <ConfirmationModal
           isOpen={isModalOpen}
           title="Remove mix"
