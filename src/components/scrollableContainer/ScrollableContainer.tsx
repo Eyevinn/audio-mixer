@@ -21,6 +21,12 @@ interface ScrollableContainerProps {
   onStripSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
 }
 
+const scrollBehavior: ScrollIntoViewOptions = {
+  behavior: 'smooth',
+  block: 'nearest',
+  inline: 'center'
+};
+
 export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   audioStrips,
   mixStrips,
@@ -46,32 +52,20 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       mixRefs.current[highlightedMixId] &&
       containerRef.current
     ) {
-      mixRefs.current[highlightedMixId]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
-      });
+      mixRefs.current[highlightedMixId]?.scrollIntoView(scrollBehavior);
     }
   }, [highlightedMixId, mixStrips]);
 
   useEffect(() => {
     audioStrips?.forEach((strip) => {
       if (strip.selected && stripRefs.current[strip.stripId]) {
-        stripRefs.current[strip.stripId]?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center'
-        });
+        stripRefs.current[strip.stripId]?.scrollIntoView(scrollBehavior);
       }
     });
 
     mixStrips?.forEach((mix) => {
       if (mix.selected && mixRefs.current[mix.stripId]) {
-        mixRefs.current[mix.stripId]?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center'
-        });
+        mixRefs.current[mix.stripId]?.scrollIntoView(scrollBehavior);
       }
     });
 
@@ -81,11 +75,9 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
           (strip) => strip.stripId === parseInt(key, 10)
         );
         if (strip?.selected && configurableRefs.current[parseInt(key, 10)]) {
-          configurableRefs.current[parseInt(key, 10)]?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'center'
-          });
+          configurableRefs.current[parseInt(key, 10)]?.scrollIntoView(
+            scrollBehavior
+          );
         }
       });
     }
@@ -94,11 +86,9 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       Object.entries(configurableMixStrips.inputs.mixes).forEach(([key]) => {
         const mix = savedMixes.find((mix) => mix.stripId === parseInt(key, 10));
         if (mix?.selected && configurableRefs.current[parseInt(key, 10)]) {
-          configurableRefs.current[parseInt(key, 10)]?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'center'
-          });
+          configurableRefs.current[parseInt(key, 10)]?.scrollIntoView(
+            scrollBehavior
+          );
         }
       });
     }
