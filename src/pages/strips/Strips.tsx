@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import PageBody from '../../components/pageLayout/pageBody/pageBody';
+import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
 import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
@@ -11,8 +13,6 @@ import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addStrip, removeStrip } from '../../utils/utils';
-import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
-import PageBody from '../../components/pageLayout/pageBody/pageBody';
 
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
@@ -106,7 +106,7 @@ export const StripsPage = () => {
 
       <PageBody>
         {/* Audio Strips Container */}
-        <div className="p-4 pr-0 w-full max-w-full overflow-hidden h-full">
+        <div className="p-4 w-full max-w-full overflow-hidden h-full">
           <ScrollableContainer
             audioStrips={savedStrips}
             handleRemoveStrip={handleRemoveStrip}
@@ -116,10 +116,12 @@ export const StripsPage = () => {
 
         {/* Effects Panel */}
         {selectedStrip !== null && (
-          <EffectsPanel
-            strip={savedStrips.find((s) => s.stripId === selectedStrip)}
-            type="strips"
-          />
+          <div className="p-4">
+            <EffectsPanel
+              strip={savedStrips.find((s) => s.stripId === selectedStrip)}
+              type="strips"
+            />
+          </div>
         )}
       </PageBody>
     </PageContainer>

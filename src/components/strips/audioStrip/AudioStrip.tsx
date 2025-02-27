@@ -73,7 +73,7 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
     <BaseStrip
       {...props}
       backgroundColor="bg-strip-bg"
-      header={`Strip #${props.input.input_slot}`}
+      header={`Strip #${props.stripId}`}
       isRemovingFromMix={props.isRemovingFromMix}
       handleStripChange={handleChange}
       handleSelection={handleSelection}

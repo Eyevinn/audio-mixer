@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useGlobalState } from '../../context/GlobalStateContext';
 import { TAudioStrip, TMixStrip } from '../../types/types';
 import { AudioStrip } from '../strips/audioStrip/AudioStrip';
-import { MixStrip } from '../strips/mixStrip/MixStrip';
 import { ConfigureMixStrip } from '../strips/configure/ConfigureMixStrip';
+import { MixStrip } from '../strips/mixStrip/MixStrip';
 
 interface ScrollableContainerProps {
   audioStrips?: TAudioStrip[];
@@ -31,10 +32,13 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mixRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const stripRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const configurableRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [startX, setStartX] = useState<number>(0);
   const [scrollLeft, setScrollLeft] = useState<number>(0);
   const [highlightedMixId, setHighlightedMixId] = useState<number | null>(null);
+  const { savedMixes, savedStrips } = useGlobalState();
 
   useEffect(() => {
     if (
@@ -49,6 +53,56 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       });
     }
   }, [highlightedMixId, mixStrips]);
+
+  useEffect(() => {
+    audioStrips?.forEach((strip) => {
+      if (strip.selected && stripRefs.current[strip.stripId]) {
+        stripRefs.current[strip.stripId]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center'
+        });
+      }
+    });
+
+    mixStrips?.forEach((mix) => {
+      if (mix.selected && mixRefs.current[mix.stripId]) {
+        mixRefs.current[mix.stripId]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center'
+        });
+      }
+    });
+
+    if (configurableMixStrips?.inputs.strips) {
+      Object.entries(configurableMixStrips.inputs.strips).forEach(([key]) => {
+        const strip = savedStrips.find(
+          (strip) => strip.stripId === parseInt(key, 10)
+        );
+        if (strip?.selected && configurableRefs.current[parseInt(key, 10)]) {
+          configurableRefs.current[parseInt(key, 10)]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center'
+          });
+        }
+      });
+    }
+
+    if (configurableMixStrips?.inputs.mixes) {
+      Object.entries(configurableMixStrips.inputs.mixes).forEach(([key]) => {
+        const mix = savedMixes.find((mix) => mix.stripId === parseInt(key, 10));
+        if (mix?.selected && configurableRefs.current[parseInt(key, 10)]) {
+          configurableRefs.current[parseInt(key, 10)]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center'
+          });
+        }
+      });
+    }
+  }, [audioStrips, mixStrips, configurableMixStrips, savedMixes, savedStrips]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
@@ -86,17 +140,24 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       onWheel={handleWheel}
     >
       {audioStrips?.map((strip) => (
-        <AudioStrip
-          isRemovingFromMix={isRemovingFromMix}
+        <div
           key={`${strip.stripId}-strip`}
-          {...strip}
-          onStripSelect={onStripSelect}
-          onRemove={() =>
-            handleRemoveStrip
-              ? handleRemoveStrip(strip.stripId)
-              : () => console.warn('No remove function provided')
-          }
-        />
+          ref={(el) => {
+            stripRefs.current[strip.stripId] = el;
+          }}
+        >
+          <AudioStrip
+            isRemovingFromMix={isRemovingFromMix}
+            key={`${strip.stripId}-strip`}
+            {...strip}
+            onStripSelect={onStripSelect}
+            onRemove={() =>
+              handleRemoveStrip
+                ? handleRemoveStrip(strip.stripId)
+                : () => console.warn('No remove function provided')
+            }
+          />
+        </div>
       ))}
       {mixStrips?.map((mix) => (
         <div
@@ -123,22 +184,29 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         <>
           {Object.entries(configurableMixStrips.inputs.strips).map(
             ([key, strip]) => (
-              <ConfigureMixStrip
-                key={key}
-                stripId={configurableMixStrips.stripId}
-                configId={parseInt(key, 10)}
-                sendLevels={strip}
-                type="strips"
-                onStripSelect={onStripSelect}
-                onRemove={() =>
-                  handleRemoveStripFromMix
-                    ? handleRemoveStripFromMix({
-                        stripId: parseInt(key, 10),
-                        type: 'strips'
-                      })
-                    : () => console.warn('No remove function provided')
-                }
-              />
+              <div
+                key={parseInt(key, 10)}
+                ref={(el) => {
+                  configurableRefs.current[parseInt(key, 10)] = el;
+                }}
+              >
+                <ConfigureMixStrip
+                  key={key}
+                  stripId={configurableMixStrips.stripId}
+                  configId={parseInt(key, 10)}
+                  sendLevels={strip}
+                  type="strips"
+                  onStripSelect={onStripSelect}
+                  onRemove={() =>
+                    handleRemoveStripFromMix
+                      ? handleRemoveStripFromMix({
+                          stripId: parseInt(key, 10),
+                          type: 'strips'
+                        })
+                      : () => console.warn('No remove function provided')
+                  }
+                />
+              </div>
             )
           )}
         </>
@@ -147,22 +215,29 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         <>
           {Object.entries(configurableMixStrips.inputs.mixes).map(
             ([key, mix]) => (
-              <ConfigureMixStrip
-                key={key}
-                stripId={configurableMixStrips.stripId}
-                configId={parseInt(key, 10)}
-                sendLevels={mix}
-                type="mixes"
-                onStripSelect={onStripSelect}
-                onRemove={() =>
-                  handleRemoveStripFromMix
-                    ? handleRemoveStripFromMix({
-                        stripId: parseInt(key, 10),
-                        type: 'mixes'
-                      })
-                    : () => console.warn('No remove function provided')
-                }
-              />
+              <div
+                key={parseInt(key, 10)}
+                ref={(el) => {
+                  configurableRefs.current[parseInt(key, 10)] = el;
+                }}
+              >
+                <ConfigureMixStrip
+                  key={key}
+                  stripId={configurableMixStrips.stripId}
+                  configId={parseInt(key, 10)}
+                  sendLevels={mix}
+                  type="mixes"
+                  onStripSelect={onStripSelect}
+                  onRemove={() =>
+                    handleRemoveStripFromMix
+                      ? handleRemoveStripFromMix({
+                          stripId: parseInt(key, 10),
+                          type: 'mixes'
+                        })
+                      : () => console.warn('No remove function provided')
+                  }
+                />
+              </div>
             )
           )}
         </>
