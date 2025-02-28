@@ -7,6 +7,7 @@ import { StripFields } from './StripFields';
 
 interface AudioStripProps extends TAudioStrip {
   isRemovingFromMix?: boolean;
+  isPFLActive: boolean | undefined;
   onStripSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
   onRemove: () => void;
 }
@@ -24,6 +25,16 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
     property: string,
     value: number | boolean | string | undefined
   ) => {
+    if (property === 'pfl') {
+      return sendMessage({
+        type: 'set',
+        resource: `/audio/mixes/1000/inputs/strips/${stripId}`,
+        body: {
+          muted: value
+        }
+      });
+    }
+
     setStrips(
       strips.map((strip) =>
         strip.stripId === stripId ? { ...strip, [property]: value } : strip
@@ -33,9 +44,6 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
     // If the value is undefined, do not send the message.
     // Needed for the input fields, so the input fields can be cleared
     if (value === undefined) return;
-
-    // Local states are not needed to be sent
-    if (property === 'pfl') return;
 
     if (property === 'label') {
       sendMessage({
@@ -75,6 +83,7 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
       backgroundColor="bg-strip-bg"
       header={`Strip #${props.stripId}`}
       isRemovingFromMix={props.isRemovingFromMix}
+      isPFLActive={props.isPFLActive}
       handleStripChange={handleChange}
       handleSelection={handleSelection}
     >

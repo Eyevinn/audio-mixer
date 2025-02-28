@@ -11,6 +11,7 @@ interface MixStripProps extends TMixStrip {
   isRemovingFromMix?: boolean;
   isBeingConfigured?: boolean;
   highlightedMixId?: number | null;
+  isPFLActive: boolean | undefined;
   onStripSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
   onRemove: () => void;
   setHighlightedMixId?: (stripId: number | null) => void;
@@ -66,6 +67,16 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
     property: string,
     value: number | boolean | string | undefined
   ) => {
+    if (property === 'pfl') {
+      return sendMessage({
+        type: 'set',
+        resource: `/audio/mixes/1000/inputs/mixes/${stripId}`,
+        body: {
+          muted: value
+        }
+      });
+    }
+
     setMixes(
       mixes.map((mix) =>
         mix.stripId === stripId ? { ...mix, [property]: value } : mix
@@ -75,9 +86,6 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
     // If the value is undefined, do not send the message.
     // Needed for the input fields, so the input fields can be cleared
     if (value === undefined) return;
-
-    // Local states are not needed to be sent
-    if (property === 'pfl') return;
 
     if (property === 'label') {
       sendMessage({
@@ -110,6 +118,7 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
       header={`Mix #${props.stripId}`}
       copyButton={true}
       isRemovingFromMix={props.isRemovingFromMix}
+      isPFLActive={props.isPFLActive}
       handleStripChange={handleMixChange}
       onCopy={() => handleCopyMix(props.stripId)}
       handleSelection={handleSelection}

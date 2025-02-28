@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PageBody from '../../components/pageLayout/pageBody/pageBody';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
@@ -36,6 +36,11 @@ export const ConfigureMixPage = () => {
   );
   const { sendMessage } = useWebSocket();
   const { strips, mixes, setMixes, setStrips } = useGlobalState();
+  const savedMixesWithoutPFL = mixes.filter((mix) => mix.stripId !== 1000);
+  const isPFL = useMemo(
+    () => mixes?.find((m) => m.stripId === 1000),
+    [mixes]
+  );
 
   useEffect(() => {
     if (!isFirstMount) return;
@@ -100,8 +105,17 @@ export const ConfigureMixPage = () => {
   }, [mixToConfigure, mixes, strips]);
 
   useEffect(() => {
-    setAllInputs([...strips, ...mixes]);
-  }, [strips, mixes]);
+    const newInputsString = JSON.stringify(
+      [...strips, ...savedMixesWithoutPFL].map((item) => item.stripId)
+    );
+    const currentInputsString = JSON.stringify(
+      allInputs.map((item) => item.stripId)
+    );
+
+    if (newInputsString !== currentInputsString) {
+      setAllInputs([...strips, ...savedMixesWithoutPFL]);
+    }
+  }, [strips, savedMixesWithoutPFL, allInputs]);
 
   const handleAddInput = (input: TAudioStrip | TMixStrip) => {
     const isMix = input.inputs !== undefined;
@@ -170,7 +184,7 @@ export const ConfigureMixPage = () => {
             value={
               mixToConfigure?.label || mixToConfigure?.stripId.toString() || ''
             }
-            options={mixes}
+            options={savedMixesWithoutPFL}
             onChange={(value) => {
               setIsFirstMount(true);
               navigate(`/mixes/${value.stripId}`, { replace: true });
@@ -194,6 +208,7 @@ export const ConfigureMixPage = () => {
             <MixStrip
               key={`mix-${mixToConfigure.stripId}`}
               {...mixToConfigure}
+              isPFLActive={isPFL?.inputs?.mixes[mixToConfigure.stripId]?.muted}
               onStripSelect={handleSelection}
               onRemove={handleRemoveMix}
               isBeingConfigured={true}
@@ -205,6 +220,7 @@ export const ConfigureMixPage = () => {
           <ScrollableContainer
             configurableMixStrips={mixToConfigure}
             isRemovingFromMix={true}
+            isPFL={isPFL}
             onStripSelect={handleSelection}
             handleRemoveStripFromMix={handleRemoveInputFromMix}
           />

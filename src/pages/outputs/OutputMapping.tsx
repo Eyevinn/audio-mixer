@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { Select } from '../../components/ui/select/Select';
 import { useGlobalState } from '../../context/GlobalStateContext';
@@ -11,10 +11,21 @@ export const OutputMappingPage = () => {
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
   const { strips, mixes, outputs } = useGlobalState();
   const { sendMessage } = useWebSocket();
+  const savedMixesWithoutPFL = mixes.filter((mix) => mix.stripId !== 1000);
+  const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
 
   useEffect(() => {
-    setAllInputs([...strips, ...mixes]);
-  }, [strips, mixes]);
+    const newInputsString = JSON.stringify(
+      [...strips, ...savedMixesWithoutPFL].map((item) => item.stripId)
+    );
+    const currentInputsString = JSON.stringify(
+      allInputs.map((item) => item.stripId)
+    );
+
+    if (newInputsString !== currentInputsString) {
+      setAllInputs([...strips, ...savedMixesWithoutPFL]);
+    }
+  }, [strips, savedMixesWithoutPFL, allInputs]);
 
   const handleAddInputToOutput = (
     outputName: string,
@@ -57,7 +68,7 @@ export const OutputMappingPage = () => {
                     ? renderLabel(output.input.index, output.input.source)
                     : 'Select input'
                 }
-                options={allInputs}
+                options={key === 'pfl' && isPFL ? [isPFL] : allInputs}
                 onChange={(selectedInput) =>
                   handleAddInputToOutput(key, selectedInput)
                 }

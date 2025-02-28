@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PageBody from '../../components/pageLayout/pageBody/pageBody';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
@@ -19,9 +19,11 @@ export const StripsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const { sendMessage } = useWebSocket();
-  const { strips, setStrips } = useGlobalState();
+  const { strips, mixes, setStrips } = useGlobalState();
   const nextStripIndex = useNextAvailableIndex(strips);
   const [isFirstMount, setIsFirstMount] = useState(true);
+  const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
+
   useEffect(() => {
     setIsDeleteAllDisabled(strips.length === 0);
   }, [strips]);
@@ -109,6 +111,7 @@ export const StripsPage = () => {
         <div className="p-4 w-full max-w-full overflow-hidden h-full">
           <ScrollableContainer
             audioStrips={strips}
+            isPFL={isPFL}
             handleRemoveStrip={handleRemoveStrip}
             onStripSelect={handleStripSelection}
           />
