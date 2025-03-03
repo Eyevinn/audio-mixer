@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useGlobalState } from '../context/GlobalStateContext';
-import { addMix, addMixToMix, addStripToMix } from '../utils/utils';
 import { useWebSocket } from '../context/WebSocketContext';
+import { addMix, addMixToMix, addStripToMix } from '../utils/wsCommands';
 
 export const usePFLMixManager = () => {
   const { mixes, strips } = useGlobalState();

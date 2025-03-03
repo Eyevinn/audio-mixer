@@ -4,7 +4,7 @@ import { Select } from '../../components/ui/select/Select';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { TAudioStrip, TMixStrip } from '../../types/types';
-import { addInputToOutput } from '../../utils/utils';
+import { addInputToOutput } from '../../utils/wsCommands';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 
 export const OutputMappingPage = () => {

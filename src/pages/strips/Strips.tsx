@@ -12,7 +12,7 @@ import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
-import { addStrip, removeStrip } from '../../utils/utils';
+import { addStrip, removeStrip } from '../../utils/wsCommands';
 
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);

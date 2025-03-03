@@ -13,7 +13,7 @@ import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
-import { addMix, removeMix } from '../../utils/utils';
+import { addMix, removeMix } from '../../utils/wsCommands';
 
 export const MixesPage = () => {
   const [selectedMix, setSelectedMix] = useState<number | null>(null);

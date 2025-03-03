@@ -3,7 +3,7 @@ import { useGlobalState } from '../../../context/GlobalStateContext';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { useNextAvailableIndex } from '../../../hooks/useNextAvailableIndex';
 import { TMixStrip } from '../../../types/types';
-import { addMix, addMixToMix, addStripToMix } from '../../../utils/utils';
+import { addMix, addMixToMix, addStripToMix } from '../../../utils/wsCommands';
 import { BaseStrip } from '../BaseStrip';
 import { MixFields } from './MixFields';
 
