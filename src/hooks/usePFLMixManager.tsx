@@ -4,7 +4,7 @@ import { addMix, addMixToMix, addStripToMix } from '../utils/utils';
 import { useWebSocket } from '../context/WebSocketContext';
 
 export const usePFLMixManager = () => {
-  const { savedMixes, savedStrips } = useGlobalState();
+  const { mixes, strips } = useGlobalState();
   const { sendMessage } = useWebSocket();
 
   const processedStrips = useRef<Set<number>>(new Set());
@@ -12,20 +12,20 @@ export const usePFLMixManager = () => {
 
   // Ensure PFL mix exists
   useEffect(() => {
-    if (savedStrips.length === 0) return;
+    if (strips.length === 0) return;
 
-    const pflMix = savedMixes.find((mix) => mix.stripId === 1000);
+    const pflMix = mixes.find((mix) => mix.stripId === 1000);
     if (!pflMix) {
       addMix(sendMessage, 1000);
     }
-  }, [savedMixes, savedStrips.length, sendMessage]);
+  }, [mixes, strips.length, sendMessage]);
 
   // Add new strips to PFL mix
   useEffect(() => {
-    const pflMix = savedMixes.find((mix) => mix.stripId === 1000);
+    const pflMix = mixes.find((mix) => mix.stripId === 1000);
     if (!pflMix) return;
 
-    savedStrips.forEach((strip) => {
+    strips.forEach((strip) => {
       if (strip.stripId === 1000 || processedStrips.current.has(strip.stripId))
         return;
 
@@ -39,14 +39,14 @@ export const usePFLMixManager = () => {
 
       processedStrips.current.add(strip.stripId);
     });
-  }, [savedStrips, savedMixes, sendMessage]);
+  }, [strips, mixes, sendMessage]);
 
   // Add new mixes to PFL mix
   useEffect(() => {
-    const pflMix = savedMixes.find((mix) => mix.stripId === 1000);
+    const pflMix = mixes.find((mix) => mix.stripId === 1000);
     if (!pflMix) return;
 
-    savedMixes.forEach((mix) => {
+    mixes.forEach((mix) => {
       if (mix.stripId === 1000 || processedMixes.current.has(mix.stripId))
         return;
 
@@ -60,5 +60,5 @@ export const usePFLMixManager = () => {
 
       processedMixes.current.add(mix.stripId);
     });
-  }, [savedMixes, sendMessage]);
+  }, [mixes, sendMessage]);
 };

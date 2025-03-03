@@ -3,12 +3,9 @@ import { useGlobalState } from '../context/GlobalStateContext';
 import { useWebSocket } from '../context/WebSocketContext';
 
 export const usePFLDefaultReset = () => {
-  const { savedMixes } = useGlobalState();
+  const { mixes } = useGlobalState();
   const { sendMessage } = useWebSocket();
-  const isPFL = useMemo(
-    () => savedMixes?.find((m) => m.stripId === 1000),
-    [savedMixes]
-  );
+  const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
 
   useEffect(() => {
     if (!isPFL) return;

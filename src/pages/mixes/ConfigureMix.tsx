@@ -37,10 +37,7 @@ export const ConfigureMixPage = () => {
   const { sendMessage } = useWebSocket();
   const { strips, mixes, setMixes, setStrips } = useGlobalState();
   const savedMixesWithoutPFL = mixes.filter((mix) => mix.stripId !== 1000);
-  const isPFL = useMemo(
-    () => mixes?.find((m) => m.stripId === 1000),
-    [mixes]
-  );
+  const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
 
   useEffect(() => {
     if (!isFirstMount) return;

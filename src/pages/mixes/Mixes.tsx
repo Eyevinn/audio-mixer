@@ -23,10 +23,7 @@ export const MixesPage = () => {
   const { sendMessage } = useWebSocket();
   const { mixes, setMixes } = useGlobalState();
   const nextMixIndex = useNextAvailableIndex(mixes);
-  const isPFL = useMemo(
-    () => mixes?.find((m) => m.stripId === 1000),
-    [mixes]
-  );
+  const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
   const navigate = useNavigate();
 
   useEffect(() => {
