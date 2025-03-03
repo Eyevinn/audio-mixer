@@ -56,7 +56,7 @@ export const MainVolume: React.FC<MainVolumeProps> = ({
         </div>
 
         {/* Volume slider with markers */}
-        <VolumeSlider type="master" onVolumeChange={onVolumeChange} />
+        <VolumeSlider onVolumeChange={onVolumeChange} />
       </div>
     </div>
   );

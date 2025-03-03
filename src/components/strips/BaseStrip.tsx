@@ -190,7 +190,6 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         >
           {configMode && <p className="text-base pb-2">Send Level</p>}
           <VolumeSlider
-            type="mixer"
             inputVolume={configMode ? sendLevels?.volume : fader.volume}
             onVolumeChange={(vol: number) =>
               handleStripChange(inputId, 'volume', vol)
