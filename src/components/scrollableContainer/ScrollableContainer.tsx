@@ -143,11 +143,11 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
             key={`${strip.stripId}-strip`}
             {...strip}
             isPFLActive={
-            isPFL?.inputs?.strips[strip.stripId]?.muted !== undefined
-              ? !isPFL.inputs.strips[strip.stripId].muted
-              : undefined
-          }
-          onStripSelect={onStripSelect}
+              isPFL?.inputs?.strips[strip.stripId]?.muted !== undefined
+                ? !isPFL.inputs.strips[strip.stripId].muted
+                : undefined
+            }
+            onStripSelect={onStripSelect}
             onRemove={() =>
               handleRemoveStrip
                 ? handleRemoveStrip(strip.stripId)
@@ -202,12 +202,13 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
                   sendLevels={strip}
                   type="strips"
                   isPFLActive={
-                  isPFL?.inputs?.strips[configurableMixStrips.stripId]
-                    ?.muted !== undefined
-                    ? !isPFL.inputs.strips[configurableMixStrips.stripId].muted
-                    : undefined
-                }
-                onStripSelect={onStripSelect}
+                    isPFL?.inputs?.strips[configurableMixStrips.stripId]
+                      ?.muted !== undefined
+                      ? !isPFL.inputs.strips[configurableMixStrips.stripId]
+                          .muted
+                      : undefined
+                  }
+                  onStripSelect={onStripSelect}
                   onRemove={() =>
                     handleRemoveStripFromMix
                       ? handleRemoveStripFromMix({
@@ -239,12 +240,12 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
                   sendLevels={mix}
                   type="mixes"
                   isPFLActive={
-                  isPFL?.inputs?.mixes[configurableMixStrips.stripId]?.muted !==
-                  undefined
-                    ? !isPFL.inputs.mixes[configurableMixStrips.stripId].muted
-                    : undefined
-                }
-                onStripSelect={onStripSelect}
+                    isPFL?.inputs?.mixes[configurableMixStrips.stripId]
+                      ?.muted !== undefined
+                      ? !isPFL.inputs.mixes[configurableMixStrips.stripId].muted
+                      : undefined
+                  }
+                  onStripSelect={onStripSelect}
                   onRemove={() =>
                     handleRemoveStripFromMix
                       ? handleRemoveStripFromMix({
