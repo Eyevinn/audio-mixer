@@ -202,10 +202,9 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
                   sendLevels={strip}
                   type="strips"
                   isPFLActive={
-                    isPFL?.inputs?.strips[configurableMixStrips.stripId]
-                      ?.muted !== undefined
-                      ? !isPFL.inputs.strips[configurableMixStrips.stripId]
-                          .muted
+                    isPFL?.inputs?.strips[parseInt(key, 10)]?.muted !==
+                    undefined
+                      ? !isPFL.inputs.strips[parseInt(key, 10)].muted
                       : undefined
                   }
                   onStripSelect={onStripSelect}
@@ -240,9 +239,8 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
                   sendLevels={mix}
                   type="mixes"
                   isPFLActive={
-                    isPFL?.inputs?.mixes[configurableMixStrips.stripId]
-                      ?.muted !== undefined
-                      ? !isPFL.inputs.mixes[configurableMixStrips.stripId].muted
+                    isPFL?.inputs?.mixes[parseInt(key, 10)]?.muted !== undefined
+                      ? !isPFL.inputs.mixes[parseInt(key, 10)].muted
                       : undefined
                   }
                   onStripSelect={onStripSelect}
