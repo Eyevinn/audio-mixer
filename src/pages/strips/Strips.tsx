@@ -3,7 +3,7 @@ import PageBody from '../../components/pageLayout/pageBody/pageBody';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
-import { EffectsPanel } from '../../components/strips/audioFilters/EffectsPanel';
+import { EffectsPanel } from '../../components/strips/stripComponents/audioFilters/EffectsPanel';
 import {
   DeleteButton,
   PrimaryButton
@@ -19,29 +19,29 @@ export const StripsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const { sendMessage } = useWebSocket();
-  const { savedStrips, setSavedStrips } = useGlobalState();
-  const nextStripIndex = useNextAvailableIndex(savedStrips);
+  const { strips, setStrips } = useGlobalState();
+  const nextStripIndex = useNextAvailableIndex(strips);
   const [isFirstMount, setIsFirstMount] = useState(true);
   useEffect(() => {
-    setIsDeleteAllDisabled(savedStrips.length === 0);
-  }, [savedStrips]);
+    setIsDeleteAllDisabled(strips.length === 0);
+  }, [strips]);
 
   useEffect(() => {
     if (isFirstMount) return;
 
-    const isSelected = savedStrips.find((strip) => {
+    const isSelected = strips.find((strip) => {
       return strip.selected === true;
     })?.stripId;
 
     if (isSelected) {
       setSelectedStrip(isSelected);
     }
-  }, [savedStrips, isFirstMount]);
+  }, [strips, isFirstMount]);
 
   useEffect(() => {
     if (!isFirstMount) return;
 
-    setSavedStrips((prevStrips) =>
+    setStrips((prevStrips) =>
       prevStrips.map((strip) => ({
         ...strip,
         selected: false
@@ -49,7 +49,7 @@ export const StripsPage = () => {
     );
     setSelectedStrip(null);
     setIsFirstMount(false);
-  }, [isFirstMount, setSavedStrips]);
+  }, [isFirstMount, setStrips]);
 
   const handleAddStrip = () => {
     addStrip(sendMessage, nextStripIndex);
@@ -64,7 +64,7 @@ export const StripsPage = () => {
   };
 
   const handleRemoveAllStrips = () => {
-    savedStrips.forEach((strip) => handleRemoveStrip(strip.stripId));
+    strips.forEach((strip) => handleRemoveStrip(strip.stripId));
   };
 
   const onModalOpen = () => {
@@ -77,7 +77,7 @@ export const StripsPage = () => {
 
   const handleStripSelection = (stripId: number | null) => {
     setSelectedStrip(stripId);
-    setSavedStrips((prevStrips) =>
+    setStrips((prevStrips) =>
       prevStrips.map((strip) => ({
         ...strip,
         selected: strip.stripId === stripId || false
@@ -92,7 +92,7 @@ export const StripsPage = () => {
           <DeleteButton disabled={isDeleteAllDisabled} onClick={onModalOpen}>
             Delete all strips
           </DeleteButton>
-          <PrimaryButton onClick={handleAddStrip}>Add Strip</PrimaryButton>
+          <PrimaryButton onClick={handleAddStrip}>Create Strip</PrimaryButton>
         </div>
         <ConfirmationModal
           title="Delete all strips"
@@ -108,7 +108,7 @@ export const StripsPage = () => {
         {/* Audio Strips Container */}
         <div className="p-4 w-full max-w-full overflow-hidden h-full">
           <ScrollableContainer
-            audioStrips={savedStrips}
+            audioStrips={strips}
             handleRemoveStrip={handleRemoveStrip}
             onStripSelect={handleStripSelection}
           />
@@ -118,7 +118,7 @@ export const StripsPage = () => {
         {selectedStrip !== null && (
           <div className="p-4">
             <EffectsPanel
-              strip={savedStrips.find((s) => s.stripId === selectedStrip)}
+              strip={strips.find((s) => s.stripId === selectedStrip)}
               type="strips"
             />
           </div>

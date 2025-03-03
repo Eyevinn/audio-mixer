@@ -12,8 +12,7 @@ import {
 } from '../utils/utils';
 export const useData = () => {
   const { sendMessage, messages, setMessages } = useWebSocket();
-  const { setSavedStrips, setSavedMixes, setSavedOutputs, setErrorMessage } =
-    useGlobalState();
+  const { setStrips, setMixes, setOutputs, setErrorMessage } = useGlobalState();
 
   const mapStripsData = (
     data: Record<string, TAudioStrip>,
@@ -72,7 +71,7 @@ export const useData = () => {
   };
 
   useEffect(() => {
-    if (messages.length === 0 || !sendMessage || !setSavedStrips) return;
+    if (messages.length === 0 || !sendMessage || !setStrips) return;
 
     const latestMessage = messages[0];
     setMessages((prevMessages) => prevMessages.slice(1));
@@ -86,22 +85,20 @@ export const useData = () => {
           Logger.data('Get-response', data.body);
           Logger.data('Resource', data.resource);
           if (data.resource === '/audio/strips') {
-            setSavedStrips((prevStrips) =>
-              mapStripsData(data.body, prevStrips)
-            );
+            setStrips((prevStrips) => mapStripsData(data.body, prevStrips));
           }
           if (data.resource === '/audio/mixes') {
-            setSavedMixes((prevMixes) => mapMixesData(data.body, prevMixes));
+            setMixes((prevMixes) => mapMixesData(data.body, prevMixes));
           }
           if (data.resource === '/audio/outputs') {
-            setSavedOutputs(data.body);
+            setOutputs(data.body);
           }
           break;
 
         case 'state-change':
           Logger.data('State-change', data.body);
           if (data.body?.strips) {
-            setSavedStrips((prevStrips: TAudioStrip[]) =>
+            setStrips((prevStrips: TAudioStrip[]) =>
               prevStrips.map((strip) => {
                 const updatedStripData = data.body.strips[strip.stripId];
                 if (updatedStripData) {
@@ -178,7 +175,7 @@ export const useData = () => {
             );
           }
           if (data.body?.mixes) {
-            setSavedMixes((prevMixes: TMixStrip[]) =>
+            setMixes((prevMixes: TMixStrip[]) =>
               prevMixes.map((mix) => {
                 const updatedStripData = data.body.mixes[mix.stripId];
                 if (updatedStripData) {
@@ -258,17 +255,15 @@ export const useData = () => {
 
         case 'subscribe-response':
           if (data.body?.strips) {
-            setSavedStrips((prevStrips) =>
+            setStrips((prevStrips) =>
               mapStripsData(data.body.strips, prevStrips)
             );
           }
           if (data.body?.mixes) {
-            setSavedMixes((prevMixes) =>
-              mapMixesData(data.body.mixes, prevMixes)
-            );
+            setMixes((prevMixes) => mapMixesData(data.body.mixes, prevMixes));
           }
           if (data.body?.outputs) {
-            setSavedOutputs(data.body.outputs);
+            setOutputs(data.body.outputs);
           }
           break;
 
@@ -313,9 +308,9 @@ export const useData = () => {
   }, [
     messages,
     sendMessage,
-    setSavedStrips,
-    setSavedMixes,
-    setSavedOutputs,
+    setStrips,
+    setMixes,
+    setOutputs,
     setErrorMessage,
     setMessages
   ]);
