@@ -44,22 +44,22 @@ const EQ_BAND_FILTERS = [
 
 export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
   const [eqState, setEqState] = useState<EQState>({
-    band0: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
-    band1: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
-    band2: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
-    band3: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
-    band4: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
-    band5: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
-    band6: { type: 'none', freq: 1000, gain: 0, q: 0.707 },
-    band7: { type: 'none', freq: 1000, gain: 0, q: 0.707 }
+    band0: { type: 'none', freq: 1000, gain: 0, q: 1 },
+    band1: { type: 'none', freq: 1000, gain: 0, q: 1 },
+    band2: { type: 'none', freq: 1000, gain: 0, q: 1 },
+    band3: { type: 'none', freq: 1000, gain: 0, q: 1 },
+    band4: { type: 'none', freq: 1000, gain: 0, q: 1 },
+    band5: { type: 'none', freq: 1000, gain: 0, q: 1 },
+    band6: { type: 'none', freq: 1000, gain: 0, q: 1 },
+    band7: { type: 'none', freq: 1000, gain: 0, q: 1 }
   });
   const [eqBandsArray, setEqBandsArray] = useState(EQ_BAND_FILTERS[0].array);
   const [trimValue, setTrimValue] = useState(0);
 
   const [compressorState, setCompressorState] = useState({
     threshold: 0,
-    ratio: 4.0,
-    knee: 2.5,
+    ratio: 4,
+    knee: 2,
     makeUpGain: 0
   });
   const { sendMessage, isConnected } = useWebSocket();
@@ -88,14 +88,14 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
       unit: 'dB',
       min: -15,
       max: 15,
-      step: 0.1
+      step: 1
     },
     {
       type: 'q',
       unit: '',
-      min: 0.1,
+      min: 1,
       max: 20,
-      step: 0.1
+      step: 1
     }
   ];
 
@@ -120,10 +120,10 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
   const compressorArray = [
     {
       name: 'attack',
-      min: 0.1,
+      min: 1,
       max: 120,
       value: strip.filters.compressor.attack,
-      step: 0.1,
+      step: 1,
       unit: 'ms'
     },
     {
@@ -131,7 +131,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
       min: 0,
       max: 30,
       value: strip.filters.compressor.gain,
-      step: 0.1,
+      step: 1,
       unit: 'dB'
     },
     {
@@ -139,7 +139,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
       min: 0,
       max: 30,
       value: strip.filters.compressor.knee,
-      step: 0.1,
+      step: 1,
       unit: 'dB'
     },
     {
@@ -155,7 +155,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
       min: 10,
       max: 1000,
       value: strip.filters.compressor.release,
-      step: 0.707,
+      step: 1,
       unit: 'ms'
     },
     {
@@ -163,7 +163,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
       min: -60,
       max: 0,
       value: strip.filters.compressor.threshold,
-      step: 0.1,
+      step: 1,
       unit: 'dB'
     }
   ];
@@ -339,7 +339,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
               text={`${compressor.name.charAt(0).toUpperCase() + compressor.name.slice(1)}:`}
               min={compressor.min}
               max={compressor.max}
-              value={Number(compressor.value.toFixed(1))}
+              value={compressor.value}
               step={compressor.step}
               unit={compressor.unit}
               filter="compressor"

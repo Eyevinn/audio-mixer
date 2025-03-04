@@ -37,7 +37,7 @@ export const EffectsSlider: React.FC<EffectsSliderProps> = ({
         max={max}
         value={value}
         step={step}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
+        onChange={(e) => onChange(parseInt(e.target.value))}
         onDoubleClick={onDoubleClick}
         className="w-[200px] slider-track [&::-webkit-slider-thumb]:slider-thumb [&::-moz-range-thumb]:slider-thumb"
       />
