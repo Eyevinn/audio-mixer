@@ -203,7 +203,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
   };
 
   return (
-    <div className="h-[92vh] min-w-[38rem] overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg p-2 text-white">
+    <div className="h-full min-w-[38rem] overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg p-2 text-white scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin box-border">
       <h1 className="text-xl font-semibold mb-4">
         Settings for{' '}
         {strip.label ||
