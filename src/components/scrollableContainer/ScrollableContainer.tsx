@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useGlobalState } from '../../context/GlobalStateContext';
-import { TAudioStrip, TMixStrip } from '../../types/types';
+import { OutputScrollItem } from '../../pages/outputs/OutputScrollItem';
+import { TAudioStrip, TMixStrip, TOutput } from '../../types/types';
 import { AudioStrip } from '../strips/audioStrip/AudioStrip';
 import { MixStrip } from '../strips/mixStrip/MixStrip';
 import { ConfigureMixStrip } from '../strips/stripComponents/configure/ConfigureMixStrip';
@@ -9,6 +10,8 @@ interface ScrollableContainerProps {
   audioStrips?: TAudioStrip[];
   mixStrips?: TMixStrip[];
   configurableMixStrips?: TMixStrip;
+  outputStrips?: { [key: string]: TOutput };
+  isOutputPage?: boolean;
   isRemovingFromMix?: boolean;
   isPFL?: TMixStrip;
   handleRemoveStrip?: (stripId: number) => void;
@@ -32,6 +35,8 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   audioStrips,
   mixStrips,
   configurableMixStrips,
+  outputStrips,
+  isOutputPage,
   isRemovingFromMix,
   isPFL,
   handleRemoveStrip,
@@ -123,7 +128,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
 
   return (
     <div
-      className="overflow-x-auto w-full h-full flex space-x-4 cursor-grab active:cursor-grabbing select-none scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin"
+      className={`overflow-x-auto w-full h-full flex ${isOutputPage ? 'space-x-8' : 'space-x-4'} cursor-grab active:cursor-grabbing select-none scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin`}
       ref={containerRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
@@ -249,6 +254,18 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
           )}
         </>
       )}
+      {outputStrips &&
+        Object.entries(outputStrips).map(([key, output]) => {
+          return (
+            <OutputScrollItem
+              key={key}
+              output={output}
+              outputName={key}
+              isPFLInactive={isPFL?.inputs?.mixes[output.input.index]?.muted}
+              onSelect={onStripSelect}
+            />
+          );
+        })}
     </div>
   );
 };

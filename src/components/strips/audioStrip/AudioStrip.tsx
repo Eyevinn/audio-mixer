@@ -1,6 +1,7 @@
 import React from 'react';
 import { useGlobalState } from '../../../context/GlobalStateContext';
 import { useWebSocket } from '../../../context/WebSocketContext';
+import { useCheckOutputUsage } from '../../../hooks/useCheckOutputUsage';
 import { TAudioStrip } from '../../../types/types';
 import { BaseStrip } from '../BaseStrip';
 import { StripFields } from './StripFields';
@@ -15,6 +16,7 @@ interface AudioStripProps extends TAudioStrip {
 export const AudioStrip: React.FC<AudioStripProps> = (props) => {
   const { sendMessage } = useWebSocket();
   const { strips, setStrips } = useGlobalState();
+  const warningTexts = useCheckOutputUsage(props, 'strip');
 
   const handleSelection = () => {
     props.onStripSelect(props.selected ? null : props.stripId, 'strips');
@@ -76,6 +78,7 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
       isPFLInactive={props.isPFLInactive}
       handleStripChange={handleChange}
       handleSelection={handleSelection}
+      removingOutputWarning={warningTexts}
     >
       <StripFields
         slot={

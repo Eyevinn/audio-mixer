@@ -12,6 +12,7 @@ import {
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
+import { useCheckOutputUsage } from '../../hooks/useCheckOutputUsage';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addMix, removeMix } from '../../utils/wsCommands';
 
@@ -25,6 +26,7 @@ export const MixesPage = () => {
   const nextMixIndex = useNextAvailableIndex(mixes);
   const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
   const navigate = useNavigate();
+  const warningTexts = useCheckOutputUsage(mixes, 'mix');
 
   useEffect(() => {
     if (!isFirstMount) return;
@@ -131,7 +133,7 @@ export const MixesPage = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Delete all mixes"
-        message="Are you sure you want to delete all mixes?"
+        message={`${warningTexts.length > 0 ? warningTexts + '\n' : ''} Are you sure you want to delete all mixes?`}
         confirmText="Yes, delete all"
         onConfirm={handleRemoveAllMixes}
       />

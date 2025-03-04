@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState } from 'react';
-import { showError, showInfo } from '../utils/notifications';
+import toast from 'react-hot-toast';
 import { AudioState } from '../types/types';
 import logger from '../utils/logger';
-import toast from 'react-hot-toast';
-import { useGlobalState } from './GlobalStateContext';
 import messageTranslator from '../utils/message-translator';
+import { showError, showInfo } from '../utils/notifications';
+import { useGlobalState } from './GlobalStateContext';
 
 interface WebSocketContextType {
   wsUrl: string;

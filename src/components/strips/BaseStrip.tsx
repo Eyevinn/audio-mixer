@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { TAudioStrip, TBaseStrip, TMixStrip } from '../../types/types';
+import React, { useEffect, useState } from 'react';
+import { useWebSocket } from '../../context/WebSocketContext';
+import { TAudioStrip, TBaseStrip, TMixStrip, TOutput } from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { StripDropdown } from '../ui/dropdown/Dropdown';
 import { LabelInput } from '../ui/input/Input';
+import { EbuMeters } from './outputStrip/EbuMeters';
+import { ResetButton } from './outputStrip/ResetButton';
 import { AudioLevel } from './stripComponents/audioLevel/AudioLevel';
 import { PanningSlider } from './stripComponents/panningSlider/PanningSlider';
-import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
 import { StripHeader } from './stripComponents/stripHeader/StripHeader';
-import { useWebSocket } from '../../context/WebSocketContext';
+import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
 
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;
@@ -19,6 +21,7 @@ interface BaseStripProps extends TBaseStrip {
     is_stereo: boolean;
     second_channel: number;
   };
+  output?: TOutput;
   backgroundColor: string;
   header: string;
   copyButton?: boolean;
@@ -29,7 +32,10 @@ interface BaseStripProps extends TBaseStrip {
     origin: 'pre_fader' | 'post_fader';
   };
   isPFLInactive: boolean | undefined;
-  onRemove: () => void;
+  isOutputStrip?: boolean;
+  removingOutputWarning?: string | string[];
+  onReset?: () => void;
+  onRemove?: () => void;
   onRemoveFromMix?: (input: TAudioStrip | TMixStrip) => void;
   handleSelection: () => void;
   handleStripChange: (
@@ -45,12 +51,14 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
   isBeingConfigured,
   isRemovingFromMix,
   isHighlighted,
+  removingOutputWarning,
   stripId,
   label,
   selected,
   fader,
   filters,
   input,
+  output,
   pre_fader_meter,
   backgroundColor,
   header,
@@ -58,6 +66,8 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
   config,
   sendLevels,
   isPFLInactive,
+  isOutputStrip,
+  onReset,
   onRemove,
   onRemoveFromMix,
   handleStripChange,
@@ -66,7 +76,10 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
   children
 }) => {
   const inputId = config ?? stripId;
-  const [stripLabel, setStripLabel] = useState(inputId.toString());
+  const [stripLabel, setStripLabel] = useState<string>(inputId.toString());
+  const [isScreenTall, setIsScreenTall] = useState<boolean>(
+    window.innerHeight > 1200
+  );
   const configMode =
     sendLevels?.muted !== undefined &&
     sendLevels?.volume !== undefined &&
@@ -75,6 +88,20 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
   const panningValToPos = (val: number): number => Math.round((val + 1) * 64);
   const panningPosToVal = (pos: number): number => pos / 64 - 1.0;
   const { sendMessage } = useWebSocket();
+
+  const isPFLInput =
+    output?.input.index === 1000 && output?.input.source === 'mix';
+  const showEbuMeters =
+    isOutputStrip && output && output.meters.enable_ebu_meters && onReset;
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsScreenTall(window.innerHeight > 1200);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const renderButtonColor = (label: string) => {
     switch (label) {
@@ -86,7 +113,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         if (configMode) {
           return 'invisible';
         } else {
-          return fader.muted ? 'bg-mute-btn' : 'bg-default-btn';
+          return fader?.muted ? 'bg-mute-btn' : 'bg-default-btn';
         }
       default:
         return 'bg-default-btn';
@@ -106,18 +133,58 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
     });
   };
 
+  const renderPanningAndActions = () => {
+    if (isPFLInput) return;
+    return (
+      <div className="flex flex-col">
+        {/* Panning Slider */}
+        <PanningSlider
+          inputValue={panningValToPos(filters ? filters.pan.value : 0)}
+          onChange={(panning) =>
+            handleStripChange(inputId, 'panning', panningPosToVal(panning))
+          }
+        />
+        <div className="flex flex-col justify-end">
+          {['SELECT', 'PFL', 'MUTE'].map((label, index) => (
+            <ActionButton
+              key={index}
+              label={label}
+              buttonColor={renderButtonColor(label)}
+              onClick={(e) => {
+                e.stopPropagation();
+                switch (label) {
+                  case 'SELECT':
+                    handleSelection();
+                    break;
+                  case 'PFL':
+                    handlePFLChange(!isPFLInactive);
+                    break;
+                  case 'MUTE':
+                    handleStripChange(inputId, 'muted', !fader?.muted);
+                    break;
+                }
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div
-      className={`box-border flex flex-col w-fit h-full relative rounded-lg ${isHighlighted ? 'border-2 border-white' : ''} ${isBeingConfigured ? 'border-2 border-white' : ''} ${backgroundColor} ${selected && !isBeingConfigured ? 'border-[1px] border-gray-400' : ''}`}
+      className={`box-border flex flex-col ${isScreenTall || !isOutputStrip ? 'w-fit' : 'w-56'} h-full relative rounded-lg ${isHighlighted ? 'border-2 border-white' : ''} ${isBeingConfigured ? 'border-2 border-white' : ''} ${backgroundColor} ${selected && !isBeingConfigured ? 'border-[1px] border-gray-400' : ''}`}
     >
       {/* Strip Info */}
       <StripHeader
         label={header}
         copyButton={copyButton}
         isRemovingFromMix={isRemovingFromMix}
+        isOutputStrip={isOutputStrip}
         onRemove={onRemove}
         onRemoveFromMix={onRemoveFromMix}
         onCopy={onCopy}
+        removingOutputWarning={removingOutputWarning}
       />
 
       {/* Config Fields */}
@@ -137,60 +204,64 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
           handleStripChange(inputId, 'label', updatedLabel);
         }}
       />
+
+      {isOutputStrip && !isPFLInput && (
+        <StripDropdown
+          options={['pre_fader', 'post_fader']}
+          value={output?.input.origin || 'post_fader'}
+          onChange={(origin) => handleStripChange(stripId, 'origin', origin)}
+        />
+      )}
+
       {/* Audio Strip Fields */}
       {children}
 
       <div className="flex flex-col items-center flex-wrap w-full mt-5">
-        <div className="w-full flex justify-evenly mb-5">
-          {/* Audio Levels */}
-          <AudioLevel
-            isStereo={input?.is_stereo ?? true}
-            audioBarData={{
-              peak_left: pre_fader_meter.peak_left,
-              peak_right: pre_fader_meter.peak_right
-            }}
-          />
-          {/* Control Buttons */}
-          <div className="flex flex-col justify-end">
-            {/* Panning Slider */}
-            <PanningSlider
-              inputValue={panningValToPos(filters.pan.value)}
-              onChange={(panning) =>
-                handleStripChange(inputId, 'panning', panningPosToVal(panning))
-              }
-            />
-            <div className="flex flex-col justify-end">
-              {['SELECT', 'PFL', 'MUTE'].map((label, index) => (
-                <ActionButton
-                  key={index}
-                  label={label}
-                  buttonColor={renderButtonColor(label)}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    switch (label) {
-                      case 'SELECT':
-                        handleSelection();
-                        break;
-                      case 'PFL':
-                        handlePFLChange(!isPFLInactive);
-                        break;
-                      case 'MUTE':
-                        handleStripChange(inputId, 'muted', !fader.muted);
-                        break;
-                    }
-                  }}
+        <div
+          className={`${isOutputStrip && output?.meters.enable_ebu_meters ? 'flex-col items-center' : ''} w-full flex justify-evenly mb-5`}
+        >
+          <div className="flex flex-row space-x-4 p-4">
+            {/* Audio Levels */}
+            {!isPFLInput && (
+              <AudioLevel
+                isStereo={input?.is_stereo ?? true}
+                audioBarData={{
+                  peak_left: isOutputStrip
+                    ? output?.meters.peak_left
+                    : pre_fader_meter?.peak_left,
+                  peak_right: isOutputStrip
+                    ? output?.meters.peak_right
+                    : pre_fader_meter?.peak_right
+                }}
+              />
+            )}
+
+            {!showEbuMeters && renderPanningAndActions()}
+
+            {showEbuMeters && (
+              <div className="flex flex-col items-center justify-center space-y-4">
+                <EbuMeters
+                  ebu_i={output?.meters.ebu_i}
+                  ebu_m={output?.meters.ebu_m}
+                  ebu_s={output?.meters.ebu_s}
                 />
-              ))}
-            </div>
+                <ResetButton onClick={onReset} />
+              </div>
+            )}
+
+            {!isScreenTall && showEbuMeters && renderPanningAndActions()}
           </div>
         </div>
+
+        {isScreenTall && showEbuMeters && renderPanningAndActions()}
+
         {/* Volume Slider */}
         <div
-          className={`flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'border border-almost-white rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''}`}
+          className={`flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'border border-almost-white rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''} ${isOutputStrip ? 'absolute bottom-0' : ''}`}
         >
           {configMode && <p className="text-base pb-2">Send Level</p>}
           <VolumeSlider
-            inputVolume={configMode ? sendLevels?.volume : fader.volume}
+            inputVolume={configMode ? sendLevels?.volume : fader?.volume}
             onVolumeChange={(vol: number) =>
               handleStripChange(inputId, 'volume', vol)
             }

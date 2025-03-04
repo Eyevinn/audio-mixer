@@ -9,13 +9,15 @@ interface SelectProps {
   value: string;
   options: (TAudioStrip | TMixStrip)[];
   onChange: (value: TAudioStrip | TMixStrip) => void;
+  removeInput?: (input: TAudioStrip | TMixStrip) => void;
 }
 
 export const Select: React.FC<SelectProps> = ({
   className,
   value,
   options,
-  onChange
+  onChange,
+  removeInput
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const selectRef = useRef<HTMLDivElement | null>(null);
@@ -24,6 +26,13 @@ export const Select: React.FC<SelectProps> = ({
 
   const handleSelect = (input: TAudioStrip | TMixStrip) => {
     onChange(input);
+    setIsOpen(false);
+  };
+
+  const handleRemove = (input: TAudioStrip | TMixStrip) => {
+    if (removeInput) {
+      removeInput(input);
+    }
     setIsOpen(false);
   };
 
@@ -42,13 +51,19 @@ export const Select: React.FC<SelectProps> = ({
           {options.map((option) => {
             const isMix = option.inputs !== undefined;
             const renderLabel = isMix
-              ? `Mix ${option.stripId} ${option.label}`
-              : `Strip ${option.stripId} ${option.label}`;
+              ? `${option.label || `Mix ${option.stripId}`}`
+              : `${option.label || `Strip ${option.stripId}`}`;
+            const isSelected = value === renderLabel;
+
             return (
               <li
-                className={`text-xl px-4 py-2 cursor-pointer text-white hover:bg-zinc-700 ${value === (option.label || option.stripId.toString()) ? 'relative bg-slider-green mx-2 rounded-lg' : 'mx-2'} h-10 flex items-center`}
+                className={`px-4 py-2 cursor-pointer text-white hover:bg-zinc-700 ${isSelected ? 'relative bg-slider-green mx-2 rounded-lg' : 'mx-2'} h-fit flex items-center`}
                 key={`${option.stripId}-${isMix ? 'mix' : 'strip'}`}
-                onClick={() => handleSelect(option)}
+                onClick={
+                  isSelected
+                    ? () => handleRemove(option)
+                    : () => handleSelect(option)
+                }
               >
                 {renderLabel}
               </li>

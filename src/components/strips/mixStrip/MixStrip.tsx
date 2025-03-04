@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useGlobalState } from '../../../context/GlobalStateContext';
 import { useWebSocket } from '../../../context/WebSocketContext';
+import { useCheckOutputUsage } from '../../../hooks/useCheckOutputUsage';
 import { useNextAvailableIndex } from '../../../hooks/useNextAvailableIndex';
 import { TMixStrip } from '../../../types/types';
 import { addMix, addMixToMix, addStripToMix } from '../../../utils/wsCommands';
@@ -21,6 +22,7 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
   const { sendMessage } = useWebSocket();
   const { mixes, setMixes } = useGlobalState();
   const nextMixIndex = useNextAvailableIndex(mixes);
+  const warningTexts = useCheckOutputUsage(props, 'mix');
 
   useEffect(() => {
     let highlightTimeout: NodeJS.Timeout;
@@ -113,6 +115,7 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
       onCopy={() => handleCopyMix(props.stripId)}
       handleSelection={handleSelection}
       isBeingConfigured={props.isBeingConfigured}
+      removingOutputWarning={warningTexts}
     >
       <MixFields
         isBeingConfigured={props.isBeingConfigured}

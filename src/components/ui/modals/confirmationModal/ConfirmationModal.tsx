@@ -52,10 +52,10 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 whitespace-pre-line"
       onClick={handleOutsideClick}
     >
-      <div className="bg-modal-bg border-2 border-border-bg rounded-lg p-8 shadow-lg">
+      <div className="bg-modal-bg border-2 border-border-bg rounded-lg py-8 px-12 shadow-lg">
         <h1 className="text-lg">{title}</h1>
         <p className="text-sm mt-2">{message}</p>
         {errorMessage && <p className="text-delete mt-4">{errorMessage}</p>}

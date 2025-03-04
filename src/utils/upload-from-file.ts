@@ -1,11 +1,11 @@
+import { ChangeEvent } from 'react';
 import toast from 'react-hot-toast';
 import {
   currentAudioMixerName,
   currentAudioMixerVersion,
   SaveConfig
 } from './save-to-file';
-import { resetAudioRoot, resync, unsubscribeToAudio } from './wsCommands';
-import { ChangeEvent } from 'react';
+import { resetAudioRoot, subscribe, unsubscribeToAudio } from './wsCommands';
 
 const uploadFromFile = (
   event: ChangeEvent<HTMLInputElement>,
@@ -59,7 +59,7 @@ const uploadFromFile = (
         }
       });
 
-      const bands = strip.filters.eq.bands;
+      const bands = strip.filters?.eq.bands;
       for (const bandIndex in bands) {
         requests.push({
           type: 'command',
@@ -124,7 +124,7 @@ const uploadFromFile = (
         });
       }
 
-      const bands = mix.filters.eq.bands;
+      const bands = mix.filters?.eq.bands;
       for (const bandIndex in bands) {
         requests.push({
           type: 'command',
@@ -159,7 +159,7 @@ const uploadFromFile = (
     }
 
     sendMessage(requests);
-    resync(sendMessage);
+    subscribe(sendMessage);
   };
   reader.readAsText(file);
   event.target.value = '';

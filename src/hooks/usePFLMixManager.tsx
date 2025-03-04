@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { useGlobalState } from '../context/GlobalStateContext';
 import { useWebSocket } from '../context/WebSocketContext';
-import { addMix, addMixToMix, addStripToMix } from '../utils/wsCommands';
+import {
+  addInputToOutput,
+  addMix,
+  addMixToMix,
+  addStripToMix
+} from '../utils/wsCommands';
 
 export const usePFLMixManager = () => {
   const { mixes, strips } = useGlobalState();
@@ -17,6 +22,7 @@ export const usePFLMixManager = () => {
     const pflMix = mixes.find((mix) => mix.stripId === 1000);
     if (!pflMix) {
       addMix(sendMessage, 1000);
+      addInputToOutput(sendMessage, 'pfl', 1000, 'pre_fader', 'mix');
     }
   }, [mixes, strips.length, sendMessage]);
 

@@ -1,7 +1,7 @@
-import { Output, TAudioStrip, TBaseStrip, TMixStrip } from '../types/types';
+import { TAudioStrip, TBaseStrip, TMixStrip, TOutput } from '../types/types';
 import deepMerge from './deep-merge';
 import logger from './logger';
-import { getAllMixes, getAllOutputs, getAllStrips, resync } from './wsCommands';
+import { getAllMixes, getAllStrips, subscribe } from './wsCommands';
 
 function mapData<T extends TBaseStrip>(
   data: Record<string, T>,
@@ -66,7 +66,7 @@ const messageTranslator = (
   ) => void,
   setStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>,
   setMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>,
-  setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: Output }>>,
+  setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: TOutput }>>,
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>
 ) => {
   if (!message || !sendMessage || !setStrips) return;
@@ -101,8 +101,12 @@ const messageTranslator = (
             updateData(prevMixes, data.body?.mixes)
           );
         }
+        if (data.body?.outputs) {
+          setOutputs((prevOutputs) => {
+            return deepMerge(prevOutputs, data.body.outputs);
+          });
+        }
         break;
-
       case 'subscribe-response':
         if (data.body?.strips) {
           setStrips((prevStrips) => mapData(data.body.strips, prevStrips));
@@ -117,7 +121,7 @@ const messageTranslator = (
 
       case 'event':
         if (data.event === 'connect') {
-          resync(sendMessage);
+          subscribe(sendMessage);
         }
         break;
 
@@ -153,12 +157,87 @@ const messageTranslator = (
         }
         break;
       case 'set-response':
-        if (data.resource.includes('/audio/outputs')) {
-          getAllOutputs(sendMessage);
-        }
         if (!data.body && data.error) {
           setErrorMessage(data.error);
         }
+        break;
+      case 'sampling-update':
+        if (data.resource === '/audio/strips/*/pre_fader_meter/*') {
+          const dataStrips = data.body.audio.strips;
+          Object.entries(dataStrips).forEach(([stripId, stripData]) => {
+            const typedStripData = stripData as {
+              pre_fader_meter: TAudioStrip['pre_fader_meter'];
+            };
+            setStrips((prevStrips) => {
+              return prevStrips.map((strip) => {
+                if (
+                  strip.stripId === parseInt(stripId) &&
+                  typedStripData.pre_fader_meter
+                ) {
+                  return {
+                    ...strip,
+                    pre_fader_meter: {
+                      peak_left: typedStripData.pre_fader_meter?.peak_left,
+                      peak_right: typedStripData.pre_fader_meter?.peak_right
+                    }
+                  };
+                }
+                return strip;
+              });
+            });
+          });
+        }
+        if (data.resource === '/audio/mixes/*/pre_fader_meter/*') {
+          const dataMixes = data.body.audio.mixes;
+          Object.entries(dataMixes).forEach(([mixId, mixData]) => {
+            const typedMixData = mixData as {
+              pre_fader_meter: TMixStrip['pre_fader_meter'];
+            };
+            setMixes((prevMixes) => {
+              return prevMixes.map((mix) => {
+                if (
+                  mix.stripId === parseInt(mixId) &&
+                  typedMixData.pre_fader_meter
+                ) {
+                  return {
+                    ...mix,
+                    pre_fader_meter: {
+                      peak_left: typedMixData.pre_fader_meter?.peak_left,
+                      peak_right: typedMixData.pre_fader_meter?.peak_right
+                    }
+                  };
+                }
+                return mix;
+              });
+            });
+          });
+        }
+        if (data.resource === '/audio/outputs/*/meters/*') {
+          const dataOutputs = data.body.audio.outputs;
+          Object.entries(dataOutputs).forEach(([outputName, outputData]) => {
+            const typedOutputData = outputData as {
+              meters: TOutput['meters'];
+            };
+            setOutputs((prevOutputs) => {
+              return {
+                ...prevOutputs,
+                [outputName]: {
+                  ...prevOutputs[outputName],
+                  meters: {
+                    enable_ebu_meters:
+                      prevOutputs[outputName].meters.enable_ebu_meters,
+                    ebu_i: typedOutputData.meters.ebu_i,
+                    ebu_m: typedOutputData.meters.ebu_m,
+                    ebu_s: typedOutputData.meters.ebu_s,
+                    peak_left: typedOutputData.meters.peak_left,
+                    peak_right: typedOutputData.meters.peak_right
+                  }
+                }
+              };
+            });
+          });
+        }
+        break;
     }
   } catch (error) {
     console.error('Error processing WebSocket message:', error);

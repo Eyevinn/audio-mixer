@@ -84,26 +84,44 @@ export interface Filters {
   };
 }
 
+export interface TOutput {
+  input: {
+    index: number;
+    origin: 'pre_fader' | 'post_fader';
+    source: 'strip' | 'mix';
+  };
+  label: string;
+  meters: {
+    enable_ebu_meters: boolean;
+    ebu_i: number;
+    ebu_m: number;
+    ebu_s: number;
+    peak_left: number;
+    peak_right: number;
+  };
+}
+
 export interface TBaseStrip {
   [key: string]: unknown;
   stripId: number;
   label: string;
-  selected: boolean;
-  fader: {
+  selected?: boolean;
+  pfl?: boolean;
+  fader?: {
     muted: boolean;
     volume: number;
   };
-  filters: Filters;
-  input_meter: {
+  filters?: Filters;
+  input_meter?: {
     peak?: number;
     peak_left?: number;
     peak_right?: number;
   };
-  post_fader_meter: {
+  post_fader_meter?: {
     peak_left: number;
     peak_right: number;
   };
-  pre_fader_meter: {
+  pre_fader_meter?: {
     peak_left: number;
     peak_right: number;
   };
@@ -137,8 +155,19 @@ export interface TMixStrip extends TBaseStrip {
   };
 }
 
-// TODO: Update to real output type
-export interface Output {
+export interface AudioState {
+  body: {
+    mixes: { [key: string]: TMixStrip };
+    strips: { [key: string]: TAudioStrip };
+    outputs: { [key: string]: TOutput };
+  };
+}
+
+export interface TOutputStrip
+  extends Omit<
+    TBaseStrip,
+    'input_meter' | 'post_fader_meter' | 'pre_fader_meter'
+  > {
   input: {
     index: number;
     origin: 'pre_fader' | 'post_fader';
@@ -152,13 +181,5 @@ export interface Output {
     ebu_s: number;
     peak_left: number;
     peak_right: number;
-  };
-}
-
-export interface AudioState {
-  body: {
-    mixes: { [key: string]: TMixStrip };
-    strips: { [key: string]: TAudioStrip };
-    outputs: { [key: string]: Output };
   };
 }
