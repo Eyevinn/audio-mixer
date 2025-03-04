@@ -1,68 +1,74 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from 'react';
 import { useGlobalState } from '../context/GlobalStateContext';
 import { useWebSocket } from '../context/WebSocketContext';
-import { TAudioStrip, TMixStrip } from '../types/types';
+import { TAudioStrip, TBaseStrip, TMixStrip } from '../types/types';
 import Logger from '../utils/logger';
 import {
   getAllMixes,
   getAllOutputs,
   getAllStrips,
   resync
-} from '../utils/utils';
+} from '../utils/wsCommands';
+import deepMerge from '../utils/deep-merge';
 export const useData = () => {
   const { sendMessage, messages, setMessages } = useWebSocket();
   const { setStrips, setMixes, setOutputs, setErrorMessage } = useGlobalState();
 
-  const mapStripsData = (
-    data: Record<string, TAudioStrip>,
-    existingStrips: TAudioStrip[]
-  ) => {
+  function mapData<T extends TBaseStrip>(
+    data: Record<string, T>,
+    existingStrips: T[]
+  ): T[] {
     return Object.entries(data).map(([index, stripData]) => {
-      const strip = stripData as TAudioStrip;
+      const strip = stripData as T;
       const existingStrip = existingStrips.find(
         (s) => s.stripId === parseInt(index)
       );
 
       return {
-        selected: existingStrip?.selected ?? false,
+        ...existingStrip,
+        ...strip,
+        // TODO: Redo the stripId to be a uniquestring
+        // stripId: 'Strip#' + index,
         stripId: parseInt(index),
-        fader: strip.fader ?? existingStrip?.fader,
-        filters: strip.filters ?? existingStrip?.filters,
-        input: strip.input ?? existingStrip?.input ?? undefined,
-        input_meter: strip.input_meter ?? existingStrip?.input_meter,
-        label: strip.label ?? existingStrip?.label,
-        post_fader_meter:
-          strip.post_fader_meter ?? existingStrip?.post_fader_meter,
-        pre_fader_meter: strip.pre_fader_meter ?? existingStrip?.pre_fader_meter
+        label: index === '1000' ? 'PFL' : (strip.label ?? existingStrip?.label)
       };
     });
-  };
+  }
 
-  const mapMixesData = (
-    data: Record<string, TMixStrip>,
-    existingStrips: TMixStrip[]
-  ) => {
-    return Object.entries(data).map(([index, stripData]) => {
-      const strip = stripData as TMixStrip;
-      const existingStrip = existingStrips.find(
-        (s) => s.stripId === parseInt(index)
-      );
-
-      return {
-        selected: existingStrip?.selected ?? false,
-        stripId: parseInt(index),
-        fader: strip.fader ?? existingStrip?.fader,
-        filters: strip.filters ?? existingStrip?.filters,
-        inputs: strip.inputs ?? existingStrip?.inputs ?? undefined,
-        input_meter: strip.input_meter ?? existingStrip?.input_meter,
-        label: index === '1000' ? 'PFL' : (strip.label ?? existingStrip?.label),
-        post_fader_meter:
-          strip.post_fader_meter ?? existingStrip?.post_fader_meter,
-        pre_fader_meter: strip.pre_fader_meter ?? existingStrip?.pre_fader_meter
-      };
+  function updateData<T extends TBaseStrip>(
+    prevStrips: T[],
+    oldStrips: T[]
+  ): T[] {
+    return prevStrips.map((strip) => {
+      const newStrip = oldStrips[strip.stripId];
+      if (newStrip) {
+        return {
+          ...strip,
+          ...Object.keys(newStrip).reduce((acc, key) => {
+            const typedKey = key as keyof T;
+            const updatedValue = newStrip[typedKey];
+            const currentValue = strip[typedKey];
+            if (
+              typeof updatedValue === 'object' &&
+              updatedValue !== null &&
+              currentValue &&
+              typeof currentValue === 'object'
+            ) {
+              return {
+                ...acc,
+                [typedKey]: deepMerge(currentValue, updatedValue)
+              };
+            }
+            return {
+              ...acc,
+              [typedKey]: updatedValue
+            };
+          }, {} as Partial<T>)
+        } satisfies T;
+      }
+      return strip;
     });
-  };
+  }
 
   useEffect(() => {
     if (messages.length === 0 || !sendMessage || !setStrips) return;
@@ -72,17 +78,18 @@ export const useData = () => {
 
     try {
       const data = JSON.parse(latestMessage);
-      Logger.data('Type', data.type);
-      Logger.data('Data', data);
+      Logger.data(
+        data.type,
+        data.resource || data.event,
+        data.body || data.result || data.address || 'No message'
+      );
       switch (data.type) {
         case 'get-response':
-          Logger.data('Get-response', data.body);
-          Logger.data('Resource', data.resource);
           if (data.resource === '/audio/strips') {
-            setStrips((prevStrips) => mapStripsData(data.body, prevStrips));
+            setStrips((prevStrips) => mapData(data.body, prevStrips));
           }
           if (data.resource === '/audio/mixes') {
-            setMixes((prevMixes) => mapMixesData(data.body, prevMixes));
+            setMixes((prevMixes) => mapData(data.body, prevMixes));
           }
           if (data.resource === '/audio/outputs') {
             setOutputs(data.body);
@@ -90,171 +97,24 @@ export const useData = () => {
           break;
 
         case 'state-change':
-          Logger.data('State-change', data.body);
           if (data.body?.strips) {
             setStrips((prevStrips: TAudioStrip[]) =>
-              prevStrips.map((strip) => {
-                const updatedStripData = data.body.strips[strip.stripId];
-                if (updatedStripData) {
-                  return {
-                    ...strip,
-                    ...Object.keys(updatedStripData).reduce((acc, key) => {
-                      const typedKey = key as keyof TAudioStrip;
-                      const updatedValue = updatedStripData[typedKey];
-                      const currentValue = strip[typedKey];
-
-                      const deepMerge = (target: any, source: any): any => {
-                        if (typeof source !== 'object' || source === null) {
-                          return source;
-                        }
-                        if (typeof target !== 'object' || target === null) {
-                          return source;
-                        }
-
-                        // Handle arrays specially
-                        if (Array.isArray(source)) {
-                          if (!Array.isArray(target)) return source;
-                          return target.map((item, index) =>
-                            index < source.length
-                              ? deepMerge(item, source[index])
-                              : item
-                          );
-                        }
-
-                        const result = { ...target };
-                        Object.keys(source).forEach((key) => {
-                          // Special handling for eq.bands - treat as an object with numeric keys
-                          if (
-                            typeof source[key] === 'object' &&
-                            source[key] !== null
-                          ) {
-                            if (
-                              target[key] &&
-                              !Array.isArray(target[key]) &&
-                              !Array.isArray(source[key])
-                            ) {
-                              // If both are objects and not arrays, merge them
-                              result[key] = deepMerge(target[key], source[key]);
-                            } else {
-                              // If one is not an object or they're arrays, replace with source
-                              result[key] = source[key];
-                            }
-                          } else {
-                            result[key] = source[key];
-                          }
-                        });
-                        return result;
-                      };
-
-                      if (
-                        typeof updatedValue === 'object' &&
-                        updatedValue !== null &&
-                        currentValue &&
-                        typeof currentValue === 'object'
-                      ) {
-                        return {
-                          ...acc,
-                          [typedKey]: deepMerge(currentValue, updatedValue)
-                        };
-                      }
-                      return {
-                        ...acc,
-                        [typedKey]: updatedValue
-                      };
-                    }, {} as Partial<TAudioStrip>)
-                  } satisfies TAudioStrip;
-                }
-                return strip;
-              })
+              updateData(prevStrips, data.body?.strips)
             );
           }
           if (data.body?.mixes) {
             setMixes((prevMixes: TMixStrip[]) =>
-              prevMixes.map((mix) => {
-                const updatedStripData = data.body.mixes[mix.stripId];
-                if (updatedStripData) {
-                  return {
-                    ...mix,
-                    ...Object.keys(updatedStripData).reduce((acc, key) => {
-                      const typedKey = key as keyof TMixStrip;
-                      const updatedValue = updatedStripData[typedKey];
-                      const currentValue = mix[typedKey];
-
-                      const deepMerge = (target: any, source: any): any => {
-                        if (typeof source !== 'object' || source === null) {
-                          return source;
-                        }
-                        if (typeof target !== 'object' || target === null) {
-                          return source;
-                        }
-
-                        // Handle arrays specially
-                        if (Array.isArray(source)) {
-                          if (!Array.isArray(target)) return source;
-                          return target.map((item, index) =>
-                            index < source.length
-                              ? deepMerge(item, source[index])
-                              : item
-                          );
-                        }
-
-                        const result = { ...target };
-                        Object.keys(source).forEach((key) => {
-                          // Special handling for eq.bands - treat as an object with numeric keys
-                          if (
-                            typeof source[key] === 'object' &&
-                            source[key] !== null
-                          ) {
-                            if (
-                              target[key] &&
-                              !Array.isArray(target[key]) &&
-                              !Array.isArray(source[key])
-                            ) {
-                              // If both are objects and not arrays, merge them
-                              result[key] = deepMerge(target[key], source[key]);
-                            } else {
-                              // If one is not an object or they're arrays, replace with source
-                              result[key] = source[key];
-                            }
-                          } else {
-                            result[key] = source[key];
-                          }
-                        });
-                        return result;
-                      };
-
-                      if (
-                        typeof updatedValue === 'object' &&
-                        updatedValue !== null &&
-                        currentValue &&
-                        typeof currentValue === 'object'
-                      ) {
-                        return {
-                          ...acc,
-                          [typedKey]: deepMerge(currentValue, updatedValue)
-                        };
-                      }
-                      return {
-                        ...acc,
-                        [typedKey]: updatedValue
-                      };
-                    }, {} as Partial<TMixStrip>)
-                  } satisfies TMixStrip;
-                }
-                return mix;
-              })
+              updateData(prevMixes, data.body?.mixes)
             );
           }
           break;
 
         case 'subscribe-response':
           if (data.body?.strips) {
-            setStrips((prevStrips) =>
-              mapStripsData(data.body.strips, prevStrips)
-            );
+            setStrips((prevStrips) => mapData(data.body.strips, prevStrips));
           }
           if (data.body?.mixes) {
-            setMixes((prevMixes) => mapMixesData(data.body.mixes, prevMixes));
+            setMixes((prevMixes) => mapData(data.body.mixes, prevMixes));
           }
           if (data.body?.outputs) {
             setOutputs(data.body.outputs);
@@ -263,13 +123,11 @@ export const useData = () => {
 
         case 'event':
           if (data.event === 'connect') {
-            Logger.data('Event -> connect', data.body);
             resync(sendMessage);
           }
           break;
 
         case 'state-add':
-          Logger.data('State-add', data.body);
           if (
             data.body.resource.startsWith('/audio/mixes/1000/inputs/mixes/') ||
             data.body.resource.startsWith('/audio/mixes/1000/inputs/strips/')
@@ -301,7 +159,6 @@ export const useData = () => {
           }
           break;
         case 'set-response':
-          Logger.data('Data-resource', data.resource);
           if (data.resource.includes('/audio/outputs')) {
             getAllOutputs(sendMessage);
           }

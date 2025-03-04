@@ -4,7 +4,7 @@ import {
   currentAudioMixerVersion,
   SaveConfig
 } from './save-to-file';
-import { resetAudioRoot, resync, unsubscribeToAudio } from './utils';
+import { resetAudioRoot, resync, unsubscribeToAudio } from './wsCommands';
 import { ChangeEvent } from 'react';
 
 const uploadFromFile = (

@@ -3,57 +3,80 @@ import debounce from 'lodash/debounce';
 import { SliderLegend } from '../../../../assets/icons/SliderLegend';
 
 type VolumeSliderProps = {
-  type: 'mixer' | 'master';
   inputVolume?: number;
   onVolumeChange: (volume: number) => void;
 };
 
+function dBToRatio(db: number) {
+  return 10 ** (db / 10);
+}
+
+function ratioToDB(ratio: number) {
+  return 10 * Math.log10(ratio);
+}
+
+function volumePosToVal(pos: number) {
+  // translate 0-127 into into the dB from the legend
+  let dB = 0;
+  if (pos >= (0 / 16) * 128 && pos < (1 / 16) * 128) {
+    dB = (16000 * pos) / 128 - 1060;
+  } else if (pos >= (1 / 16) * 128 && pos < (4 / 16) * 128) {
+    dB = (160 * pos) / 128 - 70;
+  } else if (pos >= (4 / 16) * 128 && pos < (8 / 16) * 128) {
+    dB = (80 * pos) / 128 - 50;
+  } else if (pos >= (8 / 16) * 128 && pos < (16 / 16) * 128) {
+    dB = (40 * pos) / 128 - 30;
+  }
+
+  return dBToRatio(dB);
+}
+
+function volumeValToPos(val: number) {
+  let pos = 0;
+  const dB = ratioToDB(Number(val));
+  if (dB < -200) return 0;
+  if (dB > -10 && dB <= 10) {
+    pos = ((dB + 30) * 128) / 40;
+  } else if (dB > -30 && dB <= -10) {
+    pos = ((dB + 50) * 128) / 80;
+  } else if (dB > -60 && dB <= -30) {
+    pos = ((dB + 70) * 128) / 160;
+  } else if (dB <= -60) {
+    pos = ((dB + 1060) * 128) / 16000;
+  }
+  return Math.round(pos);
+}
+
 export const VolumeSlider = ({
-  type,
   inputVolume,
   onVolumeChange
 }: VolumeSliderProps) => {
-  const [volume, setVolume] = useState(40);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const volumeValToPos = (val: number): number =>
-    Math.round(((val + 60) * 127) / 70);
-  const volumePosToVal = (pos: number): number => (pos * 70) / 127 - 60;
+  const [volume, setVolume] = useState(inputVolume ?? 0);
 
   // Throttle WebSocket updates
   const throttledVolumeChange = useMemo(
     () =>
       debounce((value: number) => {
         onVolumeChange(value);
-      }, 50),
+      }, 500),
     [onVolumeChange]
   );
 
   useEffect(() => {
-    if (inputVolume && !isDragging) {
+    if (typeof inputVolume === 'number') {
       setVolume(inputVolume);
     }
-  }, [inputVolume, isDragging]);
+  }, [inputVolume]);
 
   const onChangeHandler = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = parseInt(e.target.value);
-
       // Update local state immediately for smooth visual feedback
-      if (type === 'master') {
-        setVolume(newValue);
-      } else {
-        setVolume(volumePosToVal(newValue));
-      }
-
+      setVolume(volumePosToVal(newValue));
       // Throttle the WebSocket updates
-      if (type === 'mixer') {
-        throttledVolumeChange(volumePosToVal(newValue));
-      } else {
-        throttledVolumeChange(newValue);
-      }
+      throttledVolumeChange(volumePosToVal(newValue));
     },
-    [type, throttledVolumeChange]
+    [throttledVolumeChange]
   );
 
   return (
@@ -67,23 +90,10 @@ export const VolumeSlider = ({
         min="0"
         max="127"
         step="1"
-        value={type === 'master' ? volume : volumeValToPos(volume)}
+        value={volumeValToPos(volume)}
         onChange={onChangeHandler}
         onMouseDown={(e) => {
           e.stopPropagation();
-          setIsDragging(true);
-        }}
-        onMouseUp={() => {
-          setIsDragging(false);
-        }}
-        onMouseLeave={() => {
-          setIsDragging(false);
-        }}
-        onDoubleClick={() => {
-          if (type === 'master') {
-            setVolume(0);
-            onVolumeChange(0);
-          }
         }}
       />
     </div>

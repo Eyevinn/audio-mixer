@@ -59,9 +59,16 @@ class Logger {
     if (loggerLevel > 1) this.log(Colors.white, msg);
   }
 
-  data(msgType: string, msg: string) {
-    if (loggerLevel > 2)
-      console.log(`\x1b[36m${msgType + ': '}\x1b[0m${JSON.stringify(msg)}`);
+  data(msgType: string, msgResource: string, msg: string) {
+    if (loggerLevel > 2) {
+      let massagedMsgResource: string = msgResource;
+      if (msgResource.slice(0, 1) === '/') {
+        massagedMsgResource = msgResource.slice(1);
+      }
+      console.log(
+        `\x1b[36m${msgType}|${massagedMsgResource + ': '}\x1b[0m${JSON.stringify(msg)}`
+      );
+    }
   }
 }
 

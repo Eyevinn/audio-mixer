@@ -18,7 +18,7 @@ import {
   removeMix,
   removeMixFromMix,
   removeStripFromMix
-} from '../../utils/utils';
+} from '../../utils/wsCommands';
 
 export const ConfigureMixPage = () => {
   const { mixId } = useParams();

@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { SideNavItemComponent, TSideNavItem } from '../SideNavItem';
 import { useWebSocket } from '../../../context/WebSocketContext';
-import { getAudioRoot } from '../../../utils/utils';
+import { getAudioRoot } from '../../../utils/wsCommands';
 import saveToFile from '../../../utils/save-to-file';
 
 const ExportItem: TSideNavItem = {

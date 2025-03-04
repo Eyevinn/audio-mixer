@@ -6,7 +6,7 @@ import styles from './filterComponents.module.css';
 
 import { useWebSocket } from '../../../../context/WebSocketContext';
 import { TAudioStrip, TMixStrip } from '../../../../types/types';
-import { addEQBand, removeEQBand } from '../../../../utils/utils';
+import { addEQBand, removeEQBand } from '../../../../utils/wsCommands';
 
 interface EffectsPanelProps {
   strip: TAudioStrip | TMixStrip | undefined;
