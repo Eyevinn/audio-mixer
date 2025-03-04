@@ -28,7 +28,7 @@ interface BaseStripProps extends TBaseStrip {
     volume: number;
     origin: 'pre_fader' | 'post_fader';
   };
-  isPFLActive: boolean | undefined;
+  isPFLInactive: boolean | undefined;
   onRemove: () => void;
   onRemoveFromMix?: (input: TAudioStrip | TMixStrip) => void;
   handleSelection: () => void;
@@ -57,7 +57,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
   copyButton,
   config,
   sendLevels,
-  isPFLActive,
+  isPFLInactive,
   onRemove,
   onRemoveFromMix,
   handleStripChange,
@@ -81,7 +81,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
       case 'SELECT':
         return selected ? 'bg-select-btn' : 'bg-default-btn';
       case 'PFL':
-        return !isPFLActive ? 'bg-pfl-btn' : 'bg-default-btn';
+        return !isPFLInactive ? 'bg-pfl-btn' : 'bg-default-btn';
       case 'MUTE':
         if (configMode) {
           return 'invisible';
@@ -172,7 +172,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
                         handleSelection();
                         break;
                       case 'PFL':
-                        handlePFLChange(!isPFLActive);
+                        handlePFLChange(!isPFLInactive);
                         break;
                       case 'MUTE':
                         handleStripChange(inputId, 'muted', !fader.muted);

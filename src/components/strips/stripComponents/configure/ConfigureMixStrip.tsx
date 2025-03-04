@@ -12,7 +12,7 @@ interface MixStripProps {
     origin: 'pre_fader' | 'post_fader';
   };
   type: 'mixes' | 'strips';
-  isPFLActive: boolean | undefined;
+  isPFLInactive: boolean | undefined;
   onStripSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
   onRemove: () => void;
 }
@@ -22,7 +22,7 @@ export const ConfigureMixStrip: React.FC<MixStripProps> = ({
   configId,
   sendLevels,
   type,
-  isPFLActive,
+  isPFLInactive,
   onStripSelect,
   onRemove
 }) => {
@@ -131,7 +131,7 @@ export const ConfigureMixStrip: React.FC<MixStripProps> = ({
       header={type === 'mixes' ? `Mix #${configId}` : `Strip #${configId}`}
       config={configId}
       sendLevels={sendLevels}
-      isPFLActive={isPFLActive}
+      isPFLInactive={isPFLInactive}
       handleStripChange={handleMixChange}
       onRemove={onRemove}
       handleSelection={handleSelection}

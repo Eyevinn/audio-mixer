@@ -199,7 +199,7 @@ export const ConfigureMixPage = () => {
             <MixStrip
               key={`mix-${mixToConfigure.stripId}`}
               {...mixToConfigure}
-              isPFLActive={
+              isPFLInactive={
                 isPFL?.inputs?.mixes[mixToConfigure.stripId]?.muted ?? undefined
               }
               onStripSelect={handleSelection}

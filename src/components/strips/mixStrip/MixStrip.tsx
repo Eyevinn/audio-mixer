@@ -11,7 +11,7 @@ interface MixStripProps extends TMixStrip {
   isRemovingFromMix?: boolean;
   isBeingConfigured?: boolean;
   highlightedMixId?: number | null;
-  isPFLActive: boolean | undefined;
+  isPFLInactive: boolean | undefined;
   onStripSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
   onRemove: () => void;
   setHighlightedMixId?: (stripId: number | null) => void;
@@ -108,7 +108,7 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
       header={`Mix #${props.stripId}`}
       copyButton={true}
       isRemovingFromMix={props.isRemovingFromMix}
-      isPFLActive={props.isPFLActive}
+      isPFLInactive={props.isPFLInactive}
       handleStripChange={handleMixChange}
       onCopy={() => handleCopyMix(props.stripId)}
       handleSelection={handleSelection}
