@@ -62,7 +62,7 @@ class Logger {
   data(msgType: string, msgResource: string, msg: string) {
     if (loggerLevel > 2) {
       let massagedMsgResource: string = msgResource;
-      if (msgResource.slice(0, 1) === '/') {
+      if (msgResource?.slice(0, 1) === '/') {
         massagedMsgResource = msgResource.slice(1);
       }
       console.log(
