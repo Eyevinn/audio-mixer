@@ -69,7 +69,11 @@ export const MixesPage = () => {
   };
 
   const handleRemoveAllMixes = () => {
-    mixes.forEach((mix) => handleRemoveMix(mix.stripId));
+    mixes.forEach((mix) => {
+      if (mix.stripId !== 1000) {
+        handleRemoveMix(mix.stripId);
+      }
+    });
   };
 
   const onModalOpen = () => {
