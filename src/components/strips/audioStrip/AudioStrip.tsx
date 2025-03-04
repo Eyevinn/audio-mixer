@@ -25,16 +25,6 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
     property: string,
     value: number | boolean | string | undefined
   ) => {
-    if (property === 'pfl') {
-      return sendMessage({
-        type: 'set',
-        resource: `/audio/mixes/1000/inputs/strips/${stripId}`,
-        body: {
-          muted: value
-        }
-      });
-    }
-
     setStrips(
       strips.map((strip) =>
         strip.stripId === stripId ? { ...strip, [property]: value } : strip

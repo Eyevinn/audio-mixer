@@ -36,7 +36,10 @@ export const ConfigureMixPage = () => {
   );
   const { sendMessage } = useWebSocket();
   const { strips, mixes, setMixes, setStrips } = useGlobalState();
-  const savedMixesWithoutPFL = mixes.filter((mix) => mix.stripId !== 1000);
+  const savedMixesWithoutPFL = useMemo(
+    () => mixes.filter((mix) => mix.stripId !== 1000),
+    [mixes]
+  );
   const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
 
   useEffect(() => {
@@ -102,17 +105,8 @@ export const ConfigureMixPage = () => {
   }, [mixToConfigure, mixes, strips]);
 
   useEffect(() => {
-    const newInputsString = JSON.stringify(
-      [...strips, ...savedMixesWithoutPFL].map((item) => item.stripId)
-    );
-    const currentInputsString = JSON.stringify(
-      allInputs.map((item) => item.stripId)
-    );
-
-    if (newInputsString !== currentInputsString) {
-      setAllInputs([...strips, ...savedMixesWithoutPFL]);
-    }
-  }, [strips, savedMixesWithoutPFL, allInputs]);
+    setAllInputs([...strips, ...savedMixesWithoutPFL]);
+  }, [strips, savedMixesWithoutPFL]);
 
   const handleAddInput = (input: TAudioStrip | TMixStrip) => {
     const isMix = input.inputs !== undefined;
@@ -206,10 +200,7 @@ export const ConfigureMixPage = () => {
               key={`mix-${mixToConfigure.stripId}`}
               {...mixToConfigure}
               isPFLActive={
-                isPFL?.inputs?.mixes[mixToConfigure.stripId]?.muted !==
-                undefined
-                  ? !isPFL.inputs.mixes[mixToConfigure.stripId].muted
-                  : undefined
+                isPFL?.inputs?.mixes[mixToConfigure.stripId]?.muted ?? undefined
               }
               onStripSelect={handleSelection}
               onRemove={handleRemoveMix}

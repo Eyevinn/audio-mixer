@@ -271,18 +271,7 @@ export const useData = () => {
         case 'state-add':
           Logger.data('State-add', data.body);
           if (
-            data.body.resource.startsWith('/audio/mixes/1000/inputs/mixes/')
-          ) {
-            sendMessage({
-              type: 'set',
-              resource: data.body.resource,
-              body: {
-                muted: true,
-                origin: 'pre_fader'
-              }
-            });
-          }
-          if (
+            data.body.resource.startsWith('/audio/mixes/1000/inputs/mixes/') ||
             data.body.resource.startsWith('/audio/mixes/1000/inputs/strips/')
           ) {
             sendMessage({

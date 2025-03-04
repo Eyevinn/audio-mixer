@@ -10,34 +10,27 @@ export const usePFLDefaultReset = () => {
   useEffect(() => {
     if (!isPFL) return;
 
-    Object.entries(isPFL.inputs?.mixes).forEach(([key, value]) => {
-      if (value.origin === 'post_fader') {
-        sendMessage({
-          type: 'set',
-          resource: `/audio/mixes/1000/inputs/mixes/${key}`,
-          body: {
-            muted: true,
-            origin: 'pre_fader'
-          }
-        });
-      }
-    });
-  }, [isPFL, sendMessage]);
+    // Combined logic for both mixes and strips
+    const inputTypes = [
+      { type: 'mixes', data: isPFL.inputs?.mixes },
+      { type: 'strips', data: isPFL.inputs?.strips }
+    ];
 
-  useEffect(() => {
-    if (!isPFL) return;
+    inputTypes.forEach(({ type, data }) => {
+      if (!data) return;
 
-    Object.entries(isPFL.inputs?.strips).forEach(([key, value]) => {
-      if (value.origin === 'post_fader') {
-        sendMessage({
-          type: 'set',
-          resource: `/audio/mixes/1000/inputs/strips/${key}`,
-          body: {
-            muted: true,
-            origin: 'pre_fader'
-          }
-        });
-      }
+      Object.entries(data).forEach(([key, value]) => {
+        if (value.origin === 'post_fader') {
+          sendMessage({
+            type: 'set',
+            resource: `/audio/mixes/1000/inputs/${type}/${key}`,
+            body: {
+              muted: true,
+              origin: 'pre_fader'
+            }
+          });
+        }
+      });
     });
   }, [isPFL, sendMessage]);
 };

@@ -11,21 +11,15 @@ export const OutputMappingPage = () => {
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
   const { strips, mixes, outputs } = useGlobalState();
   const { sendMessage } = useWebSocket();
-  const savedMixesWithoutPFL = mixes.filter((mix) => mix.stripId !== 1000);
+  const savedMixesWithoutPFL = useMemo(
+    () => mixes.filter((mix) => mix.stripId !== 1000),
+    [mixes]
+  );
   const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
 
   useEffect(() => {
-    const newInputsString = JSON.stringify(
-      [...strips, ...savedMixesWithoutPFL].map((item) => item.stripId)
-    );
-    const currentInputsString = JSON.stringify(
-      allInputs.map((item) => item.stripId)
-    );
-
-    if (newInputsString !== currentInputsString) {
-      setAllInputs([...strips, ...savedMixesWithoutPFL]);
-    }
-  }, [strips, savedMixesWithoutPFL, allInputs]);
+    setAllInputs([...strips, ...savedMixesWithoutPFL]);
+  }, [strips, savedMixesWithoutPFL]);
 
   const handleAddInputToOutput = (
     outputName: string,

@@ -53,16 +53,6 @@ export const ConfigureMixStrip: React.FC<MixStripProps> = ({
     property: string,
     value: number | boolean | string | undefined
   ) => {
-    if (property === 'pfl') {
-      return sendMessage({
-        type: 'set',
-        resource: `/audio/mixes/1000/inputs/${type}/${id}`,
-        body: {
-          muted: value
-        }
-      });
-    }
-
     const isSendLevelProperty =
       configId &&
       (property === 'volume' || property === 'muted' || property === 'origin');

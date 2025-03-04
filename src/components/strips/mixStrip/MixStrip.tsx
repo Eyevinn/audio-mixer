@@ -67,16 +67,6 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
     property: string,
     value: number | boolean | string | undefined
   ) => {
-    if (property === 'pfl') {
-      return sendMessage({
-        type: 'set',
-        resource: `/audio/mixes/1000/inputs/mixes/${stripId}`,
-        body: {
-          muted: value
-        }
-      });
-    }
-
     setMixes(
       mixes.map((mix) =>
         mix.stripId === stripId ? { ...mix, [property]: value } : mix

@@ -7,6 +7,7 @@ import { AudioLevel } from './stripComponents/audioLevel/AudioLevel';
 import { PanningSlider } from './stripComponents/panningSlider/PanningSlider';
 import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
 import { StripHeader } from './stripComponents/stripHeader/StripHeader';
+import { useWebSocket } from '../../context/WebSocketContext';
 
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;
@@ -73,13 +74,14 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
     config !== undefined;
   const panningValToPos = (val: number): number => Math.round((val + 1) * 64);
   const panningPosToVal = (pos: number): number => pos / 64 - 1.0;
+  const { sendMessage } = useWebSocket();
 
   const renderButtonColor = (label: string) => {
     switch (label) {
       case 'SELECT':
         return selected ? 'bg-select-btn' : 'bg-default-btn';
       case 'PFL':
-        return isPFLActive ? 'bg-pfl-btn' : 'bg-default-btn';
+        return !isPFLActive ? 'bg-pfl-btn' : 'bg-default-btn';
       case 'MUTE':
         if (configMode) {
           return 'invisible';
@@ -89,6 +91,19 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
       default:
         return 'bg-default-btn';
     }
+  };
+
+  const handlePFLChange = (value: boolean | undefined) => {
+    if (value === undefined) return;
+
+    const type = header.includes('Mix') ? 'mixes' : 'strips';
+    sendMessage({
+      type: 'set',
+      resource: `/audio/mixes/1000/inputs/${type}/${inputId}`,
+      body: {
+        muted: value
+      }
+    });
   };
 
   return (
@@ -157,7 +172,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
                         handleSelection();
                         break;
                       case 'PFL':
-                        handleStripChange(inputId, 'pfl', isPFLActive);
+                        handlePFLChange(!isPFLActive);
                         break;
                       case 'MUTE':
                         handleStripChange(inputId, 'muted', !fader.muted);

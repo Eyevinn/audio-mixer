@@ -143,9 +143,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
             key={`${strip.stripId}-strip`}
             {...strip}
             isPFLActive={
-              isPFL?.inputs?.strips[strip.stripId]?.muted !== undefined
-                ? !isPFL.inputs.strips[strip.stripId].muted
-                : undefined
+              isPFL?.inputs?.strips[strip.stripId]?.muted ?? undefined
             }
             onStripSelect={onStripSelect}
             onRemove={() =>
@@ -171,9 +169,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
               isRemovingFromMix={isRemovingFromMix}
               {...mix}
               isPFLActive={
-                isPFL?.inputs?.mixes[mix.stripId]?.muted !== undefined
-                  ? !isPFL.inputs.mixes[mix.stripId].muted
-                  : undefined
+                isPFL?.inputs?.mixes[mix.stripId]?.muted ?? undefined
               }
               onStripSelect={onStripSelect}
               onRemove={() =>
@@ -202,10 +198,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
                   sendLevels={strip}
                   type="strips"
                   isPFLActive={
-                    isPFL?.inputs?.strips[parseInt(key, 10)]?.muted !==
-                    undefined
-                      ? !isPFL.inputs.strips[parseInt(key, 10)].muted
-                      : undefined
+                    isPFL?.inputs?.strips[parseInt(key, 10)]?.muted ?? undefined
                   }
                   onStripSelect={onStripSelect}
                   onRemove={() =>
@@ -239,9 +232,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
                   sendLevels={mix}
                   type="mixes"
                   isPFLActive={
-                    isPFL?.inputs?.mixes[parseInt(key, 10)]?.muted !== undefined
-                      ? !isPFL.inputs.mixes[parseInt(key, 10)].muted
-                      : undefined
+                    isPFL?.inputs?.mixes[parseInt(key, 10)]?.muted ?? undefined
                   }
                   onStripSelect={onStripSelect}
                   onRemove={() =>
