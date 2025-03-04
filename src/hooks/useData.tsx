@@ -26,10 +26,7 @@ export const useData = () => {
 
       return {
         selected: existingStrip?.selected ?? false,
-        pfl: existingStrip?.pfl ?? false,
         stripId: parseInt(index),
-        // TODO: Redo the stripId to be a uniquestring
-        // stripId: 'Strip#' + index,
         fader: strip.fader ?? existingStrip?.fader,
         filters: strip.filters ?? existingStrip?.filters,
         input: strip.input ?? existingStrip?.input ?? undefined,
@@ -54,15 +51,12 @@ export const useData = () => {
 
       return {
         selected: existingStrip?.selected ?? false,
-        pfl: existingStrip?.pfl ?? false,
         stripId: parseInt(index),
-        // TODO: Redo the stripId to be a uniquestring
-        // stripId: 'Mix#' + index, stripId.split('#')[1]
         fader: strip.fader ?? existingStrip?.fader,
         filters: strip.filters ?? existingStrip?.filters,
         inputs: strip.inputs ?? existingStrip?.inputs ?? undefined,
         input_meter: strip.input_meter ?? existingStrip?.input_meter,
-        label: strip.label ?? existingStrip?.label,
+        label: index === '1000' ? 'PFL' : (strip.label ?? existingStrip?.label),
         post_fader_meter:
           strip.post_fader_meter ?? existingStrip?.post_fader_meter,
         pre_fader_meter: strip.pre_fader_meter ?? existingStrip?.pre_fader_meter
@@ -276,6 +270,19 @@ export const useData = () => {
 
         case 'state-add':
           Logger.data('State-add', data.body);
+          if (
+            data.body.resource.startsWith('/audio/mixes/1000/inputs/mixes/') ||
+            data.body.resource.startsWith('/audio/mixes/1000/inputs/strips/')
+          ) {
+            sendMessage({
+              type: 'set',
+              resource: data.body.resource,
+              body: {
+                muted: true,
+                origin: 'pre_fader'
+              }
+            });
+          }
           getAllStrips(sendMessage);
           getAllMixes(sendMessage);
           break;

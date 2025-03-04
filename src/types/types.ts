@@ -89,7 +89,6 @@ export interface TBaseStrip {
   stripId: number;
   label: string;
   selected: boolean;
-  pfl: boolean;
   fader: {
     muted: boolean;
     volume: number;

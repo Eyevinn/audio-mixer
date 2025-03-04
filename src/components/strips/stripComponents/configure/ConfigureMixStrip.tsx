@@ -12,6 +12,7 @@ interface MixStripProps {
     origin: 'pre_fader' | 'post_fader';
   };
   type: 'mixes' | 'strips';
+  isPFLInactive: boolean | undefined;
   onStripSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
   onRemove: () => void;
 }
@@ -21,6 +22,7 @@ export const ConfigureMixStrip: React.FC<MixStripProps> = ({
   configId,
   sendLevels,
   type,
+  isPFLInactive,
   onStripSelect,
   onRemove
 }) => {
@@ -93,9 +95,6 @@ export const ConfigureMixStrip: React.FC<MixStripProps> = ({
     // Needed for the input fields, so the input fields can be cleared
     if (value === undefined) return;
 
-    // Local states are not needed to be sent
-    if (property === 'pfl') return;
-
     if (property === 'label') {
       sendMessage({
         type: 'set',
@@ -132,6 +131,7 @@ export const ConfigureMixStrip: React.FC<MixStripProps> = ({
       header={type === 'mixes' ? `Mix #${configId}` : `Strip #${configId}`}
       config={configId}
       sendLevels={sendLevels}
+      isPFLInactive={isPFLInactive}
       handleStripChange={handleMixChange}
       onRemove={onRemove}
       handleSelection={handleSelection}

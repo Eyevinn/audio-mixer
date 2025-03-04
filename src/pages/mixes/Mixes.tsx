@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageBody from '../../components/pageLayout/pageBody/pageBody';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
@@ -23,6 +23,7 @@ export const MixesPage = () => {
   const { sendMessage } = useWebSocket();
   const { mixes, setMixes } = useGlobalState();
   const nextMixIndex = useNextAvailableIndex(mixes);
+  const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -105,6 +106,7 @@ export const MixesPage = () => {
         <div className="p-4 w-full max-w-full h-full overflow-hidden">
           <ScrollableContainer
             mixStrips={mixes}
+            isPFL={isPFL}
             handleRemoveStrip={handleRemoveMix}
             onStripSelect={handleMixSelection}
           />
