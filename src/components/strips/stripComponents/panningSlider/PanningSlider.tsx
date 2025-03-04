@@ -9,23 +9,22 @@ type PanningSliderProps = {
 
 export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
   const [localValue, setLocalValue] = useState(inputValue);
-  const [isDragging, setIsDragging] = useState(false);
 
   // Throttle WebSocket updates
   const throttledPanningChange = useMemo(
     () =>
       debounce((value: number) => {
         onChange(value);
-      }, 50),
+      }, 500),
     [onChange]
   );
 
   // Update local value when input changes from outside
   useEffect(() => {
-    if (!isDragging) {
+    if (typeof inputValue === 'number') {
       setLocalValue(inputValue);
     }
-  }, [inputValue, isDragging]);
+  }, [inputValue]);
 
   const onChangeHandler = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,13 +53,6 @@ export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
         value={localValue}
         onMouseDown={(e) => {
           e.stopPropagation();
-          setIsDragging(true);
-        }}
-        onMouseUp={() => {
-          setIsDragging(false);
-        }}
-        onMouseLeave={() => {
-          setIsDragging(false);
         }}
         onChange={onChangeHandler}
       />

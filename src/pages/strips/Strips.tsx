@@ -119,7 +119,7 @@ export const StripsPage = () => {
 
         {/* Effects Panel */}
         {selectedStrip !== null && (
-          <div className="p-4">
+          <div className="p-4 h-full pb-6 pl-0">
             <EffectsPanel
               strip={strips.find((s) => s.stripId === selectedStrip)}
               type="strips"

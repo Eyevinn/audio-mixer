@@ -118,7 +118,7 @@ export const MixesPage = () => {
 
         {/* Effects Panel */}
         {selectedMix !== null && (
-          <div className="p-4">
+          <div className="p-4 h-full pb-6 pl-0">
             <EffectsPanel
               strip={mixes.find((m) => m.stripId === selectedMix)}
               type="mixes"
