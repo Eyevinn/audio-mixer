@@ -34,6 +34,7 @@ function volumePosToVal(pos: number) {
 function volumeValToPos(val: number) {
   let pos = 0;
   const dB = ratioToDB(Number(val));
+  if (dB < -200) return 0;
   if (dB > -10 && dB <= 10) {
     pos = ((dB + 30) * 128) / 40;
   } else if (dB > -30 && dB <= -10) {
@@ -43,7 +44,6 @@ function volumeValToPos(val: number) {
   } else if (dB <= -60) {
     pos = ((dB + 1060) * 128) / 16000;
   }
-
   return Math.round(pos);
 }
 
@@ -63,7 +63,7 @@ export const VolumeSlider = ({
   );
 
   useEffect(() => {
-    if (inputVolume) {
+    if (typeof inputVolume === 'number') {
       setVolume(inputVolume);
     }
   }, [inputVolume]);
