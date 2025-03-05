@@ -15,9 +15,8 @@ import { TAudioStrip, TMixStrip } from '../../types/types';
 import {
   addMixToMix,
   addStripToMix,
-  removeMix,
-  removeMixFromMix,
-  removeStripFromMix
+  removeInputFromMix,
+  removeMix
 } from '../../utils/wsCommands';
 
 export const ConfigureMixPage = () => {
@@ -130,11 +129,7 @@ export const ConfigureMixPage = () => {
     type: 'mixes' | 'strips';
   }) => {
     if (mixId) {
-      if (type !== 'mixes') {
-        removeStripFromMix(sendMessage, parseInt(mixId), stripId);
-      } else {
-        removeMixFromMix(sendMessage, parseInt(mixId), stripId);
-      }
+      removeInputFromMix(sendMessage, parseInt(mixId), stripId, type);
     }
   };
 
