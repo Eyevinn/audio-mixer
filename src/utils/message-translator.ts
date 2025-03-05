@@ -1,8 +1,9 @@
 import { TAudioStrip, TBaseStrip, TMixStrip, TOutput } from '../types/types';
 import deepMerge from './deep-merge';
 import logger from './logger';
-import { getAllMixes, getAllStrips, subscribe } from './wsCommands';
+import { getMixByIndex, getStripByIndex, subscribe } from './wsCommands';
 
+//TODO rewrite these update functions
 function mapData<T extends TBaseStrip>(
   data: Record<string, T>,
   existingStrips: T[]
@@ -22,10 +23,23 @@ function mapData<T extends TBaseStrip>(
   });
 }
 
+//TODO rewrite these update functions
 function updateData<T extends TBaseStrip>(
   prevStrips: T[],
-  oldStrips: T[]
+  oldStrips: Record<string, T>
 ): T[] {
+  const oldStripsKeys = Object.keys(oldStrips);
+  const isNewStrip =
+    oldStripsKeys.length === 1 &&
+    !prevStrips.find(
+      (prevStrip) => prevStrip.stripId.toString() === oldStripsKeys[0]
+    );
+  if (isNewStrip) {
+    return [
+      ...prevStrips,
+      { ...oldStrips[oldStripsKeys[0]], stripId: parseInt(oldStripsKeys[0]) }
+    ];
+  }
   return prevStrips.map((strip) => {
     const newStrip = oldStrips[strip.stripId];
     if (newStrip) {
@@ -76,7 +90,7 @@ const messageTranslator = (
       data.body || data.result || data.address || 'No message'
     );
     switch (data.type) {
-      case 'get-response':
+      case 'get-response': {
         if (data.resource === '/audio/strips') {
           setStrips((prevStrips) => mapData(data.body, prevStrips));
         }
@@ -86,8 +100,22 @@ const messageTranslator = (
         if (data.resource === '/audio/outputs') {
           setOutputs(data.body);
         }
+        const resourceArray = data.resource?.split('/');
+        const resourceType = resourceArray[2];
+        const resourceIndex = resourceArray[3];
+        if (resourceArray?.length === 4) {
+          if (resourceType === 'strips') {
+            setStrips((prevStrips: TAudioStrip[]) =>
+              updateData(prevStrips, { [resourceIndex]: data.body })
+            );
+          } else if (resourceType === 'mixes') {
+            setMixes((prevMixes: TMixStrip[]) =>
+              updateData(prevMixes, { [resourceIndex]: data.body })
+            );
+          }
+        }
         break;
-
+      }
       case 'state-change':
         if (data.body?.strips) {
           setStrips((prevStrips: TAudioStrip[]) =>
@@ -123,7 +151,7 @@ const messageTranslator = (
         }
         break;
 
-      case 'state-add':
+      case 'state-add': {
         if (
           data.body.resource.startsWith('/audio/mixes/1000/inputs/mixes/') ||
           data.body.resource.startsWith('/audio/mixes/1000/inputs/strips/')
@@ -137,16 +165,56 @@ const messageTranslator = (
             }
           });
         }
-        getAllStrips(sendMessage);
-        getAllMixes(sendMessage);
-        break;
-
-      case 'state-remove':
-        if (data.body.resource.startsWith('/strips/')) {
-          getAllStrips(sendMessage);
+        const resourceArray = data.body?.resource?.split('/') || [];
+        const resourceType = resourceArray[1];
+        const resourceIndex = resourceArray[2];
+        if (resourceType && resourceIndex && resourceIndex !== '1000') {
+          if (resourceType === 'strips')
+            getStripByIndex(sendMessage, resourceIndex);
+          else if (resourceType === 'mixes')
+            getMixByIndex(sendMessage, resourceIndex);
         }
-        getAllMixes(sendMessage);
         break;
+      }
+
+      case 'state-remove': {
+        const resourceArray = data.body?.resource?.split('/') || [];
+        const resourceType = resourceArray[1];
+        const resourceIndex = resourceArray[2];
+        const resourceCommand = resourceArray[3];
+        const resourceCommandType: 'strips' | 'mixes' = resourceArray[4];
+        const resourceCommandIndex = resourceArray[5];
+        if (resourceType === 'strips') {
+          setStrips((prevStrips) =>
+            prevStrips.filter(
+              (prevStrip) => prevStrip.stripId.toString() !== resourceIndex
+            )
+          );
+        }
+        if (resourceType === 'mixes') {
+          if (resourceCommand === 'inputs') {
+            setMixes((prevMixes: TMixStrip[]) =>
+              prevMixes.map((prevMix) => {
+                if (prevMix.stripId.toString() === resourceIndex) {
+                  const updatedMix = prevMix;
+                  delete updatedMix.inputs[resourceCommandType][
+                    resourceCommandIndex
+                  ];
+                  return updatedMix;
+                }
+                return prevMix;
+              })
+            );
+          } else {
+            setMixes((prevStrips) =>
+              prevStrips.filter(
+                (prevStrip) => prevStrip.stripId.toString() !== resourceIndex
+              )
+            );
+          }
+        }
+        break;
+      }
       case 'command-response':
         if (!data.body && data.error) {
           setErrorMessage(data.error);

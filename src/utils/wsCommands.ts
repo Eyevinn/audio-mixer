@@ -21,6 +21,16 @@ export const removeStrip = (
   });
 };
 
+export const getStripByIndex = (
+  sendMessage: (message: Record<string, unknown>) => void,
+  index: number
+) => {
+  sendMessage({
+    type: 'get',
+    resource: `/audio/strips/${index}`
+  });
+};
+
 export const getAllStrips = (
   sendMessage: (message: Record<string, unknown>) => void
 ) => {
