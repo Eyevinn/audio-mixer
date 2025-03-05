@@ -99,7 +99,6 @@ export const OutputMappingPage = () => {
                 (strip) => strip.stripId === selectedStrip.id
               )}
               type={selectedStrip.type}
-              isOutputPage={true}
             />
           </div>
         )}
