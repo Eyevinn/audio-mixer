@@ -41,7 +41,6 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const mixRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const stripRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
-  const configurableRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [startX, setStartX] = useState<number>(0);
   const [scrollLeft, setScrollLeft] = useState<number>(0);
@@ -76,10 +75,8 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         const strip = strips.find(
           (strip) => strip.stripId === parseInt(key, 10)
         );
-        if (strip?.selected && configurableRefs.current[parseInt(key, 10)]) {
-          configurableRefs.current[parseInt(key, 10)]?.scrollIntoView(
-            scrollBehavior
-          );
+        if (strip?.selected && stripRefs.current[parseInt(key, 10)]) {
+          stripRefs.current[parseInt(key, 10)]?.scrollIntoView(scrollBehavior);
         }
       });
     }
@@ -87,10 +84,8 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
     if (configurableMixStrips?.inputs.mixes) {
       Object.entries(configurableMixStrips.inputs.mixes).forEach(([key]) => {
         const mix = mixes.find((mix) => mix.stripId === parseInt(key, 10));
-        if (mix?.selected && configurableRefs.current[parseInt(key, 10)]) {
-          configurableRefs.current[parseInt(key, 10)]?.scrollIntoView(
-            scrollBehavior
-          );
+        if (mix?.selected && mixRefs.current[parseInt(key, 10)]) {
+          mixRefs.current[parseInt(key, 10)]?.scrollIntoView(scrollBehavior);
         }
       });
     }
@@ -188,7 +183,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
               <div
                 key={parseInt(key, 10)}
                 ref={(el) => {
-                  configurableRefs.current[parseInt(key, 10)] = el;
+                  stripRefs.current[parseInt(key, 10)] = el;
                 }}
               >
                 <ConfigureMixStrip
@@ -222,7 +217,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
               <div
                 key={parseInt(key, 10)}
                 ref={(el) => {
-                  configurableRefs.current[parseInt(key, 10)] = el;
+                  mixRefs.current[parseInt(key, 10)] = el;
                 }}
               >
                 <ConfigureMixStrip
