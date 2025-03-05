@@ -99,7 +99,33 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         }
       });
     }
-  }, [audioStrips, mixStrips, configurableMixStrips, mixes, strips]);
+
+    // TODO: Implement this
+    if (outputStrips) {
+      Object.entries(outputStrips).forEach(([key, output]) => {
+        if (output.input.source === 'mix') {
+          const mix = mixes.find((mix) => mix.stripId === output.input.index);
+          if (mix?.selected && mixRefs.current[mix.stripId]) {
+            mixRefs.current[mix.stripId]?.scrollIntoView(scrollBehavior);
+          }
+        } else if (output.input.source === 'strip') {
+          const strip = strips.find(
+            (strip) => strip.stripId === output.input.index
+          );
+          if (strip?.selected && stripRefs.current[strip.stripId]) {
+            stripRefs.current[strip.stripId]?.scrollIntoView(scrollBehavior);
+          }
+        }
+      });
+    }
+  }, [
+    audioStrips,
+    mixStrips,
+    configurableMixStrips,
+    mixes,
+    strips,
+    outputStrips
+  ]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
