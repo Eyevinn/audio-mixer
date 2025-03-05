@@ -7,10 +7,12 @@ import styles from './filterComponents.module.css';
 import { useWebSocket } from '../../../../context/WebSocketContext';
 import { TAudioStrip, TMixStrip } from '../../../../types/types';
 import { addEQBand, removeEQBand } from '../../../../utils/wsCommands';
+import Icons from '../../../../assets/icons/Icons';
 
 interface EffectsPanelProps {
   strip: TAudioStrip | TMixStrip | undefined;
   type: 'mixes' | 'strips';
+  onClose: () => void;
 }
 
 interface EQBand {
@@ -42,7 +44,11 @@ const EQ_BAND_FILTERS = [
   { select: '7 filters', array: [0, 1, 2, 3, 4, 5, 6] }
 ];
 
-export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
+export const EffectsPanel: React.FC<EffectsPanelProps> = ({
+  strip,
+  type,
+  onClose
+}) => {
   const [eqState, setEqState] = useState<EQState>({
     band0: { type: 'none', freq: 1000, gain: 0, q: 1 },
     band1: { type: 'none', freq: 1000, gain: 0, q: 1 },
@@ -205,12 +211,17 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
   };
 
   return (
-    <div className="h-[calc(100vh-5rem)] min-h-0 min-w-[38rem] overflow-y-auto p-2 rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg text-white scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin box-border">
-      <h1 className="text-xl font-semibold mb-4">
-        Settings for{' '}
-        {strip.label ||
-          `${type === 'mixes' ? 'Mix ' : 'Strip '} ${strip.stripId}`}
-      </h1>
+    <div className="h-full min-w-[38rem] overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg p-2 text-white scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin box-border">
+      <div className="flex justify-between items-center mb-2 mt-0">
+        <h1 className="text-xl font-semibold">
+          Settings for{' '}
+          {strip.label ||
+            `${type === 'mixes' ? 'Mix ' : 'Strip '} ${strip.stripId}`}
+        </h1>
+        <div onClick={onClose} className="hover:cursor-pointer">
+          <Icons name="IconX" className="min-w-8 min-h-8 text-red-500" />
+        </div>
+      </div>
 
       <section className={styles.settingsItem}>
         <h2 className="text-base font-bold mb-2">Trim</h2>
