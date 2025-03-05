@@ -19,6 +19,7 @@ module.exports = {
         'strip-hover': '#3a3b3d',
         'mix-bg': '#1a273f',
         'selected-mix-bg': '#291531',
+        'selected-mix-border': '#6d497b',
         'slider-green': '#04aa6d',
         'label-field': '#f9fada',
         'input-field': '#d9d9d9',

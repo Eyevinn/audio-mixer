@@ -1,10 +1,9 @@
-import React from 'react';
-
 type TStripDropdownProps = {
   type?: string;
   options: string[];
   value: string;
   hidden?: boolean;
+  configMode?: boolean;
   onChange: (input: string) => void;
 };
 
@@ -13,10 +12,13 @@ export const StripDropdown = ({
   options,
   value,
   hidden,
+  configMode,
   onChange
 }: TStripDropdownProps) => {
   return (
-    <div className="flex justify-between text-sm items-center px-4 py-1 w-full">
+    <div
+      className={`${configMode ? 'bg-selected-mix-bg border border-selected-mix-border border-y-0' : ''} flex justify-between text-sm items-center px-4 py-1 w-full`}
+    >
       {type && (
         <label
           htmlFor={type}

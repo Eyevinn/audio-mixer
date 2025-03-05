@@ -4,8 +4,8 @@ import PageBody from '../../components/pageLayout/pageBody/pageBody';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
 import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
-import { EffectsPanel } from '../../components/strips/stripComponents/audioFilters/EffectsPanel';
 import { MixStrip } from '../../components/strips/mixStrip/MixStrip';
+import { EffectsPanel } from '../../components/strips/stripComponents/audioFilters/EffectsPanel';
 import { InputDropdown } from '../../components/ui/inputDropdown/InputDropdown';
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { Select } from '../../components/ui/select/Select';
@@ -207,7 +207,6 @@ export const ConfigureMixPage = () => {
         <div className="w-full max-w-full overflow-hidden h-full p-4">
           <ScrollableContainer
             configurableMixStrips={mixToConfigure}
-            isRemovingFromMix={true}
             isPFL={isPFL}
             onStripSelect={handleSelection}
             handleRemoveStripFromMix={handleRemoveInputFromMix}
