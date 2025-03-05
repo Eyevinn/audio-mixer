@@ -94,24 +94,25 @@ export const OutputScrollItem = ({
       key={outputName}
       className="flex flex-col space-y-4 items-center border-2 border-modal-bg py-2 px-4 rounded-lg"
     >
-      <span>{outputName}</span>
-      {output.input.index === 1000 || outputName === 'pfl' ? (
-        <div className="h-10 w-64" />
-      ) : (
-        <Select
-          value={
-            output.input.index !== 0
-              ? renderLabel(output.input.index, output.input.source)
-              : 'Select input'
-          }
-          options={allInputs.filter((input) => input.stripId !== 1000)}
-          onChange={(selectedInput) =>
-            handleAddInputToOutput(outputName, selectedInput)
-          }
-          removeInput={() => removeInputFromOutput(sendMessage, outputName)}
-        />
-      )}
-
+      <div className="flex flex-row space-x-2 items-center">
+        <span>{outputName}</span>
+        {output.input.index === 1000 || outputName === 'pfl' ? (
+          <div className="h-10" />
+        ) : (
+          <Select
+            value={
+              output.input.index !== 0
+                ? renderLabel(output.input.index, output.input.source)
+                : 'Select input'
+            }
+            options={allInputs.filter((input) => input.stripId !== 1000)}
+            onChange={(selectedInput) =>
+              handleAddInputToOutput(outputName, selectedInput)
+            }
+            removeInput={() => removeInputFromOutput(sendMessage, outputName)}
+          />
+        )}
+      </div>
       {output.input.index !== 0 && (
         <OutputStrip
           outputName={outputName}

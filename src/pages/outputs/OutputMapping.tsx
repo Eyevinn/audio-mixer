@@ -93,14 +93,12 @@ export const OutputMappingPage = () => {
         </div>
 
         {selectedStrip !== null && (
-          <div className="p-4">
-            <EffectsPanel
-              strip={allInputs.find(
-                (strip) => strip.stripId === selectedStrip.id
-              )}
-              type={selectedStrip.type}
-            />
-          </div>
+          <EffectsPanel
+            strip={allInputs.find(
+              (strip) => strip.stripId === selectedStrip.id
+            )}
+            type={selectedStrip.type}
+          />
         )}
       </PageBody>
     </PageContainer>

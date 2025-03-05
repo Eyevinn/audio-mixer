@@ -63,8 +63,6 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
 
     if (value === undefined) return;
 
-    if (property === 'pfl') return;
-
     if (property === 'label') {
       sendMessage({
         type: 'set',
@@ -114,7 +112,7 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
       isPFLInactive={props.isPFLInactive}
       fader={props.type === 'mixes' ? originMix?.fader : originStrip?.fader}
     >
-      {props.outputName !== 'pfl' && (
+      {props.outputName !== 'pfl' && props.outputName !== 'program' && (
         <OutputFields source={props.input.source} stripId={props.stripId} />
       )}
     </BaseStrip>

@@ -37,7 +37,7 @@ export const Select: React.FC<SelectProps> = ({
   };
 
   return (
-    <div className={`relative w-64 ${className}`} ref={selectRef}>
+    <div className={`relative w-48 ${className}`} ref={selectRef}>
       <button
         className={`${isOpen ? 'border-b-0 rounded-b-none' : ''} text-xl w-full pl-4 pr-2 py-2 text-white bg-modal-bg border-2 border-border-bg rounded-lg focus:outline-none flex justify-between items-center h-10`}
         onClick={() => setIsOpen(!isOpen)}

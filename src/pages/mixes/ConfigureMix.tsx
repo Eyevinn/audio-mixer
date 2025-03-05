@@ -209,7 +209,7 @@ export const ConfigureMixPage = () => {
           </div>
         )}
         {/* Inputs that belong to the conf-mix */}
-        <div className="w-full max-w-full overflow-hidden h-full p-4">
+        <div className="px-4 overflow-x-hidden">
           <ScrollableContainer
             configurableMixStrips={mixToConfigure}
             isRemovingFromMix={true}
@@ -220,16 +220,14 @@ export const ConfigureMixPage = () => {
         </div>
 
         {selectedStrip !== null && (
-          <div className="p-4">
-            <EffectsPanel
-              strip={
-                selectedStrip.type === 'mixes'
-                  ? mixes.find((mix) => mix.stripId === selectedStrip.id)
-                  : strips.find((strip) => strip.stripId === selectedStrip.id)
-              }
-              type={selectedStrip.type}
-            />
-          </div>
+          <EffectsPanel
+            strip={
+              selectedStrip.type === 'mixes'
+                ? mixes.find((mix) => mix.stripId === selectedStrip.id)
+                : strips.find((strip) => strip.stripId === selectedStrip.id)
+            }
+            type={selectedStrip.type}
+          />
         )}
         <ConfirmationModal
           isOpen={isModalOpen}

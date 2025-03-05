@@ -182,16 +182,20 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
       `}
     >
       {/* Strip Info */}
-      <StripHeader
-        label={header}
-        copyButton={copyButton}
-        isRemovingFromMix={isRemovingFromMix}
-        isOutputStrip={isOutputStrip}
-        onRemove={onRemove}
-        onRemoveFromMix={onRemoveFromMix}
-        onCopy={onCopy}
-        removingOutputWarning={removingOutputWarning}
-      />
+      {isOutputStrip ? (
+        <div className="h-2" />
+      ) : (
+        <StripHeader
+          label={header}
+          copyButton={copyButton}
+          isRemovingFromMix={isRemovingFromMix}
+          isOutputStrip={isOutputStrip}
+          onRemove={onRemove}
+          onRemoveFromMix={onRemoveFromMix}
+          onCopy={onCopy}
+          removingOutputWarning={removingOutputWarning}
+        />
+      )}
 
       {/* Config Fields */}
       {configMode && (
@@ -204,6 +208,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
 
       {/* Label Input */}
       <LabelInput
+        isOutputStrip={isOutputStrip}
         value={label === '' ? stripLabel : label}
         onChange={(updatedLabel) => {
           setStripLabel(updatedLabel);
@@ -226,7 +231,9 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         <div
           className={`${isOutputStrip && output?.meters.enable_ebu_meters ? 'flex-col items-center' : ''} w-full flex justify-evenly mb-5`}
         >
-          <div className="flex flex-row space-x-4 p-4">
+          <div
+            className={`${isScreenTall ? '' : 'scale-90'} flex flex-row space-x-4 px-4`}
+          >
             {/* Audio Levels */}
             {!isPFLInput && (
               <AudioLevel
@@ -263,7 +270,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
 
         {/* Volume Slider */}
         <div
-          className={`flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'border border-almost-white rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''} ${isOutputStrip ? 'absolute bottom-0' : ''}`}
+          className={`${isScreenTall ? '' : 'scale-75'} flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'scale-100 border border-almost-white rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''} ${isOutputStrip ? 'absolute bottom-0' : ''}`}
         >
           {configMode && <p className="text-base pb-2">Send Level</p>}
           <VolumeSlider

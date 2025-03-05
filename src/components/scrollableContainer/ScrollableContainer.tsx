@@ -128,7 +128,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
 
   return (
     <div
-      className={`overflow-x-auto w-full flex cursor-grab active:cursor-grabbing select-none scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin
+      className={`h-full overflow-x-auto w-full flex cursor-grab active:cursor-grabbing select-none scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin
         ${isOutputPage ? 'space-x-8' : 'space-x-4'}
       `}
       ref={containerRef}
