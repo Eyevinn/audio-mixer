@@ -84,7 +84,7 @@ export const OutputMappingPage = () => {
       <PageHeader title="Outputs" />
 
       <PageBody>
-        <div className="p-4 w-full max-w-full h-full overflow-hidden">
+        <div className="px-4 overflow-x-hidden">
           <ScrollableContainer
             outputStrips={outputs}
             onStripSelect={handleSelection}

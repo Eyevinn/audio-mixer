@@ -4,7 +4,7 @@ const PageBody: FC<PropsWithChildren> = (props) => {
   const { children } = props;
 
   return (
-    <div className="text-white flex flex-row justify-between w-full h-[calc(100vh-60px)]">
+    <div className="text-white flex flex-row justify-between w-full flex-1">
       {children}
     </div>
   );

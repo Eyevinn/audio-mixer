@@ -111,23 +111,21 @@ export const StripsPage = () => {
 
       <PageBody>
         {/* Audio Strips Container */}
-        {/* <div className="w-full h-full min-h-0"> */}
-        <ScrollableContainer
-          audioStrips={strips}
-          isPFL={isPFL}
-          handleRemoveStrip={handleRemoveStrip}
-          onStripSelect={handleStripSelection}
-        />
-        {/* </div> */}
+        <div className="px-4 overflow-x-hidden">
+          <ScrollableContainer
+            audioStrips={strips}
+            isPFL={isPFL}
+            handleRemoveStrip={handleRemoveStrip}
+            onStripSelect={handleStripSelection}
+          />
+        </div>
 
         {/* Effects Panel */}
         {selectedStrip !== null && (
-          // <div className="h-full min-h-0">
           <EffectsPanel
             strip={strips.find((s) => s.stripId === selectedStrip)}
             type="strips"
           />
-          // </div>
         )}
       </PageBody>
     </PageContainer>

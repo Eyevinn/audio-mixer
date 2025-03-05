@@ -173,7 +173,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
 
   return (
     <div
-      className={`box-border flex flex-col relative rounded-lg
+      className={`box-border flex flex-col relative rounded-lg h-full
         ${backgroundColor}
         ${isScreenTall || !isOutputStrip ? 'w-fit' : 'w-56'}
         ${isHighlighted ? 'border-2 border-white' : ''}
@@ -262,7 +262,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         {isScreenTall && showEbuMeters && renderPanningAndActions()}
 
         {/* Volume Slider */}
-        {/* <div
+        <div
           className={`flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'border border-almost-white rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''} ${isOutputStrip ? 'absolute bottom-0' : ''}`}
         >
           {configMode && <p className="text-base pb-2">Send Level</p>}
@@ -282,7 +282,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
               }}
             />
           )}
-        </div> */}
+        </div>
       </div>
     </div>
   );

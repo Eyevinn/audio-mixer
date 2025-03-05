@@ -109,7 +109,7 @@ export const MixesPage = () => {
       </PageHeader>
       {/* Audio Strips Container */}
       <PageBody>
-        <div className="p-4 w-full max-w-full h-full overflow-hidden">
+        <div className="px-4 overflow-x-hidden">
           <ScrollableContainer
             mixStrips={mixes}
             isPFL={isPFL}
@@ -120,12 +120,10 @@ export const MixesPage = () => {
 
         {/* Effects Panel */}
         {selectedMix !== null && (
-          <div className="p-4 h-full pb-6 pl-0">
-            <EffectsPanel
-              strip={mixes.find((m) => m.stripId === selectedMix)}
-              type="mixes"
-            />
-          </div>
+          <EffectsPanel
+            strip={mixes.find((m) => m.stripId === selectedMix)}
+            type="mixes"
+          />
         )}
       </PageBody>
 
