@@ -96,9 +96,11 @@ export const OutputMappingPage = () => {
 
         {selectedStrip !== null && (
           <EffectsPanel
-            strip={allInputs.find(
-              (strip) => strip.stripId === selectedStrip.id
-            )}
+            strip={
+              selectedStrip.type === 'mixes'
+                ? mixes.find((mix) => mix.stripId === selectedStrip.id)
+                : strips.find((strip) => strip.stripId === selectedStrip.id)
+            }
             type={selectedStrip.type}
           />
         )}
