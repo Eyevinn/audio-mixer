@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
+import { useWebSocket } from '../../context/WebSocketContext';
 import { TAudioStrip, TBaseStrip, TMixStrip } from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { StripDropdown } from '../ui/dropdown/Dropdown';
 import { LabelInput } from '../ui/input/Input';
 import { AudioLevel } from './stripComponents/audioLevel/AudioLevel';
 import { PanningSlider } from './stripComponents/panningSlider/PanningSlider';
-import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
 import { StripHeader } from './stripComponents/stripHeader/StripHeader';
-import { useWebSocket } from '../../context/WebSocketContext';
+import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
 
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;
-  isRemovingFromMix?: boolean;
   isHighlighted?: boolean;
   input?: {
     first_channel: number;
@@ -43,7 +42,6 @@ interface BaseStripProps extends TBaseStrip {
 
 export const BaseStrip: React.FC<BaseStripProps> = ({
   isBeingConfigured,
-  isRemovingFromMix,
   isHighlighted,
   stripId,
   label,
@@ -114,7 +112,8 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
       <StripHeader
         label={header}
         copyButton={copyButton}
-        isRemovingFromMix={isRemovingFromMix}
+        isRemovingFromMix={configMode}
+        configMode={configMode}
         onRemove={onRemove}
         onRemoveFromMix={onRemoveFromMix}
         onCopy={onCopy}
@@ -125,6 +124,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         <StripDropdown
           options={['pre_fader', 'post_fader']}
           value={sendLevels?.origin}
+          configMode={configMode}
           onChange={(origin) => handleStripChange(inputId, 'origin', origin)}
         />
       )}
@@ -132,6 +132,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
       {/* Label Input */}
       <LabelInput
         value={label === '' ? stripLabel : label}
+        configMode={configMode}
         onChange={(updatedLabel) => {
           setStripLabel(updatedLabel);
           handleStripChange(inputId, 'label', updatedLabel);
@@ -186,7 +187,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         </div>
         {/* Volume Slider */}
         <div
-          className={`flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'border border-almost-white rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''}`}
+          className={`flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'border border-selected-mix-border rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''}`}
         >
           {configMode && <p className="text-base pb-2">Send Level</p>}
           <VolumeSlider

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { TAudioStrip, TMixStrip } from '../../../../types/types';
 import Icons from '../../../../assets/icons/Icons';
+import { TAudioStrip, TMixStrip } from '../../../../types/types';
 import { ConfirmationModal } from '../../../ui/modals/confirmationModal/ConfirmationModal';
 
 type StripHeaderProps = {
   label: string;
   copyButton?: boolean;
   isRemovingFromMix?: boolean;
+  configMode?: boolean;
   onRemove?: () => void;
   onRemoveFromMix?: (input: TAudioStrip | TMixStrip) => void;
   onCopy?: () => void;
@@ -16,6 +17,7 @@ export const StripHeader: React.FC<StripHeaderProps> = ({
   label,
   copyButton,
   isRemovingFromMix,
+  configMode,
   onRemove,
   onRemoveFromMix,
   onCopy
@@ -23,7 +25,9 @@ export const StripHeader: React.FC<StripHeaderProps> = ({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   return (
-    <div className="flex justify-between flex-wrap items-center w-full px-4 py-3">
+    <div
+      className={`flex justify-between flex-wrap items-center w-full px-4 py-3 ${configMode ? 'bg-selected-mix-bg border border-selected-mix-border border-b-0 rounded-t-lg' : ''}`}
+    >
       <div className="text-base text-center text-white">{label}</div>
       {copyButton && (
         <button onClick={onCopy} className="w-[2rem]">
@@ -35,7 +39,7 @@ export const StripHeader: React.FC<StripHeaderProps> = ({
       )}
       <button onClick={() => setIsModalOpen(true)} className="w-[2rem]">
         <Icons
-          name="IconTrash"
+          name={`${configMode ? 'IconMinus' : 'IconTrash'}`}
           className="bg-button-delete p-1 hover:cursor-pointer rounded hover:bg-button-delete-hover place-self-end"
         />
       </button>

@@ -9,7 +9,6 @@ interface ScrollableContainerProps {
   audioStrips?: TAudioStrip[];
   mixStrips?: TMixStrip[];
   configurableMixStrips?: TMixStrip;
-  isRemovingFromMix?: boolean;
   isPFL?: TMixStrip;
   handleRemoveStrip?: (stripId: number) => void;
   handleRemoveStripFromMix?: ({
@@ -32,7 +31,6 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   audioStrips,
   mixStrips,
   configurableMixStrips,
-  isRemovingFromMix,
   isPFL,
   handleRemoveStrip,
   handleRemoveStripFromMix,
@@ -134,7 +132,6 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
           }}
         >
           <AudioStrip
-            isRemovingFromMix={isRemovingFromMix}
             key={`${strip.stripId}-strip`}
             {...strip}
             isPFLInactive={
@@ -161,7 +158,6 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
             <MixStrip
               highlightedMixId={highlightedMixId}
               setHighlightedMixId={setHighlightedMixId}
-              isRemovingFromMix={isRemovingFromMix}
               {...mix}
               isPFLInactive={
                 isPFL?.inputs?.mixes[mix.stripId]?.muted ?? undefined
