@@ -13,8 +13,8 @@ import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
-import { addMix, removeMix } from '../../utils/wsCommands';
 import { useRemoveFromMixInputs } from '../../hooks/useRemoveFromMixInputs';
+import { addMix, removeMix } from '../../utils/wsCommands';
 
 export const MixesPage = () => {
   const [selectedMix, setSelectedMix] = useState<number | null>(null);
@@ -42,7 +42,9 @@ export const MixesPage = () => {
   }, [isFirstMount, setMixes]);
 
   useEffect(() => {
-    setIsDeleteAllDisabled(mixes.length === 0);
+    setIsDeleteAllDisabled(
+      mixes.length === 0 || (mixes.length === 1 && mixes[0].stripId === 1000)
+    );
   }, [mixes]);
 
   useEffect(() => {
