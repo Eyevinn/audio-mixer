@@ -94,7 +94,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
     }
 
     if (outputStrips) {
-      Object.entries(outputStrips).forEach(([_, output]) => {
+      Object.values(outputStrips).forEach((output) => {
         if (output.input.source === 'mix') {
           const mix = mixes.find((mix) => mix.stripId === output.input.index);
           if (mix?.selected && mixRefs.current[mix.stripId]) {

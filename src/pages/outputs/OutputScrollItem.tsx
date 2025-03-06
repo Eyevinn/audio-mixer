@@ -13,7 +13,7 @@ export interface TOutputScrollItem {
   output: TOutput;
   outputName: string;
   isPFLInactive: boolean | undefined;
-  ref?: (el: any) => void;
+  ref?: (el: HTMLDivElement | null) => void;
   onSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
 }
 
