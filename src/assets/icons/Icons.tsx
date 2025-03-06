@@ -11,6 +11,7 @@ import {
   IconMinus,
   IconPlugConnected,
   IconPlugConnectedX,
+  IconReload,
   IconSettings,
   IconSTurnRight,
   IconTrash,
@@ -59,6 +60,9 @@ const pickIcon = {
     <IconSettings className={className} />
   ),
   IconCopy: ({ className }: IClassName) => <IconCopy className={className} />,
+  IconReload: ({ className }: IClassName) => (
+    <IconReload className={className} />
+  ),
   IconMinus: ({ className }: IClassName) => <IconMinus className={className} />
 };
 

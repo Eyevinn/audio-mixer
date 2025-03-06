@@ -14,20 +14,12 @@
   .slider-track {
     @apply appearance-none w-full h-[5px] bg-gray-300 outline-none opacity-70 transition-opacity duration-200;
   }
+}
 
-  .button-base {
-    @apply relative w-[61px] h-[40px] text-[15px] border-none bg-gray-500 text-center m-[5px_10px] p-0 rounded text-white;
-  }
-
-  .audio-strip {
-    @apply w-[97px] h-[726px] relative inline-block;
-  }
-
-  .strip-container {
-    @apply w-[100px] absolute;
-  }
-
-  .strip-config {
-    @apply flex justify-between;
-  }
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow-x: hidden;
 }

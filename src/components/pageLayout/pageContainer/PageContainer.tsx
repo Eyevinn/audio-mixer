@@ -4,7 +4,7 @@ const PageContainer: FC<PropsWithChildren> = (props) => {
   const { children } = props;
 
   return (
-    <div className="text-white text-2xl flex flex-col w-full h-screen overflow-hidden">
+    <div className="text-white flex flex-col w-full h-screen overflow-x-hidden">
       {children}
     </div>
   );

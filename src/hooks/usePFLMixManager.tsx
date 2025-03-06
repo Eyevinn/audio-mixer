@@ -1,7 +1,12 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useGlobalState } from '../context/GlobalStateContext';
 import { useWebSocket } from '../context/WebSocketContext';
-import { addMix, addMixToMix, addStripToMix } from '../utils/wsCommands';
+import {
+  addInputToOutput,
+  addMix,
+  addMixToMix,
+  addStripToMix
+} from '../utils/wsCommands';
 
 export const usePFLMixManager = () => {
   const { mixes, strips } = useGlobalState();
@@ -20,6 +25,7 @@ export const usePFLMixManager = () => {
   const setPFLMix = useCallback(() => {
     resetProcessedSets();
     addMix(sendMessage, 1000);
+    addInputToOutput(sendMessage, 'pfl', 1000, 'pre_fader', 'mix');
   }, [sendMessage, resetProcessedSets]);
 
   // Ensure PFL mix exists

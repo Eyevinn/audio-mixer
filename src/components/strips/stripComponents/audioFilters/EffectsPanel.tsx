@@ -100,11 +100,11 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
   ];
 
   useEffect(() => {
-    setTrimValue(strip?.filters.gain.value || 0);
+    setTrimValue(strip?.filters?.gain.value || 0);
     setEqBandsArray(
-      EQ_BAND_FILTERS[Object.keys(strip?.filters.eq.bands || {}).length].array
+      EQ_BAND_FILTERS[Object.keys(strip?.filters?.eq.bands || {}).length].array
     );
-    Object.entries(strip?.filters.eq.bands || {}).forEach(([key, band]) => {
+    Object.entries(strip?.filters?.eq.bands || {}).forEach(([key, band]) => {
       setEqState((prev) => ({
         ...prev,
         [`band${key}`]: {
@@ -117,7 +117,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
 
   if (!strip) return null;
 
-  const compressorArray = [
+  const compressorArray = strip.filters && [
     {
       name: 'attack',
       min: 1,
@@ -169,7 +169,9 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
   ];
 
   const handleEQBandChange = (newBandsArray: number[]) => {
-    const currentBandsCount = Object.keys(strip?.filters.eq.bands || {}).length;
+    const currentBandsCount = Object.keys(
+      strip?.filters?.eq.bands || {}
+    ).length;
 
     if (currentBandsCount < newBandsArray.length) {
       // Add each missing band one by one
@@ -203,7 +205,7 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
   };
 
   return (
-    <div className="h-full min-w-[38rem] overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg p-2 text-white scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin box-border">
+    <div className="h-[calc(100vh-5rem)] min-h-0 min-w-[38rem] overflow-y-auto p-2 rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg text-white scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin box-border">
       <h1 className="text-xl font-semibold mb-4">
         Settings for{' '}
         {strip.label ||
@@ -341,27 +343,28 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
       <section className={styles.settingsItem}>
         <h2 className="text-base font-bold mb-2">Compressor</h2>
         <div className="mb-2 ml-2">
-          {compressorArray.map((compressor) => (
-            <EffectsSlider
-              key={compressor.name}
-              id={`compressor_${compressor.name}`}
-              text={`${compressor.name.charAt(0).toUpperCase() + compressor.name.slice(1)}:`}
-              min={compressor.min}
-              max={compressor.max}
-              value={compressor.value}
-              step={compressor.step}
-              unit={compressor.unit}
-              filter="compressor"
-              parameter={compressor.name}
-              onChange={(value) => {
-                setCompressorState((prev) => ({
-                  ...prev,
-                  [compressor.name]: value
-                }));
-                handleEffectChange('compressor', compressor.name, value);
-              }}
-            />
-          ))}
+          {compressorArray &&
+            compressorArray.map((compressor) => (
+              <EffectsSlider
+                key={compressor.name}
+                id={`compressor_${compressor.name}`}
+                text={`${compressor.name.charAt(0).toUpperCase() + compressor.name.slice(1)}:`}
+                min={compressor.min}
+                max={compressor.max}
+                value={compressor.value && compressor.value}
+                step={compressor.step}
+                unit={compressor.unit}
+                filter="compressor"
+                parameter={compressor.name}
+                onChange={(value) => {
+                  setCompressorState((prev) => ({
+                    ...prev,
+                    [compressor.name]: value
+                  }));
+                  handleEffectChange('compressor', compressor.name, value);
+                }}
+              />
+            ))}
         </div>
 
         <CompressorVisualisation

@@ -13,6 +13,7 @@ type TInputProps = {
 type TStripInputProps = {
   type?: string;
   value: string;
+  isOutputStrip?: boolean;
   configMode?: boolean;
   onChange: (input: string) => void;
 };
@@ -58,6 +59,7 @@ export const StripInput = ({ type, value, onChange }: TStripInputProps) => {
 
 export const LabelInput = ({
   value,
+  isOutputStrip,
   configMode,
   onChange
 }: TStripInputProps) => {
@@ -70,7 +72,7 @@ export const LabelInput = ({
         maxLength={15}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-[8rem] bg-label-field text-black g-transparent outline-none text-center py-1 text-sm rounded mb-2 truncate overflow-hidden whitespace-nowrap px-1"
+        className={`${isOutputStrip ? 'w-full' : 'w-[8rem]'} bg-label-field text-black g-transparent outline-none text-center py-1 text-sm rounded mb-1 truncate overflow-hidden whitespace-nowrap px-1`}
       />
     </div>
   );

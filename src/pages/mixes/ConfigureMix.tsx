@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PageBody from '../../components/pageLayout/pageBody/pageBody';
 import PageContainer from '../../components/pageLayout/pageContainer/PageContainer';
-import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
 import { MixStrip } from '../../components/strips/mixStrip/MixStrip';
 import { EffectsPanel } from '../../components/strips/stripComponents/audioFilters/EffectsPanel';
@@ -163,9 +162,9 @@ export const ConfigureMixPage = () => {
 
   return (
     <PageContainer>
-      <PageHeader
-        title="Configure Mix:"
-        titleElement={
+      <div className="flex flex-row justify-between p-5 pb-0 items-center">
+        <div className="flex flew-row space-x-4 items-center">
+          <h1>Configure Mix: </h1>
           <Select
             value={
               mixToConfigure?.label || mixToConfigure?.stripId.toString() || ''
@@ -177,17 +176,16 @@ export const ConfigureMixPage = () => {
             }}
             className="ml-2"
           />
-        }
-      >
+        </div>
         <InputDropdown
           selectedInputs={usedInputs}
-          options={allInputs}
+          options={allInputs.filter((input) => input.stripId !== 1000)}
           label="Add input"
           mixToConfigure={mixToConfigure?.stripId}
           addInput={handleAddInput}
           removeInput={handleRemoveInputFromMix}
         />
-      </PageHeader>
+      </div>
       <PageBody>
         {mixToConfigure && (
           <div className="p-4">
@@ -204,7 +202,7 @@ export const ConfigureMixPage = () => {
           </div>
         )}
         {/* Inputs that belong to the conf-mix */}
-        <div className="w-full max-w-full overflow-hidden h-full p-4">
+        <div className="p-4 overflow-x-hidden w-full">
           <ScrollableContainer
             configurableMixStrips={mixToConfigure}
             isPFL={isPFL}
@@ -214,16 +212,14 @@ export const ConfigureMixPage = () => {
         </div>
 
         {selectedStrip !== null && (
-          <div className="p-4">
-            <EffectsPanel
-              strip={
-                selectedStrip.type === 'mixes'
-                  ? mixes.find((mix) => mix.stripId === selectedStrip.id)
-                  : strips.find((strip) => strip.stripId === selectedStrip.id)
-              }
-              type={selectedStrip.type}
-            />
-          </div>
+          <EffectsPanel
+            strip={
+              selectedStrip.type === 'mixes'
+                ? mixes.find((mix) => mix.stripId === selectedStrip.id)
+                : strips.find((strip) => strip.stripId === selectedStrip.id)
+            }
+            type={selectedStrip.type}
+          />
         )}
         <ConfirmationModal
           isOpen={isModalOpen}

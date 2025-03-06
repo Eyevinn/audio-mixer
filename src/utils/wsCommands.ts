@@ -130,20 +130,6 @@ export const getOutputInput = (
   });
 };
 
-export const setOutputLabel = (
-  sendMessage: (message: Record<string, unknown>) => void,
-  outputName: string,
-  label: string
-) => {
-  sendMessage({
-    type: 'set',
-    resource: `/audio/outputs/${outputName}`,
-    body: {
-      label: label
-    }
-  });
-};
-
 export const addInputToOutput = (
   sendMessage: (message: Record<string, unknown>) => void,
   outputName: string,
@@ -162,13 +148,67 @@ export const addInputToOutput = (
   });
 };
 
+export const removeInputFromOutput = (
+  sendMessage: (message: Record<string, unknown>) => void,
+  outputName: string
+) => {
+  sendMessage({
+    type: 'set',
+    resource: `/audio/outputs/${outputName}/input`,
+    body: {
+      index: 0,
+      origin: 'post_fader',
+      source: 'mix'
+    }
+  });
+};
+
+export const resetOutputMeters = (
+  sendMessage: (message: Record<string, unknown>) => void,
+  outputName: string
+) => {
+  sendMessage({
+    type: 'command',
+    resource: `/audio/outputs/${outputName}/meters`,
+    body: { command: 'reset' }
+  });
+};
+
 // Subscriptions
-export const resync = (
+export const subscribe = (
   sendMessage: (message: Record<string, unknown>) => void
 ) => {
   sendMessage({
     type: 'subscribe',
     resource: '/audio'
+  });
+
+  // Enable EBU-meters for program output
+  sendMessage({
+    type: 'set',
+    resource: '/audio/outputs/program/meters',
+    body: { enable_ebu_meters: true }
+  });
+
+  // Start sampling
+  sendMessage({
+    type: 'sampling-start',
+    resource: '/audio/strips/*/pre_fader_meter/*',
+    body: { interval_ms: 40 }
+  });
+
+  sendMessage({
+    type: 'sampling-start',
+    resource: '/audio/mixes/*/pre_fader_meter/*',
+    body: { interval_ms: 40 }
+  });
+
+  sendMessage({
+    type: 'sampling-start',
+    resource: '/audio/outputs/*/meters/*',
+    body: {
+      interval_ms: 40
+    }
   });
 };
 

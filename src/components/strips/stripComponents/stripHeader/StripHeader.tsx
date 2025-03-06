@@ -5,8 +5,10 @@ import { ConfirmationModal } from '../../../ui/modals/confirmationModal/Confirma
 
 type StripHeaderProps = {
   label: string;
+  isOutputStrip?: boolean;
   copyButton?: boolean;
   isRemovingFromMix?: boolean;
+  removingOutputWarning?: string | string[];
   configMode?: boolean;
   onRemove?: () => void;
   onRemoveFromMix?: (input: TAudioStrip | TMixStrip) => void;
@@ -15,8 +17,10 @@ type StripHeaderProps = {
 
 export const StripHeader: React.FC<StripHeaderProps> = ({
   label,
+  isOutputStrip,
   copyButton,
   isRemovingFromMix,
+  removingOutputWarning,
   configMode,
   onRemove,
   onRemoveFromMix,
@@ -37,16 +41,18 @@ export const StripHeader: React.FC<StripHeaderProps> = ({
           />
         </button>
       )}
-      <button onClick={() => setIsModalOpen(true)} className="w-[2rem]">
-        <Icons
-          name={`${configMode ? 'IconMinus' : 'IconTrash'}`}
-          className="bg-button-delete p-1 hover:cursor-pointer rounded hover:bg-button-delete-hover place-self-end"
-        />
-      </button>
+      {!isOutputStrip && (
+        <button onClick={() => setIsModalOpen(true)} className="w-[2rem]">
+          <Icons
+            name={`${configMode ? 'IconMinus' : 'IconTrash'}`}
+            className="bg-button-delete p-1 hover:cursor-pointer rounded hover:bg-button-delete-hover place-self-end"
+          />
+        </button>
+      )}
       <ConfirmationModal
         isOpen={isModalOpen}
         title={`Delete ${label}`}
-        message={`Are you sure you want to delete ${label}${isRemovingFromMix ? ' from this mix?' : '?'}`}
+        message={`${removingOutputWarning && removingOutputWarning.length > 0 ? removingOutputWarning + '\n' : ''}Are you sure you want to delete ${label}${isRemovingFromMix ? ' from this mix?' : '?'}`}
         confirmText="Yes, delete"
         onConfirm={onRemove}
         onConfirmMixConfig={onRemoveFromMix}

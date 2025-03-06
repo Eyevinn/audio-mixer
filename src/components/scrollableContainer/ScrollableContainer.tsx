@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useGlobalState } from '../../context/GlobalStateContext';
-import { TAudioStrip, TMixStrip } from '../../types/types';
+import { OutputScrollItem } from '../../pages/outputs/OutputScrollItem';
+import { TAudioStrip, TMixStrip, TOutput } from '../../types/types';
 import { AudioStrip } from '../strips/audioStrip/AudioStrip';
 import { MixStrip } from '../strips/mixStrip/MixStrip';
 import { ConfigureMixStrip } from '../strips/stripComponents/configure/ConfigureMixStrip';
@@ -9,6 +10,8 @@ interface ScrollableContainerProps {
   audioStrips?: TAudioStrip[];
   mixStrips?: TMixStrip[];
   configurableMixStrips?: TMixStrip;
+  outputStrips?: { [key: string]: TOutput };
+  isOutputPage?: boolean;
   isPFL?: TMixStrip;
   handleRemoveStrip?: (stripId: number) => void;
   handleRemoveStripFromMix?: ({
@@ -31,6 +34,8 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   audioStrips,
   mixStrips,
   configurableMixStrips,
+  outputStrips,
+  isOutputPage,
   isPFL,
   handleRemoveStrip,
   handleRemoveStripFromMix,
@@ -87,7 +92,32 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         }
       });
     }
-  }, [audioStrips, mixStrips, configurableMixStrips, mixes, strips]);
+
+    if (outputStrips) {
+      Object.values(outputStrips).forEach((output) => {
+        if (output.input.source === 'mix') {
+          const mix = mixes.find((mix) => mix.stripId === output.input.index);
+          if (mix?.selected && mixRefs.current[mix.stripId]) {
+            mixRefs.current[mix.stripId]?.scrollIntoView(scrollBehavior);
+          }
+        } else if (output.input.source === 'strip') {
+          const strip = strips.find(
+            (strip) => strip.stripId === output.input.index
+          );
+          if (strip?.selected && stripRefs.current[strip.stripId]) {
+            stripRefs.current[strip.stripId]?.scrollIntoView(scrollBehavior);
+          }
+        }
+      });
+    }
+  }, [
+    audioStrips,
+    mixStrips,
+    configurableMixStrips,
+    mixes,
+    strips,
+    outputStrips
+  ]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
@@ -116,7 +146,9 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
 
   return (
     <div
-      className="overflow-x-auto w-full h-full flex space-x-4 cursor-grab active:cursor-grabbing select-none scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin"
+      className={`h-full overflow-x-auto w-full flex cursor-grab active:cursor-grabbing select-none scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin
+        ${isOutputPage ? 'space-x-8' : 'space-x-4'}
+      `}
       ref={containerRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
@@ -240,6 +272,27 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
           )}
         </>
       )}
+      {outputStrips &&
+        Object.entries(outputStrips).map(([key, output]) => {
+          return (
+            <OutputScrollItem
+              ref={(el) => {
+                output.input.source === 'mix'
+                  ? (mixRefs.current[output.input.index] = el)
+                  : (stripRefs.current[output.input.index] = el);
+              }}
+              key={key}
+              output={output}
+              outputName={key}
+              isPFLInactive={
+                output.input.source === 'mix'
+                  ? isPFL?.inputs?.mixes[output.input.index]?.muted
+                  : isPFL?.inputs?.strips[output.input.index]?.muted
+              }
+              onSelect={onStripSelect}
+            />
+          );
+        })}
     </div>
   );
 };

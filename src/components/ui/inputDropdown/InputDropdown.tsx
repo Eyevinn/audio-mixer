@@ -50,8 +50,8 @@ export const InputDropdown: React.FC<InputDropdownProps> = ({
             );
 
             const renderLabel = isMix
-              ? `Mix ${option.stripId + ' ' + option.label}`
-              : `Strip ${option.stripId + ' ' + option.label}`;
+              ? `${option.label || `Mix ${option.stripId}`}`
+              : `${option.label || `Strip ${option.stripId}`}`;
             return (
               <li
                 key={`${option.stripId}-${isMix ? 'mix' : 'strip'}`}

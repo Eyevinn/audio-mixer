@@ -11,6 +11,7 @@ import {
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
+import { useCheckOutputUsage } from '../../hooks/useCheckOutputUsage';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addStrip, removeStrip } from '../../utils/wsCommands';
 import { useRemoveFromMixInputs } from '../../hooks/useRemoveFromMixInputs';
@@ -25,6 +26,8 @@ export const StripsPage = () => {
   const nextStripIndex = useNextAvailableIndex(strips);
   const [isFirstMount, setIsFirstMount] = useState(true);
   const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
+
+  const warningTexts = useCheckOutputUsage(strips, 'strip');
 
   useEffect(() => {
     setIsDeleteAllDisabled(strips.length === 0);
@@ -101,7 +104,7 @@ export const StripsPage = () => {
         </div>
         <ConfirmationModal
           title="Delete all strips"
-          message="Are you sure you want to delete all strips?"
+          message={`${warningTexts.length > 0 ? warningTexts + '\n' : ''} Are you sure you want to delete all strips?`}
           isOpen={isModalOpen}
           confirmText="Yes, delete all"
           onConfirm={() => handleRemoveAllStrips()}
@@ -111,7 +114,7 @@ export const StripsPage = () => {
 
       <PageBody>
         {/* Audio Strips Container */}
-        <div className="p-4 w-full max-w-full overflow-hidden h-full">
+        <div className="px-4 overflow-x-hidden">
           <ScrollableContainer
             audioStrips={strips}
             isPFL={isPFL}
@@ -122,12 +125,10 @@ export const StripsPage = () => {
 
         {/* Effects Panel */}
         {selectedStrip !== null && (
-          <div className="p-4 h-full pb-6 pl-0">
-            <EffectsPanel
-              strip={strips.find((s) => s.stripId === selectedStrip)}
-              type="strips"
-            />
-          </div>
+          <EffectsPanel
+            strip={strips.find((s) => s.stripId === selectedStrip)}
+            type="strips"
+          />
         )}
       </PageBody>
     </PageContainer>

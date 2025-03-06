@@ -12,6 +12,7 @@ import {
 import { ConfirmationModal } from '../../components/ui/modals/confirmationModal/ConfirmationModal';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
+import { useCheckOutputUsage } from '../../hooks/useCheckOutputUsage';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { useRemoveFromMixInputs } from '../../hooks/useRemoveFromMixInputs';
 import { addMix, removeMix } from '../../utils/wsCommands';
@@ -27,6 +28,7 @@ export const MixesPage = () => {
   const nextMixIndex = useNextAvailableIndex(mixes);
   const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
   const navigate = useNavigate();
+  const warningTexts = useCheckOutputUsage(mixes, 'mix');
 
   useEffect(() => {
     if (!isFirstMount) return;
@@ -112,7 +114,7 @@ export const MixesPage = () => {
       </PageHeader>
       {/* Audio Strips Container */}
       <PageBody>
-        <div className="p-4 w-full max-w-full h-full overflow-hidden">
+        <div className="px-4 overflow-x-hidden">
           <ScrollableContainer
             mixStrips={mixes}
             isPFL={isPFL}
@@ -123,12 +125,10 @@ export const MixesPage = () => {
 
         {/* Effects Panel */}
         {selectedMix !== null && (
-          <div className="p-4 h-full pb-6 pl-0">
-            <EffectsPanel
-              strip={mixes.find((m) => m.stripId === selectedMix)}
-              type="mixes"
-            />
-          </div>
+          <EffectsPanel
+            strip={mixes.find((m) => m.stripId === selectedMix)}
+            type="mixes"
+          />
         )}
       </PageBody>
 
@@ -136,7 +136,7 @@ export const MixesPage = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Delete all mixes"
-        message="Are you sure you want to delete all mixes?"
+        message={`${warningTexts.length > 0 ? warningTexts + '\n' : ''} Are you sure you want to delete all mixes?`}
         confirmText="Yes, delete all"
         onConfirm={handleRemoveAllMixes}
       />

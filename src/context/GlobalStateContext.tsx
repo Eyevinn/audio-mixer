@@ -5,16 +5,16 @@ import React, {
   useContext,
   useState
 } from 'react';
-import { Output, TAudioStrip, TMixStrip } from '../types/types';
+import { TAudioStrip, TMixStrip, TOutput } from '../types/types';
 
 interface GlobalStateContextType {
   strips: TAudioStrip[];
   mixes: TMixStrip[];
-  outputs: { [key: string]: Output };
+  outputs: { [key: string]: TOutput };
   errorMessage: string;
   setStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>;
   setMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>;
-  setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: Output }>>;
+  setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: TOutput }>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -25,7 +25,7 @@ export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
 }) => {
   const [strips, setStrips] = useState<TAudioStrip[]>([]);
   const [mixes, setMixes] = useState<TMixStrip[]>([]);
-  const [outputs, setOutputs] = useState<{ [key: string]: Output }>({});
+  const [outputs, setOutputs] = useState<{ [key: string]: TOutput }>({});
   const [errorMessage, setErrorMessage] = useState<string>('');
   return (
     <GlobalStateContext.Provider
