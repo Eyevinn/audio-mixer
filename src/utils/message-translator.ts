@@ -168,10 +168,10 @@ const messageTranslator = (
         const resourceArray = data.body?.resource?.split('/') || [];
         const resourceType = resourceArray[1];
         const resourceIndex = resourceArray[2];
-        if (resourceType && resourceIndex && resourceIndex !== '1000') {
+        if (resourceType && resourceIndex) {
           if (resourceType === 'strips')
             getStripByIndex(sendMessage, resourceIndex);
-          else if (resourceType === 'mixes')
+          else if (resourceType === 'mixes' && resourceIndex !== '1000')
             getMixByIndex(sendMessage, resourceIndex);
         }
         break;
