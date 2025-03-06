@@ -186,7 +186,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         <StripHeader
           label={header}
           copyButton={copyButton}
-          isRemovingFromMix={isRemovingFromMix}
+          isRemovingFromMix={configMode}
           isOutputStrip={isOutputStrip}
           onRemove={onRemove}
           onRemoveFromMix={onRemoveFromMix}

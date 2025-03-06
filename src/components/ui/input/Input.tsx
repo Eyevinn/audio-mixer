@@ -25,8 +25,6 @@ export const Input = ({
   placeholder,
   error,
   onKeyDown,
-  isOutputStrip,
-  configMode,
   onChange
 }: TInputProps) => {
   return (

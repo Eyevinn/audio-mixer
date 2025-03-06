@@ -65,32 +65,28 @@ const uploadFromFile = (
         body: strip
       });
 
-      requests.push({
-        type: 'set',
-        resource: '/audio/strips/' + stripIndex,
-        body: strip
-      });
-
       const bands = strip.filters?.eq.bands;
-      for (const bandIndex in bands) {
-        requests.push({
-          type: 'command',
-          resource: '/audio/strips/' + stripIndex + '/filters/eq/bands',
-          body: {
-            command: 'add_band',
-            parameters: {
-              index: Number(bandIndex)
+      if (bands) {
+        for (const bandIndex in bands) {
+          requests.push({
+            type: 'command',
+            resource: '/audio/strips/' + stripIndex + '/filters/eq/bands',
+            body: {
+              command: 'add_band',
+              parameters: {
+                index: Number(bandIndex)
+              }
             }
-          }
-        });
-        requests.push({
-          type: 'set',
-          resource:
-            '/audio/strips/' + stripIndex + '/filters/eq/bands/' + bandIndex,
-          body: {
-            ...bands[bandIndex]
-          }
-        });
+          });
+          requests.push({
+            type: 'set',
+            resource:
+              '/audio/strips/' + stripIndex + '/filters/eq/bands/' + bandIndex,
+            body: {
+              ...bands[bandIndex]
+            }
+          });
+        }
       }
     }
 
@@ -151,26 +147,28 @@ const uploadFromFile = (
       }
 
       const bands = mix.filters?.eq.bands;
-      for (const bandIndex in bands) {
-        requests.push({
-          type: 'command',
-          resource: '/audio/mixes/' + mixIndex + '/filters/eq/bands',
-          body: {
-            command: 'add_band',
-            parameters: {
-              index: Number(bandIndex)
+      if (bands) {
+        for (const bandIndex in bands) {
+          requests.push({
+            type: 'command',
+            resource: '/audio/mixes/' + mixIndex + '/filters/eq/bands',
+            body: {
+              command: 'add_band',
+              parameters: {
+                index: Number(bandIndex)
+              }
             }
-          }
-        });
+          });
 
-        requests.push({
-          type: 'set',
-          resource:
-            '/audio/mixes/' + mixIndex + '/filters/eq/bands/' + bandIndex,
-          body: {
-            ...bands[bandIndex]
-          }
-        });
+          requests.push({
+            type: 'set',
+            resource:
+              '/audio/mixes/' + mixIndex + '/filters/eq/bands/' + bandIndex,
+            body: {
+              ...bands[bandIndex]
+            }
+          });
+        }
       }
     }
 

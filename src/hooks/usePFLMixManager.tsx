@@ -25,13 +25,13 @@ export const usePFLMixManager = () => {
   const setPFLMix = useCallback(() => {
     resetProcessedSets();
     addMix(sendMessage, 1000);
+    addInputToOutput(sendMessage, 'pfl', 1000, 'pre_fader', 'mix');
   }, [sendMessage, resetProcessedSets]);
 
   // Ensure PFL mix exists
   useEffect(() => {
     if (!pflMix && !noStrips) {
       setPFLMix();
-      addInputToOutput(sendMessage, 'pfl', 1000, 'pre_fader', 'mix');
     }
   }, [pflMix, noStrips, setPFLMix]);
 
