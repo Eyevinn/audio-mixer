@@ -233,8 +233,11 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
 
       {/* EQ Section */}
       <section className="mb-5">
-        <label className="text-lg font-bold mr-10">Equalizer</label>
+        <label htmlFor="equalizer" className="text-lg font-bold mr-10">
+          Equalizer
+        </label>
         <select
+          id="equalizer"
           value={JSON.stringify(eqBandsArray)}
           onChange={(e) => {
             const parsedArray = JSON.parse(e.target.value);
@@ -257,8 +260,14 @@ export const EffectsPanel: React.FC<EffectsPanelProps> = ({ strip, type }) => {
               </h3>
               <div className="mb-2 ml-2">
                 <div className="mb-2 text-sm">
-                  <label className="w-[150px] inline-block">Type:</label>
+                  <label
+                    htmlFor={`eq_band_${bandIndex}_type`}
+                    className="w-[150px] inline-block"
+                  >
+                    Type:
+                  </label>
                   <select
+                    id={`eq_band_${bandIndex}_type`}
                     value={eqState[`band${bandIndex}` as keyof EQState].type}
                     onChange={(e) => {
                       setEqState((prev) => ({
