@@ -65,6 +65,9 @@ class Logger {
       if (msgResource?.slice(0, 1) === '/') {
         massagedMsgResource = msgResource.slice(1);
       }
+      if (msgType === 'sampling-update') {
+        return;
+      }
       console.log(
         `\x1b[36m${msgType}|${massagedMsgResource + ': '}\x1b[0m${JSON.stringify(msg)}`
       );
