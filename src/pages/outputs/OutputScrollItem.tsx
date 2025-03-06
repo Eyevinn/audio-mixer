@@ -13,6 +13,7 @@ export interface TOutputScrollItem {
   output: TOutput;
   outputName: string;
   isPFLInactive: boolean | undefined;
+  ref?: (el: any) => void;
   onSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
 }
 
@@ -20,6 +21,7 @@ export const OutputScrollItem = ({
   output,
   outputName,
   isPFLInactive,
+  ref,
   onSelect
 }: TOutputScrollItem) => {
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
@@ -91,6 +93,7 @@ export const OutputScrollItem = ({
 
   return (
     <div
+      ref={ref}
       key={outputName}
       className="flex flex-col space-y-4 items-center border-2 border-modal-bg py-2 px-4 rounded-lg"
     >

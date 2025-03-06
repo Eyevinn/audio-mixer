@@ -102,7 +102,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
 
     // TODO: Implement this
     if (outputStrips) {
-      Object.entries(outputStrips).forEach(([key, output]) => {
+      Object.entries(outputStrips).forEach(([_, output]) => {
         if (output.input.source === 'mix') {
           const mix = mixes.find((mix) => mix.stripId === output.input.index);
           if (mix?.selected && mixRefs.current[mix.stripId]) {
@@ -286,6 +286,11 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         Object.entries(outputStrips).map(([key, output]) => {
           return (
             <OutputScrollItem
+              ref={(el) => {
+                output.input.source === 'mix'
+                  ? (mixRefs.current[output.input.index] = el)
+                  : (stripRefs.current[output.input.index] = el);
+              }}
               key={key}
               output={output}
               outputName={key}
