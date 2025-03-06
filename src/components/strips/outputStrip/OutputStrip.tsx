@@ -108,7 +108,7 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
       isPFLInactive={props.isPFLInactive}
       fader={props.type === 'mixes' ? originMix?.fader : originStrip?.fader}
     >
-      {props.outputName !== 'pfl' && props.outputName !== 'program' && (
+      {props.outputName !== 'pfl' && (
         <OutputFields source={props.input.source} stripId={props.stripId} />
       )}
     </BaseStrip>
