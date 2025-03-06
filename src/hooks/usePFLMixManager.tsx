@@ -15,6 +15,7 @@ export const usePFLMixManager = () => {
   const processedStrips = useRef<Set<number>>(new Set());
   const processedMixes = useRef<Set<number>>(new Set());
   const pflMix = mixes.find((mix) => mix.stripId === 1000);
+  const noStrips = strips.length === 0;
 
   const resetProcessedSets = useCallback(() => {
     processedStrips.current.clear();
@@ -28,11 +29,11 @@ export const usePFLMixManager = () => {
 
   // Ensure PFL mix exists
   useEffect(() => {
-    if (!pflMix) {
+    if (!pflMix && !noStrips) {
       setPFLMix();
       addInputToOutput(sendMessage, 'pfl', 1000, 'pre_fader', 'mix');
     }
-  }, [pflMix, setPFLMix]);
+  }, [pflMix, noStrips, setPFLMix]);
 
   // Add new strips to PFL mix
   useEffect(() => {

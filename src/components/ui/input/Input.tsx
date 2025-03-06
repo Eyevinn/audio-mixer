@@ -48,6 +48,7 @@ export const StripInput = ({ type, value, onChange }: TStripInputProps) => {
         {type}
       </label>
       <input
+        id={type}
         type="number"
         placeholder="Input Slot"
         value={value}
