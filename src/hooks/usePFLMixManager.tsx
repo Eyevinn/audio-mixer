@@ -25,7 +25,6 @@ export const usePFLMixManager = () => {
   // Ensure PFL mix exists
   useEffect(() => {
     if (!pflMix && !noStrips) {
-      console.log('Setting PFL mix', pflMix);
       setPFLMix();
     }
   }, [pflMix, noStrips, setPFLMix]);
