@@ -185,6 +185,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
       ) : (
         <StripHeader
           label={header}
+          configMode={configMode}
           copyButton={copyButton}
           isRemovingFromMix={configMode}
           isOutputStrip={isOutputStrip}
@@ -199,6 +200,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
       {configMode && (
         <StripDropdown
           options={['pre_fader', 'post_fader']}
+          configMode={configMode}
           value={sendLevels?.origin}
           onChange={(origin) => handleStripChange(inputId, 'origin', origin)}
         />
@@ -208,6 +210,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
       <LabelInput
         isOutputStrip={isOutputStrip}
         value={label === '' ? stripLabel : label}
+        configMode={configMode}
         onChange={(updatedLabel) => {
           setStripLabel(updatedLabel);
           handleStripChange(inputId, 'label', updatedLabel);
