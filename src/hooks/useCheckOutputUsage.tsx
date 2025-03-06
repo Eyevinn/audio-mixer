@@ -26,7 +26,7 @@ export function useCheckOutputUsage<T extends Item>(
           )
           .map(([key]) => key);
 
-        if (usedOutputKeys.length > 0) {
+        if (usedOutputKeys.length > 0 && item.stripId !== 1000) {
           newWarningTexts.push(
             `${sourceType.charAt(0).toUpperCase() + sourceType.slice(1)} ${
               item.label || item.stripId
@@ -46,7 +46,7 @@ export function useCheckOutputUsage<T extends Item>(
         .map(([key]) => key);
 
       setWarningText(
-        usedOutputKeys.length > 0
+        usedOutputKeys.length > 0 && items.stripId !== 1000
           ? `${sourceType.charAt(0).toUpperCase() + sourceType.slice(1)} ${
               items.label || items.stripId
             } is used in output${usedOutputKeys.length > 1 ? 's' : ''}: ${usedOutputKeys.join(', ')}.\n`
