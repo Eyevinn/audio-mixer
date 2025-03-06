@@ -219,7 +219,7 @@ export const ConfigureMixPage = () => {
                 : strips.find((strip) => strip.stripId === selectedStrip.id)
             }
             type={selectedStrip.type}
-            onClose={() => setSelectedStrip(null)}
+            onClose={() => setIsFirstMount(true)}
           />
         )}
         <ConfirmationModal
