@@ -19,6 +19,7 @@ export const OutputMappingPage = () => {
     () => mixes.filter((mix) => mix.stripId !== 1000),
     [mixes]
   );
+  const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
 
   useEffect(() => {
     setAllInputs([...strips, ...savedMixesWithoutPFL]);
@@ -87,6 +88,7 @@ export const OutputMappingPage = () => {
         <div className="px-4 overflow-x-hidden">
           <ScrollableContainer
             outputStrips={outputs}
+            isPFL={isPFL}
             onStripSelect={handleSelection}
             isOutputPage={true}
           />

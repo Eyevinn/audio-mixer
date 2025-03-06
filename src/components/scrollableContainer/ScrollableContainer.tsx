@@ -294,7 +294,11 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
               key={key}
               output={output}
               outputName={key}
-              isPFLInactive={isPFL?.inputs?.mixes[output.input.index]?.muted}
+              isPFLInactive={
+                output.input.source === 'mix'
+                  ? isPFL?.inputs?.mixes[output.input.index]?.muted
+                  : isPFL?.inputs?.strips[output.input.index]?.muted
+              }
               onSelect={onStripSelect}
             />
           );

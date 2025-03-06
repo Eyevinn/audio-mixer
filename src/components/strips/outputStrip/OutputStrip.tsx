@@ -105,10 +105,6 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
         (originMix?.selected && props.type === 'mixes') ||
         (originStrip?.selected && props.type === 'strips')
       }
-      pfl={
-        (originMix?.pfl && props.type === 'mixes') ||
-        (originStrip?.pfl && props.type === 'strips')
-      }
       isPFLInactive={props.isPFLInactive}
       fader={props.type === 'mixes' ? originMix?.fader : originStrip?.fader}
     >
