@@ -35,10 +35,18 @@ function updateData<T extends TBaseStrip>(
       (prevStrip) => prevStrip.stripId.toString() === oldStripsKeys[0]
     );
   if (isNewStrip) {
-    return [
-      ...prevStrips,
-      { ...oldStrips[oldStripsKeys[0]], stripId: parseInt(oldStripsKeys[0]) }
-    ];
+    let insertIndex = prevStrips.findIndex(
+      (prevStrip) => prevStrip.stripId > parseInt(oldStripsKeys[0])
+    );
+    if (insertIndex < 0) {
+      insertIndex = prevStrips.length;
+    }
+    const prevStripsCopy = JSON.parse(JSON.stringify(prevStrips));
+    prevStripsCopy.splice(insertIndex, 0, {
+      ...oldStrips[oldStripsKeys[0]],
+      stripId: parseInt(oldStripsKeys[0])
+    });
+    return prevStripsCopy;
   }
   return prevStrips.map((strip) => {
     const newStrip = oldStrips[strip.stripId];

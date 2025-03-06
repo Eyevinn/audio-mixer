@@ -200,24 +200,26 @@ export const subscribe = (
     body: { enable_ebu_meters: true }
   });
 
+  const samplingRate = 100;
+
   // Start sampling
   sendMessage({
     type: 'sampling-start',
     resource: '/audio/strips/*/pre_fader_meter/*',
-    body: { interval_ms: 40 }
+    body: { interval_ms: samplingRate }
   });
 
   sendMessage({
     type: 'sampling-start',
     resource: '/audio/mixes/*/pre_fader_meter/*',
-    body: { interval_ms: 40 }
+    body: { interval_ms: samplingRate }
   });
 
   sendMessage({
     type: 'sampling-start',
     resource: '/audio/outputs/*/meters/*',
     body: {
-      interval_ms: 40
+      interval_ms: samplingRate
     }
   });
 };
