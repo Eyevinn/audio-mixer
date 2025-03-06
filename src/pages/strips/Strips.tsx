@@ -14,6 +14,7 @@ import { useWebSocket } from '../../context/WebSocketContext';
 import { useCheckOutputUsage } from '../../hooks/useCheckOutputUsage';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { addStrip, removeStrip } from '../../utils/wsCommands';
+import { useRemoveFromMixInputs } from '../../hooks/useRemoveFromMixInputs';
 
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
@@ -21,6 +22,7 @@ export const StripsPage = () => {
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const { sendMessage } = useWebSocket();
   const { strips, mixes, setStrips } = useGlobalState();
+  const { removeFromMixInputs } = useRemoveFromMixInputs();
   const nextStripIndex = useNextAvailableIndex(strips);
   const [isFirstMount, setIsFirstMount] = useState(true);
   const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
@@ -62,6 +64,7 @@ export const StripsPage = () => {
 
   const handleRemoveStrip = (stripId: number) => {
     removeStrip(stripId, sendMessage);
+    removeFromMixInputs(stripId, 'strips');
 
     if (selectedStrip === stripId) {
       setSelectedStrip(null);

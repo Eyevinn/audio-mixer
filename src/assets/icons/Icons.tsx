@@ -8,6 +8,7 @@ import {
   IconDownload,
   IconMenu2,
   IconMenuDeep,
+  IconMinus,
   IconPlugConnected,
   IconPlugConnectedX,
   IconReload,
@@ -61,7 +62,8 @@ const pickIcon = {
   IconCopy: ({ className }: IClassName) => <IconCopy className={className} />,
   IconReload: ({ className }: IClassName) => (
     <IconReload className={className} />
-  )
+  ),
+  IconMinus: ({ className }: IClassName) => <IconMinus className={className} />
 };
 
 export type PickIconNames = keyof typeof pickIcon;

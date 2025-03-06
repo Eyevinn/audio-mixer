@@ -59,16 +59,36 @@ const uploadFromFile = (
         }
       });
 
+      requests.push({
+        type: 'set',
+        resource: '/audio/strips/' + stripIndex,
+        body: strip
+      });
+
+      requests.push({
+        type: 'set',
+        resource: '/audio/strips/' + stripIndex,
+        body: strip
+      });
+
       const bands = strip.filters?.eq.bands;
       for (const bandIndex in bands) {
         requests.push({
           type: 'command',
-          resource: '/audio/strips/' + stripIndex + '/filters/eq',
+          resource: '/audio/strips/' + stripIndex + '/filters/eq/bands',
           body: {
             command: 'add_band',
             parameters: {
               index: Number(bandIndex)
             }
+          }
+        });
+        requests.push({
+          type: 'set',
+          resource:
+            '/audio/strips/' + stripIndex + '/filters/eq/bands/' + bandIndex,
+          body: {
+            ...bands[bandIndex]
           }
         });
       }
@@ -94,6 +114,12 @@ const uploadFromFile = (
             index: Number(mixIndex)
           }
         }
+      });
+
+      requests.push({
+        type: 'set',
+        resource: '/audio/mixes/' + mixIndex,
+        body: mix
       });
 
       const subMixes = mix.inputs.mixes;
@@ -128,12 +154,21 @@ const uploadFromFile = (
       for (const bandIndex in bands) {
         requests.push({
           type: 'command',
-          resource: '/audio/mixes/' + mixIndex + '/filters/eq',
+          resource: '/audio/mixes/' + mixIndex + '/filters/eq/bands',
           body: {
             command: 'add_band',
             parameters: {
               index: Number(bandIndex)
             }
+          }
+        });
+
+        requests.push({
+          type: 'set',
+          resource:
+            '/audio/mixes/' + mixIndex + '/filters/eq/bands/' + bandIndex,
+          body: {
+            ...bands[bandIndex]
           }
         });
       }

@@ -14,6 +14,7 @@ import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useCheckOutputUsage } from '../../hooks/useCheckOutputUsage';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
+import { useRemoveFromMixInputs } from '../../hooks/useRemoveFromMixInputs';
 import { addMix, removeMix } from '../../utils/wsCommands';
 
 export const MixesPage = () => {
@@ -23,6 +24,7 @@ export const MixesPage = () => {
   const [isFirstMount, setIsFirstMount] = useState(true);
   const { sendMessage } = useWebSocket();
   const { mixes, setMixes } = useGlobalState();
+  const { removeFromMixInputs } = useRemoveFromMixInputs();
   const nextMixIndex = useNextAvailableIndex(mixes);
   const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
   const navigate = useNavigate();
@@ -42,7 +44,9 @@ export const MixesPage = () => {
   }, [isFirstMount, setMixes]);
 
   useEffect(() => {
-    setIsDeleteAllDisabled(mixes.length === 0);
+    setIsDeleteAllDisabled(
+      mixes.length === 0 || (mixes.length === 1 && mixes[0].stripId === 1000)
+    );
   }, [mixes]);
 
   useEffect(() => {
@@ -64,6 +68,7 @@ export const MixesPage = () => {
 
   const handleRemoveMix = (mixId: number) => {
     removeMix(mixId, sendMessage);
+    removeFromMixInputs(mixId, 'mixes');
 
     if (selectedMix === mixId) {
       setSelectedMix(null);

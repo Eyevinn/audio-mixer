@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useGlobalState } from '../context/GlobalStateContext';
 import { useWebSocket } from '../context/WebSocketContext';
 import {
@@ -14,26 +14,32 @@ export const usePFLMixManager = () => {
 
   const processedStrips = useRef<Set<number>>(new Set());
   const processedMixes = useRef<Set<number>>(new Set());
+  const pflMix = mixes.find((mix) => mix.stripId === 1000);
+
+  const resetProcessedSets = useCallback(() => {
+    processedStrips.current.clear();
+    processedMixes.current.clear();
+  }, []);
+
+  const setPFLMix = useCallback(() => {
+    resetProcessedSets();
+    addMix(sendMessage, 1000);
+  }, [sendMessage, resetProcessedSets]);
 
   // Ensure PFL mix exists
   useEffect(() => {
-    if (strips.length === 0) return;
-
-    const pflMix = mixes.find((mix) => mix.stripId === 1000);
     if (!pflMix) {
-      addMix(sendMessage, 1000);
+      setPFLMix();
       addInputToOutput(sendMessage, 'pfl', 1000, 'pre_fader', 'mix');
     }
-  }, [mixes, strips.length, sendMessage]);
+  }, [pflMix, setPFLMix]);
 
   // Add new strips to PFL mix
   useEffect(() => {
-    const pflMix = mixes.find((mix) => mix.stripId === 1000);
     if (!pflMix) return;
 
     strips.forEach((strip) => {
-      if (strip.stripId === 1000 || processedStrips.current.has(strip.stripId))
-        return;
+      if (processedStrips.current.has(strip.stripId)) return;
 
       const isAlreadyInPFL =
         pflMix.inputs?.strips &&
@@ -45,11 +51,10 @@ export const usePFLMixManager = () => {
 
       processedStrips.current.add(strip.stripId);
     });
-  }, [strips, mixes, sendMessage]);
+  }, [strips, pflMix, sendMessage]);
 
   // Add new mixes to PFL mix
   useEffect(() => {
-    const pflMix = mixes.find((mix) => mix.stripId === 1000);
     if (!pflMix) return;
 
     mixes.forEach((mix) => {
@@ -66,5 +71,5 @@ export const usePFLMixManager = () => {
 
       processedMixes.current.add(mix.stripId);
     });
-  }, [mixes, sendMessage]);
+  }, [mixes, pflMix, sendMessage]);
 };

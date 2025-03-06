@@ -14,6 +14,7 @@ type TStripInputProps = {
   type?: string;
   value: string;
   isOutputStrip?: boolean;
+  configMode?: boolean;
   onChange: (input: string) => void;
 };
 
@@ -24,6 +25,8 @@ export const Input = ({
   placeholder,
   error,
   onKeyDown,
+  isOutputStrip,
+  configMode,
   onChange
 }: TInputProps) => {
   return (
@@ -58,10 +61,13 @@ export const StripInput = ({ type, value, onChange }: TStripInputProps) => {
 export const LabelInput = ({
   value,
   isOutputStrip,
+  configMode,
   onChange
 }: TStripInputProps) => {
   return (
-    <div className="w-full px-4 items-center">
+    <div
+      className={`${configMode ? 'bg-selected-mix-bg pb-1 border border-selected-mix-border border-t-0' : ''} w-full px-4 items-center`}
+    >
       <input
         type="text"
         maxLength={15}

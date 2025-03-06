@@ -13,7 +13,6 @@ import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
 
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;
-  isRemovingFromMix?: boolean;
   isHighlighted?: boolean;
   input?: {
     first_channel: number;
@@ -49,7 +48,6 @@ interface BaseStripProps extends TBaseStrip {
 
 export const BaseStrip: React.FC<BaseStripProps> = ({
   isBeingConfigured,
-  isRemovingFromMix,
   isHighlighted,
   removingOutputWarning,
   stripId,
@@ -270,7 +268,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
 
         {/* Volume Slider */}
         <div
-          className={`${isScreenTall || configMode ? '' : 'scale-75'} flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'scale-100 border border-almost-white rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''} ${isOutputStrip ? 'absolute bottom-0' : ''}`}
+          className={`${isScreenTall || configMode ? '' : 'scale-75'} flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'scale-100 border border-selected-mix-border rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''} ${isOutputStrip ? 'absolute bottom-0' : ''}`}
         >
           {configMode && <p className="text-base pb-2">Send Level</p>}
           <VolumeSlider

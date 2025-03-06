@@ -84,18 +84,6 @@ export const addStripToMix = (
   });
 };
 
-export const removeStripFromMix = (
-  sendMessage: (message: Record<string, unknown>) => void,
-  index: number,
-  indexToRemove: number
-) => {
-  sendMessage({
-    type: 'command',
-    resource: `/audio/mixes/${index}/inputs/strips`,
-    body: { command: 'remove_strip', parameters: { index: indexToRemove } }
-  });
-};
-
 export const addMixToMix = (
   sendMessage: (message: Record<string, unknown>) => void,
   index: number,
@@ -108,15 +96,17 @@ export const addMixToMix = (
   });
 };
 
-export const removeMixFromMix = (
+export const removeInputFromMix = (
   sendMessage: (message: Record<string, unknown>) => void,
   index: number,
-  indexToRemove: number
+  indexToRemove: number,
+  type: 'mixes' | 'strips'
 ) => {
+  const command = type === 'mixes' ? 'remove_mix' : 'remove_strip';
   sendMessage({
     type: 'command',
-    resource: `/audio/mixes/${index}/inputs/mixes`,
-    body: { command: 'remove_mix', parameters: { index: indexToRemove } }
+    resource: `/audio/mixes/${index}/inputs/${type}`,
+    body: { command: command, parameters: { index: indexToRemove } }
   });
 };
 

@@ -12,7 +12,6 @@ interface ScrollableContainerProps {
   configurableMixStrips?: TMixStrip;
   outputStrips?: { [key: string]: TOutput };
   isOutputPage?: boolean;
-  isRemovingFromMix?: boolean;
   isPFL?: TMixStrip;
   handleRemoveStrip?: (stripId: number) => void;
   handleRemoveStripFromMix?: ({
@@ -37,7 +36,6 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   configurableMixStrips,
   outputStrips,
   isOutputPage,
-  isRemovingFromMix,
   isPFL,
   handleRemoveStrip,
   handleRemoveStripFromMix,
@@ -46,7 +44,6 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const mixRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const stripRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
-  const configurableRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [startX, setStartX] = useState<number>(0);
   const [scrollLeft, setScrollLeft] = useState<number>(0);
@@ -81,10 +78,8 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         const strip = strips.find(
           (strip) => strip.stripId === parseInt(key, 10)
         );
-        if (strip?.selected && configurableRefs.current[parseInt(key, 10)]) {
-          configurableRefs.current[parseInt(key, 10)]?.scrollIntoView(
-            scrollBehavior
-          );
+        if (strip?.selected && stripRefs.current[parseInt(key, 10)]) {
+          stripRefs.current[parseInt(key, 10)]?.scrollIntoView(scrollBehavior);
         }
       });
     }
@@ -92,15 +87,12 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
     if (configurableMixStrips?.inputs.mixes) {
       Object.entries(configurableMixStrips.inputs.mixes).forEach(([key]) => {
         const mix = mixes.find((mix) => mix.stripId === parseInt(key, 10));
-        if (mix?.selected && configurableRefs.current[parseInt(key, 10)]) {
-          configurableRefs.current[parseInt(key, 10)]?.scrollIntoView(
-            scrollBehavior
-          );
+        if (mix?.selected && mixRefs.current[parseInt(key, 10)]) {
+          mixRefs.current[parseInt(key, 10)]?.scrollIntoView(scrollBehavior);
         }
       });
     }
 
-    // TODO: Implement this
     if (outputStrips) {
       Object.entries(outputStrips).forEach(([_, output]) => {
         if (output.input.source === 'mix') {
@@ -172,7 +164,6 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
           }}
         >
           <AudioStrip
-            isRemovingFromMix={isRemovingFromMix}
             key={`${strip.stripId}-strip`}
             {...strip}
             isPFLInactive={
@@ -199,7 +190,6 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
             <MixStrip
               highlightedMixId={highlightedMixId}
               setHighlightedMixId={setHighlightedMixId}
-              isRemovingFromMix={isRemovingFromMix}
               {...mix}
               isPFLInactive={
                 isPFL?.inputs?.mixes[mix.stripId]?.muted ?? undefined
@@ -221,7 +211,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
               <div
                 key={parseInt(key, 10)}
                 ref={(el) => {
-                  configurableRefs.current[parseInt(key, 10)] = el;
+                  stripRefs.current[parseInt(key, 10)] = el;
                 }}
               >
                 <ConfigureMixStrip
@@ -255,7 +245,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
               <div
                 key={parseInt(key, 10)}
                 ref={(el) => {
-                  configurableRefs.current[parseInt(key, 10)] = el;
+                  mixRefs.current[parseInt(key, 10)] = el;
                 }}
               >
                 <ConfigureMixStrip

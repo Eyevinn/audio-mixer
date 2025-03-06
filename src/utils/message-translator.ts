@@ -16,8 +16,6 @@ function mapData<T extends TBaseStrip>(
     return {
       ...existingStrip,
       ...strip,
-      // TODO: Redo the stripId to be a uniquestring
-      // stripId: 'Strip#' + index,
       stripId: parseInt(index),
       label: index === '1000' ? 'PFL' : (strip.label ?? existingStrip?.label)
     };
@@ -147,9 +145,7 @@ const messageTranslator = (
         if (data.body.resource.startsWith('/strips/')) {
           getAllStrips(sendMessage);
         }
-        if (data.body.resource.startsWith('/mixes/')) {
-          getAllMixes(sendMessage);
-        }
+        getAllMixes(sendMessage);
         break;
       case 'command-response':
         if (!data.body && data.error) {

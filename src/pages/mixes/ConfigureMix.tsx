@@ -14,9 +14,8 @@ import { TAudioStrip, TMixStrip } from '../../types/types';
 import {
   addMixToMix,
   addStripToMix,
-  removeMix,
-  removeMixFromMix,
-  removeStripFromMix
+  removeInputFromMix,
+  removeMix
 } from '../../utils/wsCommands';
 
 export const ConfigureMixPage = () => {
@@ -129,11 +128,7 @@ export const ConfigureMixPage = () => {
     type: 'mixes' | 'strips';
   }) => {
     if (mixId) {
-      if (type !== 'mixes') {
-        removeStripFromMix(sendMessage, parseInt(mixId), stripId);
-      } else {
-        removeMixFromMix(sendMessage, parseInt(mixId), stripId);
-      }
+      removeInputFromMix(sendMessage, parseInt(mixId), stripId, type);
     }
   };
 
@@ -210,7 +205,6 @@ export const ConfigureMixPage = () => {
         <div className="p-4 overflow-x-hidden w-full">
           <ScrollableContainer
             configurableMixStrips={mixToConfigure}
-            isRemovingFromMix={true}
             isPFL={isPFL}
             onStripSelect={handleSelection}
             handleRemoveStripFromMix={handleRemoveInputFromMix}
