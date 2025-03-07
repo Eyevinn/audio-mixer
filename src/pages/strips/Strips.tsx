@@ -128,6 +128,7 @@ export const StripsPage = () => {
           <EffectsPanel
             strip={strips.find((s) => s.stripId === selectedStrip)}
             type="strips"
+            onClose={() => setIsFirstMount(true)}
           />
         )}
       </PageBody>

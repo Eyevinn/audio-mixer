@@ -15,7 +15,8 @@ import {
   IconSettings,
   IconSTurnRight,
   IconTrash,
-  IconUpload
+  IconUpload,
+  IconX
 } from '@tabler/icons-react';
 
 interface IClassName {
@@ -63,7 +64,8 @@ const pickIcon = {
   IconReload: ({ className }: IClassName) => (
     <IconReload className={className} />
   ),
-  IconMinus: ({ className }: IClassName) => <IconMinus className={className} />
+  IconMinus: ({ className }: IClassName) => <IconMinus className={className} />,
+  IconX: ({ className }: IClassName) => <IconX className={className} />
 };
 
 export type PickIconNames = keyof typeof pickIcon;

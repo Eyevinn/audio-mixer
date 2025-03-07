@@ -128,6 +128,7 @@ export const MixesPage = () => {
           <EffectsPanel
             strip={mixes.find((m) => m.stripId === selectedMix)}
             type="mixes"
+            onClose={() => setIsFirstMount(true)}
           />
         )}
       </PageBody>

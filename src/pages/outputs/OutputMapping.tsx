@@ -92,6 +92,7 @@ export const OutputMappingPage = () => {
                 : strips.find((strip) => strip.stripId === selectedStrip.id)
             }
             type={selectedStrip.type}
+            onClose={() => setIsFirstMount(true)}
           />
         )}
       </PageBody>
