@@ -228,7 +228,7 @@ const messageTranslator = (
           if (
             (data.error.includes('already exists') &&
               data.resource.includes('mixes/1000/inputs/mixes/')) ||
-            data.error.includes('1000already exists')
+            data.error.includes('1000 already exists')
           )
             return;
           setErrorMessage(data.error);
