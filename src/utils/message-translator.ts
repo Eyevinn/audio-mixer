@@ -225,6 +225,12 @@ const messageTranslator = (
       }
       case 'command-response':
         if (!data.body && data.error) {
+          if (
+            (data.error.includes('already exists') &&
+              data.resource.includes('mixes/1000/inputs/mixes/')) ||
+            data.error.includes('1000already exists')
+          )
+            return;
           setErrorMessage(data.error);
         }
         break;
