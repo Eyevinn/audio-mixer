@@ -140,6 +140,11 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
 
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     if (containerRef.current) {
+      const target = e.target as HTMLElement;
+      if (target.closest('.select-dropdown')) {
+        e.stopPropagation();
+        return;
+      }
       containerRef.current.scrollLeft += e.deltaY;
     }
   };
@@ -273,26 +278,37 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         </>
       )}
       {outputStrips &&
-        Object.entries(outputStrips).map(([key, output]) => {
-          return (
-            <OutputScrollItem
-              ref={(el) => {
-                output.input.source === 'mix'
-                  ? (mixRefs.current[output.input.index] = el)
-                  : (stripRefs.current[output.input.index] = el);
-              }}
-              key={key}
-              output={output}
-              outputName={key}
-              isPFLInactive={
-                output.input.source === 'mix'
-                  ? isPFL?.inputs?.mixes[output.input.index]?.muted
-                  : isPFL?.inputs?.strips[output.input.index]?.muted
-              }
-              onSelect={onStripSelect}
-            />
-          );
-        })}
+        Object.entries(outputStrips)
+          .sort(([keyA, outputA], [keyB, outputB]) => {
+            if (keyA.includes('program') && !keyB.includes('program'))
+              return -1;
+            if (!keyA.includes('program') && keyB.includes('program')) return 1;
+            if (outputA.input.index !== 0 && outputB.input.index === 0)
+              return -1;
+            if (outputA.input.index === 0 && outputB.input.index !== 0)
+              return 1;
+            return 0;
+          })
+          .map(([key, output]) => {
+            return (
+              <OutputScrollItem
+                ref={(el) => {
+                  output.input.source === 'mix'
+                    ? (mixRefs.current[output.input.index] = el)
+                    : (stripRefs.current[output.input.index] = el);
+                }}
+                key={key}
+                output={output}
+                outputName={key}
+                isPFLInactive={
+                  output.input.source === 'mix'
+                    ? isPFL?.inputs?.mixes[output.input.index]?.muted
+                    : isPFL?.inputs?.strips[output.input.index]?.muted
+                }
+                onSelect={onStripSelect}
+              />
+            );
+          })}
     </div>
   );
 };
