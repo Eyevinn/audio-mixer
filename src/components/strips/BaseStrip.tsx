@@ -184,7 +184,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         <div className="h-2" />
       ) : (
         <StripHeader
-          label={header}
+          label={label || header}
           configMode={configMode}
           copyButton={copyButton}
           isRemovingFromMix={configMode}
