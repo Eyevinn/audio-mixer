@@ -8,7 +8,7 @@
   }
 
   .pan-slider-thumb {
-    @apply appearance-none w-[15px] h-[50px] bg-slider-green rounded-lg cursor-pointer;
+    @apply appearance-none w-[10px] h-[40px] bg-slider-green rounded-lg cursor-pointer;
   }
 
   .slider-track {
