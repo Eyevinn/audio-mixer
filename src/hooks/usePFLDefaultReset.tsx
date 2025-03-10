@@ -26,7 +26,8 @@ export const usePFLDefaultReset = () => {
             resource: `/audio/mixes/1000/inputs/${type}/${key}`,
             body: {
               muted: true,
-              origin: 'pre_fader'
+              origin: 'pre_fader',
+              volume: 1
             }
           });
         }

@@ -175,28 +175,30 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       onMouseLeave={handleMouseUp}
       onWheel={handleWheel}
     >
-      {audioStrips?.map((strip) => (
-        <div
-          key={`${strip.stripId}-strip`}
-          ref={(el) => {
-            stripRefs.current[strip.stripId] = el;
-          }}
-        >
-          <AudioStrip
+      {audioStrips?.map((strip) => {
+        return (
+          <div
             key={`${strip.stripId}-strip`}
-            {...strip}
-            isPFLInactive={
-              isPFL?.inputs?.strips[strip.stripId]?.muted ?? undefined
-            }
-            onStripSelect={onStripSelect}
-            onRemove={() =>
-              handleRemoveStrip
-                ? handleRemoveStrip(strip.stripId)
-                : () => console.warn('No remove function provided')
-            }
-          />
-        </div>
-      ))}
+            ref={(el) => {
+              stripRefs.current[strip.stripId] = el;
+            }}
+          >
+            <AudioStrip
+              key={`${strip.stripId}-strip`}
+              {...strip}
+              isPFLInactive={
+                isPFL?.inputs?.strips?.[strip.stripId]?.muted ?? undefined
+              }
+              onStripSelect={onStripSelect}
+              onRemove={() =>
+                handleRemoveStrip
+                  ? handleRemoveStrip(strip.stripId)
+                  : () => console.warn('No remove function provided')
+              }
+            />
+          </div>
+        );
+      })}
       {mixStrips?.map((mix) => {
         if (mix.stripId === 1000) return null;
         return (
@@ -211,7 +213,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
               setHighlightedMixId={setHighlightedMixId}
               {...mix}
               isPFLInactive={
-                isPFL?.inputs?.mixes[mix.stripId]?.muted ?? undefined
+                isPFL?.inputs?.mixes?.[mix.stripId]?.muted ?? undefined
               }
               onStripSelect={onStripSelect}
               onRemove={() =>
@@ -240,7 +242,8 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
                   sendLevels={strip}
                   type="strips"
                   isPFLInactive={
-                    isPFL?.inputs?.strips[parseInt(key, 10)]?.muted ?? undefined
+                    isPFL?.inputs?.strips?.[parseInt(key, 10)]?.muted ??
+                    undefined
                   }
                   onStripSelect={onStripSelect}
                   onRemove={() =>
@@ -274,7 +277,8 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
                   sendLevels={mix}
                   type="mixes"
                   isPFLInactive={
-                    isPFL?.inputs?.mixes[parseInt(key, 10)]?.muted ?? undefined
+                    isPFL?.inputs?.mixes?.[parseInt(key, 10)]?.muted ??
+                    undefined
                   }
                   onStripSelect={onStripSelect}
                   onRemove={() =>
