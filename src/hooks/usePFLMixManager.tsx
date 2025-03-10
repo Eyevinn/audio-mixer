@@ -63,9 +63,9 @@ export const usePFLMixManager = () => {
   // Add new strips to PFL mix
   useEffect(() => {
     if (!pflMix || stripsLength === strips.length) return;
+    setStripsLength(strips.length);
 
     strips.forEach((strip) => {
-      setStripsLength(strips.length);
       if (processedStrips.current.has(strip.stripId)) return;
 
       const isAlreadyInPFL =
@@ -90,9 +90,9 @@ export const usePFLMixManager = () => {
   // Add new mixes to PFL mix
   useEffect(() => {
     if (!pflMix || mixesLength === mixes.length) return;
+    setMixesLength(mixes.length);
 
     mixes.forEach((mix) => {
-      setMixesLength(mixes.length);
       if (mix.stripId === 1000 || processedMixes.current.has(mix.stripId))
         return;
 
