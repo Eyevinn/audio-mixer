@@ -241,7 +241,7 @@ const messageTranslator = (
         break;
       case 'sampling-update':
         if (data.resource === '/audio/strips/*/pre_fader_meter/*') {
-          const dataStrips = data.body.audio.strips;
+          const dataStrips = data.body.audio?.strips || {};
           Object.entries(dataStrips).forEach(([stripId, stripData]) => {
             const typedStripData = stripData as {
               pre_fader_meter: TAudioStrip['pre_fader_meter'];
@@ -266,7 +266,7 @@ const messageTranslator = (
           });
         }
         if (data.resource === '/audio/mixes/*/pre_fader_meter/*') {
-          const dataMixes = data.body.audio.mixes;
+          const dataMixes = data.body.audio?.mixes || {};
           Object.entries(dataMixes).forEach(([mixId, mixData]) => {
             const typedMixData = mixData as {
               pre_fader_meter: TMixStrip['pre_fader_meter'];
@@ -291,7 +291,7 @@ const messageTranslator = (
           });
         }
         if (data.resource === '/audio/outputs/*/meters/*') {
-          const dataOutputs = data.body.audio.outputs;
+          const dataOutputs = data.body.audio?.outputs || {};
           Object.entries(dataOutputs).forEach(([outputName, outputData]) => {
             const typedOutputData = outputData as {
               meters: TOutput['meters'];
