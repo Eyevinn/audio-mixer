@@ -44,10 +44,13 @@ export const PanningLegend = () => {
         y2="35"
         style={{ stroke: '#777', strokeWidth: 2 }}
       />
-      <text x="2" y="46" className="text-[10px] font-sans fill-[#777]">
+      <text x="2" y="50" className="text-[10px] font-sans fill-[#777]">
         L
       </text>
-      <text x="72" y="46" className="text-[10px] font-sans fill-[#777]">
+      <text x="37" y="50" className="text-[10px] font-sans fill-[#777]">
+        0
+      </text>
+      <text x="72" y="50" className="text-[10px] font-sans fill-[#777]">
         R
       </text>
     </svg>

@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { PanningLegend } from '../../../../assets/icons/PanningLegend';
 import debounce from 'lodash/debounce';
+import { SetValueButtons } from './SetValueButtons';
 
 type PanningSliderProps = {
   inputValue: number;
@@ -42,6 +43,7 @@ export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
   return (
     <div className="relative w-[80px] h-[50px] mb-3">
       <PanningLegend />
+      <SetValueButtons onChange={onChange} />
       <input
         type="range"
         className="absolute w-[80px] h-[5px] left-[2px] bg-[#d3d3d3] outline-none
