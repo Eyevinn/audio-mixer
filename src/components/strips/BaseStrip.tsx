@@ -236,7 +236,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
             className={`${isScreenTall ? '' : 'scale-90'} flex flex-row space-x-4 px-4`}
           >
             {/* Audio Levels */}
-            {!isPFLInput && (
+            {!isPFLInput && !output?.meters.enable_ebu_meters && (
               <AudioLevel
                 isStereo={input?.is_stereo ?? true}
                 audioBarData={{
@@ -271,15 +271,29 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
 
         {/* Volume Slider */}
         <div
-          className={`${isScreenTall || configMode ? '' : 'scale-75'} flex flex-col pt-2 pb-5 w-full items-center ${configMode ? 'scale-100 border border-selected-mix-border rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''} ${isOutputStrip ? 'absolute bottom-0' : ''}`}
+          className={`flex ${output?.meters.enable_ebu_meters ? 'flex-row justify-center space-x-8 px-4' : 'flex-col'} pt-2 pb-5 w-full items-center ${configMode ? 'scale-100 border border-selected-mix-border rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''} ${isOutputStrip ? 'absolute bottom-0' : ''}`}
         >
           {configMode && <p className="text-base pb-2">Send Level</p>}
-          <VolumeSlider
-            inputVolume={configMode ? sendLevels?.volume : fader?.volume}
-            onVolumeChange={(vol: number) =>
-              handleStripChange(inputId, 'volume', vol)
-            }
-          />
+          {output?.meters.enable_ebu_meters && (
+            <AudioLevel
+              isStereo={input?.is_stereo ?? true}
+              audioBarData={{
+                peak_left: output?.meters.peak_left,
+                peak_right: output?.meters.peak_right
+              }}
+            />
+          )}
+          <div className={`${isScreenTall || configMode ? '' : 'scale-75'}`}>
+            <VolumeSlider
+              isDisabled={
+                output && output.input.origin === 'pre_fader' && !isPFLInput
+              }
+              inputVolume={configMode ? sendLevels?.volume : fader?.volume}
+              onVolumeChange={(vol: number) =>
+                handleStripChange(inputId, 'volume', vol)
+              }
+            />
+          </div>
           {configMode && (
             <ActionButton
               label={'MUTE'}

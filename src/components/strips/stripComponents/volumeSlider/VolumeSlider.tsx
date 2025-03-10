@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import debounce from 'lodash/debounce';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SliderLegend } from '../../../../assets/icons/SliderLegend';
 
 type VolumeSliderProps = {
   inputVolume?: number;
+  isDisabled?: boolean;
   onVolumeChange: (volume: number) => void;
 };
 
@@ -49,6 +50,7 @@ function volumeValToPos(val: number) {
 
 export const VolumeSlider = ({
   inputVolume,
+  isDisabled,
   onVolumeChange
 }: VolumeSliderProps) => {
   const [volume, setVolume] = useState(inputVolume ?? 0);
@@ -80,20 +82,26 @@ export const VolumeSlider = ({
   );
 
   return (
-    <div className="relative w-[72px] h-[346px] mr-[7px]">
+    <div
+      className={`relative w-[72px] h-[346px] mr-[7px] ${isDisabled ? 'opacity-50' : ''}`}
+    >
       <SliderLegend />
       <input
         type="range"
-        className="absolute w-[346px] h-[5px] bg-[#d3d3d3] outline-none
+        className={`${isDisabled ? 'pointer-events-auto !cursor-not-allowed' : ''} absolute w-[346px] h-[5px] outline-none
         opacity-[0.7] transition-opacity duration-200 transform -rotate-90
-        left-[-131px] top-[170px] hover:opacity-[1] slider-track [&::-webkit-slider-thumb]:volume-slider-thumb [&::-moz-range-thumb]:volume-slider-thumb"
+        left-[-131px] top-[170px] ${isDisabled ? '' : 'hover:opacity-[1]'} slider-track [&::-webkit-slider-thumb]:volume-slider-thumb [&::-moz-range-thumb]:volume-slider-thumb`}
         min="0"
         max="127"
         step="1"
         value={volumeValToPos(volume)}
         onChange={onChangeHandler}
         onMouseDown={(e) => {
-          e.stopPropagation();
+          if (isDisabled) {
+            e.preventDefault();
+          } else {
+            e.stopPropagation();
+          }
         }}
       />
     </div>
