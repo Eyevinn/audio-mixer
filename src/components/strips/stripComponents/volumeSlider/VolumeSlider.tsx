@@ -9,11 +9,11 @@ type VolumeSliderProps = {
 };
 
 function dBToRatio(db: number) {
-  return 10 ** (db / 10);
+  return 10 ** (db / 20);
 }
 
 function ratioToDB(ratio: number) {
-  return 10 * Math.log10(ratio);
+  return 20 * Math.log10(ratio);
 }
 
 function volumePosToVal(pos: number) {
