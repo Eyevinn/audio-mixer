@@ -34,6 +34,7 @@ module.exports = {
         'copy-btn-hover': '#ffffff',
         'dark-purple': '#291531',
         'almost-white': '#f5f5f4',
+        'fader': '#d3d3d3',
         // Filter-settings colors:
         'grid-bg': '#151515',
         //

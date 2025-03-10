@@ -15,7 +15,7 @@ export const OutputFields = ({ stripId, source }: TOutputFieldsProps) => {
       {source === 'mix' && (
         <MixFieldsBtn
           type="configure"
-          onClick={() => navigate(`/mixes/${stripId}`)}
+          onClick={() => navigate(`/mixes/${stripId}`, { replace: true })}
         >
           <Icons name="IconSettings" className="w-5 h-5" />
           Configure
