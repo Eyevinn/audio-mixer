@@ -9,6 +9,7 @@ type VolumeSliderProps = {
 };
 
 function dBToRatio(db: number) {
+  if (db < -200) return 0;
   return 10 ** (db / 20);
 }
 
