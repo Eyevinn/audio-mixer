@@ -91,6 +91,10 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
         channel2={props.input.second_channel}
         stripId={props.stripId}
         handleStripChange={handleChange}
+        msStereoProps={{
+          enabled: props.filters?.mid_side?.enabled ?? false,
+          input_format: props.filters?.mid_side?.input_format ?? 'ms_stereo'
+        }}
       />
     </BaseStrip>
   );

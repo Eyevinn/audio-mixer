@@ -19,11 +19,11 @@ interface EQVisualisationProps {
   };
 }
 
-export const EQVisualisation: React.FC<EQVisualisationProps> = ({
+export const EQVisualisation = ({
   bands,
   lowPass,
   highPass
-}) => {
+}: EQVisualisationProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const height = 228;
   const width = 583;

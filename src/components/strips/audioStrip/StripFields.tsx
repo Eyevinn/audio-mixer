@@ -1,5 +1,6 @@
 import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { StripInput } from '../../ui/input/Input';
+import { MSStereo } from '../stripComponents/msStereo/MSStereo';
 
 type TStripFieldsProps = {
   slot: string;
@@ -7,6 +8,10 @@ type TStripFieldsProps = {
   channel1: number;
   channel2: number;
   stripId: number;
+  msStereoProps: {
+    enabled: boolean;
+    input_format: string;
+  };
   handleStripChange: (
     stripId: number,
     key: string,
@@ -20,6 +25,7 @@ export const StripFields = ({
   channel1,
   channel2,
   stripId,
+  msStereoProps,
   handleStripChange
 }: TStripFieldsProps) => {
   return (
@@ -46,6 +52,9 @@ export const StripFields = ({
           handleStripChange(stripId, 'is_stereo', mode === 'stereo')
         }
       />
+
+      {/* MS Stereo Select */}
+      <MSStereo isStereo={isStereo} filters={msStereoProps} stripId={stripId} />
 
       {/* Left Ch Select */}
       <StripDropdown

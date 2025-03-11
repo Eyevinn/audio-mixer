@@ -3,7 +3,7 @@ on: [pull_request]
 
 jobs:
   lint:
-    if: "!contains(github.event.pull_request.title, 'WIP!')"
+    if: '!contains(github.event.pull_request.title, "WIP!")'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

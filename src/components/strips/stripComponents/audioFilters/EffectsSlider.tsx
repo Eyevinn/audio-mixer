@@ -14,7 +14,7 @@ interface EffectsSliderProps {
   onDoubleClick?: () => void;
 }
 
-export const EffectsSlider: React.FC<EffectsSliderProps> = ({
+export const EffectsSlider = ({
   id,
   text,
   min,
@@ -24,7 +24,7 @@ export const EffectsSlider: React.FC<EffectsSliderProps> = ({
   unit,
   onChange,
   onDoubleClick
-}) => {
+}: EffectsSliderProps) => {
   return (
     <div className="py-[5px] text-sm">
       <label htmlFor={`${id}_slider`} className="w-[150px] inline-block">
@@ -37,7 +37,7 @@ export const EffectsSlider: React.FC<EffectsSliderProps> = ({
         max={max}
         value={value}
         step={step}
-        onChange={(e) => onChange(parseInt(e.target.value))}
+        onChange={(e) => onChange(Number(e.target.value))}
         onDoubleClick={onDoubleClick}
         className="w-[200px] slider-track [&::-webkit-slider-thumb]:slider-thumb [&::-moz-range-thumb]:slider-thumb"
       />
