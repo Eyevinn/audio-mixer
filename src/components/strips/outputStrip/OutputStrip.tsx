@@ -92,6 +92,7 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
 
   return (
     <BaseStrip
+      {...(props.input.source === 'mix' ? originMix : originStrip)}
       isOutputStrip={true}
       label={props.label}
       output={props}
