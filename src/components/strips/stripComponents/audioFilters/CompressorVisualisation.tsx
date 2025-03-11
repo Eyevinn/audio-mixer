@@ -7,9 +7,12 @@ interface CompressorVisualisationProps {
   makeUpGain: number;
 }
 
-export const CompressorVisualisation: React.FC<
-  CompressorVisualisationProps
-> = ({ threshold, ratio, kneeWidth, makeUpGain }) => {
+export const CompressorVisualisation = ({
+  threshold,
+  ratio,
+  kneeWidth,
+  makeUpGain
+}: CompressorVisualisationProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const height = 250;
   const width = 250;

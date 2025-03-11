@@ -13,11 +13,7 @@ interface EffectsPanelProps {
   onClose: () => void;
 }
 
-export const EffectsPanel: React.FC<EffectsPanelProps> = ({
-  strip,
-  type,
-  onClose
-}) => {
+export const EffectsPanel = ({ strip, type, onClose }: EffectsPanelProps) => {
   const { sendMessage, isConnected } = useWebSocket();
 
   const isStereo = () => {

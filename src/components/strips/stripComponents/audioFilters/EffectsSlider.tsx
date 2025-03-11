@@ -14,7 +14,7 @@ interface EffectsSliderProps {
   onDoubleClick?: () => void;
 }
 
-export const EffectsSlider: React.FC<EffectsSliderProps> = ({
+export const EffectsSlider = ({
   id,
   text,
   min,
@@ -24,7 +24,7 @@ export const EffectsSlider: React.FC<EffectsSliderProps> = ({
   unit,
   onChange,
   onDoubleClick
-}) => {
+}: EffectsSliderProps) => {
   return (
     <div className="py-[5px] text-sm">
       <label htmlFor={`${id}_slider`} className="w-[150px] inline-block">
