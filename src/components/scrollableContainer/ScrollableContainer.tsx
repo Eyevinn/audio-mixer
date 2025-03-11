@@ -53,12 +53,24 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   const sortedOutputs = useMemo(() => {
     if (!outputStrips) return [];
 
+    const programRegex = /program/i;
+
     return Object.entries(outputStrips).sort(
       ([keyA, outputA], [keyB, outputB]) => {
-        if (keyA.includes('program') && !keyB.includes('program')) return -1;
-        if (!keyA.includes('program') && keyB.includes('program')) return 1;
+        const isProgramA = programRegex.test(keyA);
+        const isProgramB = programRegex.test(keyB);
+        const isEbuEnabledA = outputA.meters.enable_ebu_meters === true;
+        const isEbuEnabledB = outputB.meters.enable_ebu_meters === true;
+
+        if (isProgramA && !isProgramB) return -1;
+        if (!isProgramA && isProgramB) return 1;
+
+        if (isEbuEnabledA && !isEbuEnabledB) return -1;
+        if (!isEbuEnabledA && isEbuEnabledB) return 1;
+
         if (outputA.input.index !== 0 && outputB.input.index === 0) return -1;
         if (outputA.input.index === 0 && outputB.input.index !== 0) return 1;
+
         return 0;
       }
     );

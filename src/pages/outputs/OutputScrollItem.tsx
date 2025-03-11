@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { OutputStrip } from '../../components/strips/outputStrip/OutputStrip';
+import Checkbox from '../../components/ui/checkbox/Checkbox';
 import { Select } from '../../components/ui/select/Select';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { TAudioStrip, TMixStrip, TOutput } from '../../types/types';
 import {
   addInputToOutput,
+  enableEbuMeters,
   removeInputFromOutput
 } from '../../utils/wsCommands';
 
@@ -25,6 +27,7 @@ export const OutputScrollItem = ({
   onSelect
 }: TOutputScrollItem) => {
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
+  const [ebuMetersEnabled, setEbuMetersEnabled] = useState<boolean>(false);
   const { mixes, strips } = useGlobalState();
   const { sendMessage } = useWebSocket();
   const hasRemovedInputRef = useRef<boolean>(false);
@@ -116,6 +119,19 @@ export const OutputScrollItem = ({
           />
         )}
       </div>
+
+      {output.input.index !== 1000 && output.input.index !== 0 && (
+        <Checkbox
+          label="Enable EBU meters for output"
+          checked={ebuMetersEnabled}
+          onChange={() => {
+            const newValue = !ebuMetersEnabled;
+            setEbuMetersEnabled(newValue);
+            enableEbuMeters(sendMessage, outputName, newValue);
+          }}
+        />
+      )}
+
       {output.input.index !== 0 && (
         <OutputStrip
           outputName={outputName}
