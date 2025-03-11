@@ -5,9 +5,9 @@ import { TAudioStrip, TMixStrip } from '../../../types/types';
 
 interface SelectProps {
   className?: string;
-  nothingSelected?: string;
   value: string;
   options: (TAudioStrip | TMixStrip)[];
+  isOutputPage?: boolean;
   onChange: (value: TAudioStrip | TMixStrip) => void;
   removeInput?: (input: TAudioStrip | TMixStrip) => void;
 }
@@ -16,6 +16,7 @@ export const Select: React.FC<SelectProps> = ({
   className,
   value,
   options,
+  isOutputPage,
   onChange,
   removeInput
 }) => {
@@ -38,7 +39,7 @@ export const Select: React.FC<SelectProps> = ({
 
   return (
     <div
-      className={`relative w-48 ${className} select-dropdown`}
+      className={`relative ${isOutputPage ? 'w-48' : 'w-fit'} ${className} select-dropdown`}
       ref={selectRef}
     >
       <button

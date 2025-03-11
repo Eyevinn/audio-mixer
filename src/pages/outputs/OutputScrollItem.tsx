@@ -106,6 +106,7 @@ export const OutputScrollItem = ({
           <div className="h-10" />
         ) : (
           <Select
+            isOutputPage={true}
             value={
               output.input.index !== 0
                 ? renderLabel(output.input.index, output.input.source)
