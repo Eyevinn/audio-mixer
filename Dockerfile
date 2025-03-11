@@ -1,22 +1,26 @@
-# Use the latest LTS version of Node.js
-FROM node:22-alpine
- 
-# Set the working directory inside the container
-WORKDIR /app
- 
-# Copy package.json and package-lock.json
-COPY package*.json ./
- 
-# Install dependencies
-RUN npm install
- 
-# Copy the rest of your application files
-COPY . .
+FROM nginx:1.19.0
 
-RUN npm run build
- 
-# Expose the port your app runs on
-EXPOSE 9000
- 
-# Define the command to run your app
-CMD ["npm", "run", "server"]
+RUN apt-get update
+RUN apt-get install -y curl
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+RUN apt-get install -y nodejs
+RUN mkdir /app
+WORKDIR /app
+
+COPY . .
+RUN npm install
+RUN echo 'server { \
+    listen 8080; \
+    server_name localhost; \
+    location / { \
+        root /usr/share/nginx/html; \
+        index index.html; \
+        try_files $uri $uri/ /index.html; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
+
+RUN chmod +x /app/scripts/entrypoint.sh
+
+ENV NODE_ENV=production
+ENV PORT=3000
+ENTRYPOINT [ "/app/scripts/entrypoint.sh" ]
