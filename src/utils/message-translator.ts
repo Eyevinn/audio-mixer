@@ -160,26 +160,13 @@ const messageTranslator = (
         break;
 
       case 'state-add': {
-        if (
-          data.body.resource.startsWith('/audio/mixes/1000/inputs/mixes/') ||
-          data.body.resource.startsWith('/audio/mixes/1000/inputs/strips/')
-        ) {
-          sendMessage({
-            type: 'set',
-            resource: data.body.resource,
-            body: {
-              muted: true,
-              origin: 'pre_fader'
-            }
-          });
-        }
         const resourceArray = data.body?.resource?.split('/') || [];
         const resourceType = resourceArray[1];
         const resourceIndex = resourceArray[2];
         if (resourceType && resourceIndex) {
           if (resourceType === 'strips')
             getStripByIndex(sendMessage, resourceIndex);
-          else if (resourceType === 'mixes' && resourceIndex !== '1000')
+          else if (resourceType === 'mixes')
             getMixByIndex(sendMessage, resourceIndex);
         }
         break;
