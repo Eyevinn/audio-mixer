@@ -92,6 +92,7 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
 
   return (
     <BaseStrip
+      {...(props.input.source === 'mix' ? originMix : originStrip)}
       isOutputStrip={true}
       label={props.label}
       output={props}
@@ -101,12 +102,7 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
       onReset={handleResetMeters}
       stripId={props.stripId}
       handleSelection={handleSelection}
-      selected={
-        (originMix?.selected && props.type === 'mixes') ||
-        (originStrip?.selected && props.type === 'strips')
-      }
       isPFLInactive={props.isPFLInactive}
-      fader={props.type === 'mixes' ? originMix?.fader : originStrip?.fader}
     >
       {props.outputName !== 'pfl' && (
         <OutputFields source={props.input.source} stripId={props.stripId} />
