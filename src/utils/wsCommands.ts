@@ -184,6 +184,18 @@ export const resetOutputMeters = (
   });
 };
 
+export const enableEbuMeters = (
+  sendMessage: (message: Record<string, unknown>) => void,
+  outputName: string,
+  enableEbuMeters: boolean
+) => {
+  sendMessage({
+    type: 'set',
+    resource: `/audio/outputs/${outputName}/meters`,
+    body: { enable_ebu_meters: enableEbuMeters }
+  });
+};
+
 // Subscriptions
 export const subscribe = (
   sendMessage: (message: Record<string, unknown>) => void
@@ -191,13 +203,6 @@ export const subscribe = (
   sendMessage({
     type: 'subscribe',
     resource: '/audio'
-  });
-
-  // Enable EBU-meters for program output
-  sendMessage({
-    type: 'set',
-    resource: '/audio/outputs/program/meters',
-    body: { enable_ebu_meters: true }
   });
 
   const samplingRate = 100;
