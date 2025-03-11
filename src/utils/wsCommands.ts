@@ -189,7 +189,6 @@ export const enableEbuMeters = (
   outputName: string,
   enableEbuMeters: boolean
 ) => {
-  console.log('enableEbuMeters', enableEbuMeters);
   sendMessage({
     type: 'set',
     resource: `/audio/outputs/${outputName}/meters`,
