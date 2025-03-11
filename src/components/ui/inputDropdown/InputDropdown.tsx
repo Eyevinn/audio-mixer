@@ -72,7 +72,7 @@ export const InputDropdown: React.FC<InputDropdownProps> = ({
                     : () => addInput(option)
                 }
               >
-                <span>{renderLabel}</span>
+                <span className="text-start">{renderLabel}</span>
                 {isSelected && <Icons name="IconCheck" className="ml-2" />}
               </li>
             );
