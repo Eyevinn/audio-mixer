@@ -211,6 +211,7 @@ export const BaseStrip: React.FC<BaseStripProps> = ({
         isOutputStrip={isOutputStrip}
         value={label === '' ? stripLabel : label}
         configMode={configMode}
+        isPFLInput={isPFLInput}
         onChange={(updatedLabel) => {
           setStripLabel(updatedLabel);
           handleStripChange(inputId, 'label', updatedLabel);

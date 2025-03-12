@@ -15,6 +15,7 @@ type TStripInputProps = {
   value: string;
   isOutputStrip?: boolean;
   configMode?: boolean;
+  isPFLInput?: boolean;
   onChange: (input: string) => void;
 };
 
@@ -61,6 +62,7 @@ export const LabelInput = ({
   value,
   isOutputStrip,
   configMode,
+  isPFLInput,
   onChange
 }: TStripInputProps) => {
   return (
@@ -71,7 +73,11 @@ export const LabelInput = ({
         type="text"
         maxLength={15}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          if (!isPFLInput) {
+            onChange(e.target.value);
+          }
+        }}
         className={`${isOutputStrip ? 'w-full' : 'w-[8rem]'} bg-label-field text-black g-transparent outline-none text-center py-1 text-sm rounded mb-1 truncate overflow-hidden whitespace-nowrap px-1`}
       />
     </div>
