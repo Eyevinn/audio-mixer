@@ -1,3 +1,4 @@
+import { useHandleChange } from '../../../hooks/useHandleChange';
 import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { StripInput } from '../../ui/input/Input';
 import { MSStereo } from '../stripComponents/msStereo/MSStereo';
@@ -12,11 +13,6 @@ type TStripFieldsProps = {
     enabled: boolean;
     input_format: string;
   };
-  handleStripChange: (
-    stripId: number,
-    key: string,
-    value: string | number | boolean
-  ) => void;
 };
 
 export const StripFields = ({
@@ -25,9 +21,10 @@ export const StripFields = ({
   channel1,
   channel2,
   stripId,
-  msStereoProps,
-  handleStripChange
+  msStereoProps
 }: TStripFieldsProps) => {
+  const { handleChange } = useHandleChange();
+
   return (
     <div className="flex flex-col pb-1">
       {/* Slot Input */}
@@ -35,7 +32,8 @@ export const StripFields = ({
         type="Slot"
         value={slot !== undefined ? slot.toString() : ''}
         onChange={(slot: string) =>
-          handleStripChange(
+          handleChange(
+            'strips',
             stripId,
             'input_slot',
             slot !== '' ? parseInt(slot, 10) : ''
@@ -49,7 +47,7 @@ export const StripFields = ({
         options={['Mono', 'Stereo']}
         value={isStereo ? 'stereo' : 'mono'}
         onChange={(mode) =>
-          handleStripChange(stripId, 'is_stereo', mode === 'stereo')
+          handleChange('strips', stripId, 'is_stereo', mode === 'stereo')
         }
       />
 
@@ -62,7 +60,12 @@ export const StripFields = ({
         options={['0', '1']}
         value={channel1 !== undefined ? channel1.toString() : ''}
         onChange={(channel1) =>
-          handleStripChange(stripId, 'first_channel', parseInt(channel1, 10))
+          handleChange(
+            'strips',
+            stripId,
+            'first_channel',
+            parseInt(channel1, 10)
+          )
         }
       />
 
@@ -72,7 +75,12 @@ export const StripFields = ({
         options={['0', '1']}
         value={channel2 !== undefined ? channel2.toString() : ''}
         onChange={(channel2) =>
-          handleStripChange(stripId, 'second_channel', parseInt(channel2, 10))
+          handleChange(
+            'strips',
+            stripId,
+            'second_channel',
+            parseInt(channel2, 10)
+          )
         }
         hidden={!isStereo}
       />
