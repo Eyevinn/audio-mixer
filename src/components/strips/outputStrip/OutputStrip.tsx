@@ -98,7 +98,7 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
       output={props}
       backgroundColor={props.backgroundColor}
       header={`${props.input.source === 'mix' ? 'Mix ' : 'Strip '} ${props.stripId}`}
-      handleStripChange={handleOutputChange}
+      handleOutputChange={handleOutputChange}
       onReset={handleResetMeters}
       stripId={props.stripId}
       handleSelection={handleSelection}

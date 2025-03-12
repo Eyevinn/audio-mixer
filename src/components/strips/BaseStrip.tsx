@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useHandleChange } from '../../hooks/useHandleChange';
+import { useRenderPanningAndActions } from '../../hooks/useRenderPanningAndActions';
 import { TAudioStrip, TBaseStrip, TMixStrip, TOutput } from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { StripDropdown } from '../ui/dropdown/Dropdown';
 import { LabelInput } from '../ui/input/Input';
 import { AudioLevel } from './stripComponents/audioLevel/AudioLevel';
+import { Meters } from './stripComponents/meters/Meters';
 import { StripHeader } from './stripComponents/stripHeader/StripHeader';
 import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
-import { Meters } from './stripComponents/meters/Meters';
-import { useRenderPanningAndActions } from '../../hooks/useRenderPanningAndActions';
-import { useHandleChange } from '../../hooks/useHandleChange';
 
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;
@@ -37,6 +37,11 @@ interface BaseStripProps extends TBaseStrip {
   onRemoveFromMix?: (input: TAudioStrip | TMixStrip) => void;
   handleSelection: () => void;
   onCopy?: () => void;
+  handleOutputChange?: (
+    id: number,
+    property: string,
+    value: number | boolean | string | undefined
+  ) => void;
   children?: React.ReactNode;
 }
 
@@ -64,6 +69,7 @@ export const BaseStrip = ({
   onRemoveFromMix,
   handleSelection,
   onCopy,
+  handleOutputChange,
   children
 }: BaseStripProps) => {
   const [stripLabel, setStripLabel] = useState<string>(stripId.toString());
@@ -152,7 +158,11 @@ export const BaseStrip = ({
         configMode={configMode}
         onChange={(updatedLabel) => {
           setStripLabel(updatedLabel);
-          handleChange(type, stripId, 'label', updatedLabel, config);
+          if (isOutputStrip && handleOutputChange) {
+            handleOutputChange(stripId, 'label', updatedLabel);
+          } else {
+            handleChange(type, stripId, 'label', updatedLabel, config);
+          }
         }}
       />
 
