@@ -7,6 +7,7 @@ import { TMixStrip } from '../../../types/types';
 import { addMix, addMixToMix, addStripToMix } from '../../../utils/wsCommands';
 import { BaseStrip } from '../BaseStrip';
 import { MixFields } from './MixFields';
+import { useHandleChange } from '../../../hooks/useHandleChange';
 
 interface MixStripProps extends TMixStrip {
   isRemovingFromMix?: boolean;
@@ -20,9 +21,10 @@ interface MixStripProps extends TMixStrip {
 
 export const MixStrip: React.FC<MixStripProps> = (props) => {
   const { sendMessage } = useWebSocket();
-  const { mixes, setMixes } = useGlobalState();
+  const { mixes } = useGlobalState();
   const nextMixIndex = useNextAvailableIndex(mixes);
   const warningTexts = useCheckOutputUsage(props, 'mix');
+  const { handleChange } = useHandleChange();
 
   useEffect(() => {
     let highlightTimeout: NodeJS.Timeout;
@@ -49,8 +51,7 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
 
     // Change label of new mix
     const renderCopyLabel = `Copy of ${mixToCopyData.label || 'Mix ' + mixToCopyData.stripId}`;
-    handleMixChange(nextMixIndex, 'label', renderCopyLabel);
-
+    handleChange('mixes', nextMixIndex, 'label', renderCopyLabel);
     // Add inputs to new mix
     Object.entries(mixToCopyData.inputs.mixes).forEach(([key]) => {
       addMixToMix(sendMessage, nextMixIndex, parseInt(key));
@@ -64,42 +65,6 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
     props.onStripSelect(props.selected ? null : props.stripId, 'mixes');
   };
 
-  const handleMixChange = (
-    stripId: number,
-    property: string,
-    value: number | boolean | string | undefined
-  ) => {
-    setMixes(
-      mixes.map((mix) =>
-        mix.stripId === stripId ? { ...mix, [property]: value } : mix
-      )
-    );
-
-    // If the value is undefined, do not send the message.
-    // Needed for the input fields, so the input fields can be cleared
-    if (value === undefined) return;
-
-    if (property === 'label') {
-      sendMessage({
-        type: 'set',
-        resource: `/audio/mixes/${stripId}`,
-        body: { [property]: value }
-      });
-    } else if (property === 'volume' || property === 'muted') {
-      sendMessage({
-        type: 'set',
-        resource: `/audio/mixes/${stripId}/fader`,
-        body: { [property]: value }
-      });
-    } else if (property === 'panning') {
-      sendMessage({
-        type: 'set',
-        resource: `/audio/mixes/${stripId}/filters/pan`,
-        body: { value: value }
-      });
-    }
-  };
-
   return (
     <BaseStrip
       {...props}
@@ -111,7 +76,6 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
       copyButton={true}
       isRemovingFromMix={props.isRemovingFromMix}
       isPFLInactive={props.isPFLInactive}
-      handleStripChange={handleMixChange}
       onCopy={() => handleCopyMix(props.stripId)}
       handleSelection={handleSelection}
       isBeingConfigured={props.isBeingConfigured}
