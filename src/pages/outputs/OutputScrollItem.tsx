@@ -27,13 +27,24 @@ export const OutputScrollItem = ({
   onSelect
 }: TOutputScrollItem) => {
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
-  const [ebuMetersEnabled, setEbuMetersEnabled] = useState<boolean>(false);
+  const [ebuMetersEnabled, setEbuMetersEnabled] = useState<boolean>(
+    output.meters.enable_ebu_meters
+  );
   const { mixes, strips } = useGlobalState();
   const { sendMessage } = useWebSocket();
   const hasRemovedInputRef = useRef<boolean>(false);
 
   useEffect(() => {
-    setAllInputs([...strips, ...mixes]);
+    const sortedInputs = [...mixes, ...strips].sort((a, b) => {
+      const isAMix = 'inputs' in a;
+      const isBMix = 'inputs' in b;
+
+      if (isAMix && !isBMix) return -1;
+      if (!isAMix && isBMix) return 1;
+      return 0;
+    });
+
+    setAllInputs(sortedInputs);
   }, [strips, mixes]);
 
   const handleAddInputToOutput = (
