@@ -39,7 +39,7 @@ export const Select: React.FC<SelectProps> = ({
 
   return (
     <div
-      className={`relative ${isOutputPage ? 'w-48' : 'w-fit'} ${className} select-dropdown`}
+      className={`relative ${isOutputPage ? 'w-48' : 'w-fit min-w-52'} ${className} select-dropdown`}
       ref={selectRef}
     >
       <button

@@ -151,18 +151,6 @@ export const BaseStrip = ({
         />
       )}
 
-      {/* Config Fields */}
-      {configMode && (
-        <StripDropdown
-          options={['pre_fader', 'post_fader']}
-          configMode={configMode}
-          value={sendLevels?.origin}
-          onChange={(origin) =>
-            handleChange(type, stripId, 'origin', origin, config)
-          }
-        />
-      )}
-
       {/* Label Input */}
       <LabelInput
         value={label === '' ? stripLabel : label}
@@ -221,7 +209,18 @@ export const BaseStrip = ({
             ${isOutputStrip ? 'absolute bottom-0' : ''}
           `}
         >
-          {configMode && <p className="text-base pb-2">Send Level</p>}
+          {/* Config Fields */}
+          {configMode && (
+            <StripDropdown
+              options={['pre_fader', 'post_fader']}
+              configMode={configMode}
+              value={sendLevels?.origin}
+              onChange={(origin) =>
+                handleStripChange(inputId, 'origin', origin)
+              }
+            />
+          )}
+          {configMode && <p className="text-base pb-2 mt-2">Send Level</p>}
           {output?.meters.enable_ebu_meters && (
             <AudioLevel
               isStereo={input?.is_stereo ?? true}

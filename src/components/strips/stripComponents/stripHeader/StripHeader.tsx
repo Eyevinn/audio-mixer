@@ -32,7 +32,7 @@ export const StripHeader: React.FC<StripHeaderProps> = ({
 
   return (
     <div
-      className={`flex justify-between flex-wrap items-center w-full px-4 py-3 ${configMode ? 'bg-selected-mix-bg border border-selected-mix-border border-b-0 rounded-t-lg' : ''}`}
+      className={`flex justify-between flex-wrap items-center w-full px-4 py-3`}
     >
       <div
         className={`${copyButton ? 'max-w-[5rem]' : 'max-w-[7rem]'} text-base text-center text-white truncate`}

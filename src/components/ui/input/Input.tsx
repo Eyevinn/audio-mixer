@@ -59,14 +59,11 @@ export const StripInput = ({ type, value, onChange }: TStripInputProps) => {
 
 export const LabelInput = ({
   value,
-  configMode,
   isPFLInput,
   onChange
 }: TStripInputProps) => {
   return (
-    <div
-      className={`${configMode ? 'bg-selected-mix-bg pb-1 border border-selected-mix-border border-t-0' : ''} w-full px-4 items-center`}
-    >
+    <div className="w-full px-4 items-center">
       <input
         type="text"
         maxLength={15}

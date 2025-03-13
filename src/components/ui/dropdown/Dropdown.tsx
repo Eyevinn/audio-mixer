@@ -15,7 +15,6 @@ export const StripDropdown = ({
   options,
   value,
   hidden,
-  configMode,
   isStereo,
   dropdownType,
   msStereo,
@@ -27,8 +26,7 @@ export const StripDropdown = ({
         dropdownType !== 'settings'
           ? `
             flex justify-between items-center px-4 py-1 w-full
-            ${configMode ? 'bg-selected-mix-bg border border-selected-mix-border border-y-0' : ''}
-            ${msStereo ? 'text-xs' : 'text-sm'}
+            ${msStereo || !isStereo ? 'text-xs' : 'text-sm'}
           `
           : 'mb-2 text-sm'
       }
