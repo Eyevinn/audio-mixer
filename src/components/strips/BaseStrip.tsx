@@ -141,7 +141,7 @@ export const BaseStrip = ({
           header={header}
           label={label}
           configMode={configMode}
-          copyButton={copyButton}
+          copyButton={isBeingConfigured ? undefined : copyButton}
           isRemovingFromMix={configMode}
           isOutputStrip={isOutputStrip}
           onRemove={onRemove}
@@ -151,22 +151,15 @@ export const BaseStrip = ({
         />
       )}
 
-      {/* Config Fields */}
-      {configMode && (
-        <StripDropdown
-          options={['pre_fader', 'post_fader']}
-          configMode={configMode}
-          value={sendLevels?.origin}
-          onChange={(origin) =>
-            handleChange(type, stripId, 'origin', origin, config)
-          }
-        />
-      )}
-
       {/* Label Input */}
       <LabelInput
-        value={label === '' ? stripLabel : label}
-        configMode={configMode}
+        value={
+          isOutputStrip
+            ? output?.label || ''
+            : label === ''
+              ? stripLabel
+              : label
+        }
         isPFLInput={isPFLInput}
         onChange={(updatedLabel) => {
           setStripLabel(updatedLabel);
@@ -178,13 +171,11 @@ export const BaseStrip = ({
         }}
       />
 
-      {isOutputStrip && !isPFLInput && (
+      {isOutputStrip && !isPFLInput && handleOutputChange && (
         <StripDropdown
           options={['pre_fader', 'post_fader']}
           value={output?.input.origin || 'post_fader'}
-          onChange={(origin) =>
-            handleChange(type, stripId, 'origin', origin, config)
-          }
+          onChange={(origin) => handleOutputChange(stripId, 'origin', origin)}
         />
       )}
 
@@ -221,7 +212,17 @@ export const BaseStrip = ({
             ${isOutputStrip ? 'absolute bottom-0' : ''}
           `}
         >
-          {configMode && <p className="text-base pb-2">Send Level</p>}
+          {/* Config Fields */}
+          {configMode && (
+            <StripDropdown
+              options={['pre_fader', 'post_fader']}
+              value={sendLevels?.origin}
+              onChange={(origin) =>
+                handleChange(type, stripId, 'origin', origin, config)
+              }
+            />
+          )}
+          {configMode && <p className="text-base pb-2 mt-2">Receive Level</p>}
           {output?.meters.enable_ebu_meters && (
             <AudioLevel
               isStereo={input?.is_stereo ?? true}

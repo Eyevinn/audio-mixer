@@ -47,13 +47,13 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
     property: string,
     value: number | boolean | string | undefined
   ) => {
-    if (props.type === 'mixes') {
+    if (props.type === 'mixes' && property !== 'label') {
       setMixes(
         mixes.map((mix) =>
           mix.stripId === id ? { ...mix, [property]: value } : mix
         )
       );
-    } else if (props.type === 'strips') {
+    } else if (props.type === 'strips' && property !== 'label') {
       setStrips(
         strips.map((strip) =>
           strip.stripId === id ? { ...strip, [property]: value } : strip
