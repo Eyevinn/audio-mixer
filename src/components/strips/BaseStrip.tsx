@@ -141,7 +141,7 @@ export const BaseStrip = ({
           header={header}
           label={label}
           configMode={configMode}
-          copyButton={copyButton}
+          copyButton={isBeingConfigured ? undefined : copyButton}
           isRemovingFromMix={configMode}
           isOutputStrip={isOutputStrip}
           onRemove={onRemove}
@@ -218,7 +218,7 @@ export const BaseStrip = ({
               }
             />
           )}
-          {configMode && <p className="text-base pb-2 mt-2">Send Level</p>}
+          {configMode && <p className="text-base pb-2 mt-2">Receive Level</p>}
           {output?.meters.enable_ebu_meters && (
             <AudioLevel
               isStereo={input?.is_stereo ?? true}
