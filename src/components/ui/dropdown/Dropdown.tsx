@@ -3,7 +3,6 @@ type TStripDropdownProps = {
   options: string[];
   value: string;
   hidden?: boolean;
-  configMode?: boolean;
   isStereo?: boolean | undefined;
   dropdownType?: 'settings';
   msStereo?: boolean;

@@ -13,7 +13,6 @@ type TInputProps = {
 type TStripInputProps = {
   type?: string;
   value: string;
-  configMode?: boolean;
   isPFLInput?: boolean;
   onChange: (input: string) => void;
 };

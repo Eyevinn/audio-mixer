@@ -154,7 +154,6 @@ export const BaseStrip = ({
       {/* Label Input */}
       <LabelInput
         value={label === '' ? stripLabel : label}
-        configMode={configMode}
         isPFLInput={isPFLInput}
         onChange={(updatedLabel) => {
           setStripLabel(updatedLabel);
@@ -213,7 +212,6 @@ export const BaseStrip = ({
           {configMode && (
             <StripDropdown
               options={['pre_fader', 'post_fader']}
-              configMode={configMode}
               value={sendLevels?.origin}
               onChange={(origin) =>
                 handleStripChange(inputId, 'origin', origin)
