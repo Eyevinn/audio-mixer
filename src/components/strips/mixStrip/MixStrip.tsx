@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { useGlobalState } from '../../../context/GlobalStateContext';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { useCheckOutputUsage } from '../../../hooks/useCheckOutputUsage';
+import { useHandleChange } from '../../../hooks/useHandleChange';
 import { useNextAvailableIndex } from '../../../hooks/useNextAvailableIndex';
 import { TMixStrip } from '../../../types/types';
 import { addMix, addMixToMix, addStripToMix } from '../../../utils/wsCommands';
 import { BaseStrip } from '../BaseStrip';
 import { MixFields } from './MixFields';
-import { useHandleChange } from '../../../hooks/useHandleChange';
 
 interface MixStripProps extends TMixStrip {
   isRemovingFromMix?: boolean;
@@ -24,19 +24,20 @@ export const MixStrip: React.FC<MixStripProps> = (props) => {
   const { mixes } = useGlobalState();
   const nextMixIndex = useNextAvailableIndex(mixes);
   const warningTexts = useCheckOutputUsage(props, 'mix');
+  const { highlightedMixId, stripId, setHighlightedMixId } = props;
   const { handleChange } = useHandleChange();
 
   useEffect(() => {
-    let highlightTimeout: NodeJS.Timeout;
-    if (props.highlightedMixId === props.stripId) {
-      highlightTimeout = setTimeout(() => {
-        if (props.setHighlightedMixId) {
-          props.setHighlightedMixId(null);
+    if (highlightedMixId === stripId) {
+      const highlightTimeout = setTimeout(() => {
+        if (setHighlightedMixId) {
+          setHighlightedMixId(null);
         }
       }, 2000);
+
+      return () => clearTimeout(highlightTimeout);
     }
-    return () => clearTimeout(highlightTimeout);
-  });
+  }, [highlightedMixId, stripId, setHighlightedMixId]);
 
   const handleCopyMix = (mixToCopy: number) => {
     const mixToCopyData = mixes.find((mix) => mix.stripId === mixToCopy);
