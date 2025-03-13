@@ -138,7 +138,8 @@ export const BaseStrip = ({
         <div className="h-2" />
       ) : (
         <StripHeader
-          label={label || header}
+          header={header}
+          label={label}
           configMode={configMode}
           copyButton={copyButton}
           isRemovingFromMix={configMode}

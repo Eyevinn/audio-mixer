@@ -4,6 +4,7 @@ import { TAudioStrip, TMixStrip } from '../../../../types/types';
 import { ConfirmationModal } from '../../../ui/modals/confirmationModal/ConfirmationModal';
 
 type StripHeaderProps = {
+  header: string;
   label: string;
   isOutputStrip?: boolean;
   copyButton?: boolean;
@@ -16,6 +17,7 @@ type StripHeaderProps = {
 };
 
 export const StripHeader: React.FC<StripHeaderProps> = ({
+  header,
   label,
   isOutputStrip,
   copyButton,
@@ -34,9 +36,9 @@ export const StripHeader: React.FC<StripHeaderProps> = ({
     >
       <div
         className={`${copyButton ? 'max-w-[5rem]' : 'max-w-[7rem]'} text-base text-center text-white truncate`}
-        title={label}
+        title={header}
       >
-        {label}
+        {header}
       </div>
       {copyButton && (
         <button onClick={onCopy} className="w-[2rem]">
@@ -56,7 +58,7 @@ export const StripHeader: React.FC<StripHeaderProps> = ({
       )}
       <ConfirmationModal
         isOpen={isModalOpen}
-        title={`${isRemovingFromMix ? 'Remove' : 'Delete'} ${label}`}
+        title={`${isRemovingFromMix ? 'Remove' : 'Delete'} ${header}: ${label}`}
         message={`${removingOutputWarning && removingOutputWarning.length > 0 ? removingOutputWarning + '\n' : ''}Are you sure you want to ${isRemovingFromMix ? `remove ${label} from this mix?` : `delete ${label}?`}`}
         confirmText={`Yes, ${isRemovingFromMix ? 'remove' : 'delete'}`}
         onConfirm={onRemove}
