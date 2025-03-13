@@ -23,12 +23,6 @@ export const MixFields = ({ stripId, isBeingConfigured }: TMixFieldsProps) => {
       <MixFieldsBtn isBeingConfigured={isBeingConfigured} type="dummy">
         |
       </MixFieldsBtn>
-      <MixFieldsBtn isBeingConfigured={isBeingConfigured} type="dummy">
-        |
-      </MixFieldsBtn>
-      <MixFieldsBtn isBeingConfigured={isBeingConfigured} type="dummy">
-        |
-      </MixFieldsBtn>
     </div>
   );
 };

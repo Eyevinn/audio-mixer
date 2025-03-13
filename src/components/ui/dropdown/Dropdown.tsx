@@ -40,7 +40,7 @@ export const StripDropdown = ({
             dropdownType !== 'settings'
               ? hidden
                 ? 'text-strip-bg'
-                : 'text-white'
+                : 'text-white pr-4'
               : 'w-[150px] inline-block'
           }
         >

@@ -84,14 +84,17 @@ export const VolumeSlider = ({
 
   return (
     <div
-      className={`relative w-[72px] h-[346px] mr-[7px] ${isDisabled ? 'opacity-50' : ''}`}
+      className={`relative w-[72px] h-[280px] mr-[7px] ${isDisabled ? 'opacity-50' : ''}`}
     >
       <SliderLegend />
       <input
         type="range"
-        className={`${isDisabled ? 'pointer-events-auto !cursor-not-allowed' : ''} absolute w-[346px] h-[5px] outline-none
-        opacity-[0.7] transition-opacity duration-200 transform -rotate-90
-        left-[-131px] top-[170px] ${isDisabled ? '' : 'hover:opacity-[1]'} slider-track [&::-webkit-slider-thumb]:volume-slider-thumb [&::-moz-range-thumb]:volume-slider-thumb`}
+        className={`
+          absolute w-[280px] h-[5px] outline-none opacity-[0.7] transition-opacity duration-200 transform -rotate-90 left-[-96px]
+          top-[139px] slider-track [&::-webkit-slider-thumb]:volume-slider-thumb [&::-moz-range-thumb]:volume-slider-thumb
+          ${isDisabled ? 'pointer-events-auto !cursor-not-allowed' : ''}
+          ${isDisabled ? '' : 'hover:opacity-[1]'}
+        `}
         min="0"
         max="127"
         step="1"
