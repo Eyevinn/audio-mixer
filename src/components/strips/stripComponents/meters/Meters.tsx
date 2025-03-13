@@ -20,6 +20,7 @@ type TMetersProps = {
   isOutputStrip?: boolean;
   isScreenTall: boolean;
   showEbuMeters?: boolean;
+  isScreenSmall: boolean;
   renderPanningAndActions: () => JSX.Element | undefined;
   onReset?: () => void;
 };
@@ -32,12 +33,17 @@ export const Meters = ({
   isOutputStrip,
   isScreenTall,
   showEbuMeters,
+  isScreenSmall,
   renderPanningAndActions,
   onReset
 }: TMetersProps) => {
   return (
     <div
-      className={`${isOutputStrip && output?.meters.enable_ebu_meters ? 'flex-col items-center' : ''} w-full flex justify-evenly mb-5`}
+      className={`
+        w-full flex justify-evenly
+        ${isOutputStrip && output?.meters.enable_ebu_meters ? 'flex-col items-center' : ''} 
+        ${isScreenSmall && !isOutputStrip ? '' : 'mb-5'}
+      `}
     >
       <div
         className={`${isScreenTall ? '' : 'scale-90'} flex flex-row space-x-4 px-4`}

@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useGlobalState } from '../../context/GlobalStateContext';
+import React, { useMemo, useRef, useState } from 'react';
 import { OutputScrollItem } from '../../pages/outputs/OutputScrollItem';
 import { TAudioStrip, TMixStrip, TOutput } from '../../types/types';
 import { AudioStrip } from '../strips/audioStrip/AudioStrip';
 import { MixStrip } from '../strips/mixStrip/MixStrip';
 import { ConfigureMixStrip } from '../strips/stripComponents/configure/ConfigureMixStrip';
+import { useScrollIntoView } from '../../hooks/useScrollIntoView';
 
 interface ScrollableContainerProps {
   audioStrips?: TAudioStrip[];
@@ -24,12 +24,6 @@ interface ScrollableContainerProps {
   onStripSelect: (stripId: number | null, type: 'mixes' | 'strips') => void;
 }
 
-const scrollBehavior: ScrollIntoViewOptions = {
-  behavior: 'smooth',
-  block: 'nearest',
-  inline: 'center'
-};
-
 export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   audioStrips,
   mixStrips,
@@ -45,11 +39,23 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   const mixRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const stripRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [stopScrollIntoView, setStopScrollIntoView] = useState<boolean>(true);
   const [startX, setStartX] = useState<number>(0);
   const [scrollLeft, setScrollLeft] = useState<number>(0);
   const [highlightedMixId, setHighlightedMixId] = useState<number | null>(null);
-  const { mixes, strips } = useGlobalState();
 
+  useScrollIntoView({
+    audioStrips,
+    mixStrips,
+    configurableMixStrips,
+    outputStrips,
+    highlightedMixId,
+    stopScrollIntoView,
+    stripRefs,
+    mixRefs,
+    containerRef,
+    setStopScrollIntoView
+  });
   const sortedOutputs = useMemo(() => {
     if (!outputStrips) return [];
 
@@ -76,75 +82,6 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
     );
   }, [outputStrips]);
 
-  useEffect(() => {
-    if (
-      highlightedMixId !== null &&
-      mixRefs.current[highlightedMixId] &&
-      containerRef.current
-    ) {
-      mixRefs.current[highlightedMixId]?.scrollIntoView(scrollBehavior);
-    }
-  }, [highlightedMixId, mixStrips]);
-
-  useEffect(() => {
-    audioStrips?.forEach((strip) => {
-      if (strip.selected && stripRefs.current[strip.stripId]) {
-        stripRefs.current[strip.stripId]?.scrollIntoView(scrollBehavior);
-      }
-    });
-
-    mixStrips?.forEach((mix) => {
-      if (mix.selected && mixRefs.current[mix.stripId]) {
-        mixRefs.current[mix.stripId]?.scrollIntoView(scrollBehavior);
-      }
-    });
-
-    if (configurableMixStrips?.inputs.strips) {
-      Object.entries(configurableMixStrips.inputs.strips).forEach(([key]) => {
-        const strip = strips.find(
-          (strip) => strip.stripId === parseInt(key, 10)
-        );
-        if (strip?.selected && stripRefs.current[parseInt(key, 10)]) {
-          stripRefs.current[parseInt(key, 10)]?.scrollIntoView(scrollBehavior);
-        }
-      });
-    }
-
-    if (configurableMixStrips?.inputs.mixes) {
-      Object.entries(configurableMixStrips.inputs.mixes).forEach(([key]) => {
-        const mix = mixes.find((mix) => mix.stripId === parseInt(key, 10));
-        if (mix?.selected && mixRefs.current[parseInt(key, 10)]) {
-          mixRefs.current[parseInt(key, 10)]?.scrollIntoView(scrollBehavior);
-        }
-      });
-    }
-
-    if (outputStrips) {
-      Object.values(outputStrips).forEach((output) => {
-        if (output.input.source === 'mix') {
-          const mix = mixes.find((mix) => mix.stripId === output.input.index);
-          if (mix?.selected && mixRefs.current[mix.stripId]) {
-            mixRefs.current[mix.stripId]?.scrollIntoView(scrollBehavior);
-          }
-        } else if (output.input.source === 'strip') {
-          const strip = strips.find(
-            (strip) => strip.stripId === output.input.index
-          );
-          if (strip?.selected && stripRefs.current[strip.stripId]) {
-            stripRefs.current[strip.stripId]?.scrollIntoView(scrollBehavior);
-          }
-        }
-      });
-    }
-  }, [
-    audioStrips,
-    mixStrips,
-    configurableMixStrips,
-    mixes,
-    strips,
-    outputStrips
-  ]);
-
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
     setIsDragging(true);
@@ -165,6 +102,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   };
 
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    setStopScrollIntoView(true);
     if (containerRef.current) {
       const target = e.target as HTMLElement;
       if (target.closest('.select-dropdown')) {

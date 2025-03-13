@@ -74,7 +74,13 @@ export const BaseStrip = ({
 }: BaseStripProps) => {
   const [stripLabel, setStripLabel] = useState<string>(stripId.toString());
   const [isScreenTall, setIsScreenTall] = useState<boolean>(
-    window.innerHeight > 1200
+    window.innerHeight > 1100
+  );
+  const [isScreenExtraTall, setIsScreenExtraTall] = useState<boolean>(
+    window.innerHeight > 1500
+  );
+  const [isScreenSmall, setIsScreenSmall] = useState<boolean>(
+    window.innerHeight < 900
   );
   const configMode =
     sendLevels?.muted !== undefined &&
@@ -105,7 +111,9 @@ export const BaseStrip = ({
 
   useEffect(() => {
     const handleResize = () => {
-      setIsScreenTall(window.innerHeight > 1200);
+      setIsScreenSmall(window.innerHeight < 900);
+      setIsScreenTall(window.innerHeight > 1100);
+      setIsScreenExtraTall(window.innerHeight > 1500);
     };
 
     window.addEventListener('resize', handleResize);
@@ -114,9 +122,12 @@ export const BaseStrip = ({
 
   return (
     <div
-      className={`box-border flex flex-col relative rounded-lg h-full
+      className={`box-border flex flex-col relative rounded-lg
         ${backgroundColor}
-        ${isScreenTall || !isOutputStrip ? 'w-fit' : 'w-56'}
+        ${isScreenTall && 'h-[80%]'}
+        ${isScreenExtraTall && 'h-[60%]'}
+        ${!isScreenTall && !isScreenExtraTall && 'h-full'}
+        ${isScreenTall || !isOutputStrip ? 'w-fit min-w-[180px]' : 'w-56'}
         ${isHighlighted ? 'border-2 border-white' : ''}
         ${isBeingConfigured ? 'border-2 border-white' : ''}
         ${selected && !isBeingConfigured ? 'border-[1px] border-gray-400' : ''}
@@ -127,7 +138,8 @@ export const BaseStrip = ({
         <div className="h-2" />
       ) : (
         <StripHeader
-          label={label || header}
+          header={header}
+          label={label}
           configMode={configMode}
           copyButton={copyButton}
           isRemovingFromMix={configMode}
@@ -153,7 +165,6 @@ export const BaseStrip = ({
 
       {/* Label Input */}
       <LabelInput
-        isOutputStrip={isOutputStrip}
         value={label === '' ? stripLabel : label}
         configMode={configMode}
         isPFLInput={isPFLInput}
@@ -180,7 +191,12 @@ export const BaseStrip = ({
       {/* Audio Strip Fields */}
       {children}
 
-      <div className="flex flex-col items-center flex-wrap w-full mt-5">
+      <div
+        className={`
+          flex flex-col items-center flex-wrap w-full mt-5
+          ${isScreenSmall && !isOutputStrip && header.includes('Strip') && !configMode ? 'scale-[85%] mt-[-30px]' : ''}
+        `}
+      >
         <Meters
           isPFLInput={isPFLInput}
           output={output}
@@ -189,6 +205,7 @@ export const BaseStrip = ({
           isOutputStrip={isOutputStrip}
           isScreenTall={isScreenTall}
           showEbuMeters={showEbuMeters ? true : false}
+          isScreenSmall={isScreenSmall}
           renderPanningAndActions={renderPanningAndActions}
           onReset={onReset}
         />
@@ -214,7 +231,7 @@ export const BaseStrip = ({
               }}
             />
           )}
-          <div className={`${isScreenTall || configMode ? '' : 'scale-75'}`}>
+          <div>
             <VolumeSlider
               isDisabled={
                 output && output.input.origin === 'pre_fader' && !isPFLInput

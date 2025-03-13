@@ -214,7 +214,7 @@ const messageTranslator = (
         if (!data.body && data.error) {
           if (
             (data.error.includes('already exists') &&
-              data.resource.includes('mixes/1000/inputs/mixes/')) ||
+              data.resource.includes('/audio/mixes/1000/inputs/')) ||
             data.error.includes('1000 already exists')
           )
             return;
