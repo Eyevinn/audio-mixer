@@ -65,14 +65,9 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       ([keyA, outputA], [keyB, outputB]) => {
         const isProgramA = programRegex.test(keyA);
         const isProgramB = programRegex.test(keyB);
-        const isEbuEnabledA = outputA.meters.enable_ebu_meters === true;
-        const isEbuEnabledB = outputB.meters.enable_ebu_meters === true;
 
         if (isProgramA && !isProgramB) return -1;
         if (!isProgramA && isProgramB) return 1;
-
-        if (isEbuEnabledA && !isEbuEnabledB) return -1;
-        if (!isEbuEnabledA && isEbuEnabledB) return 1;
 
         if (outputA.input.index !== 0 && outputB.input.index === 0) return -1;
         if (outputA.input.index === 0 && outputB.input.index !== 0) return 1;
