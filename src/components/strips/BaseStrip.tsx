@@ -153,7 +153,13 @@ export const BaseStrip = ({
 
       {/* Label Input */}
       <LabelInput
-        value={label === '' ? stripLabel : label}
+        value={
+          isOutputStrip
+            ? output?.label || ''
+            : label === ''
+              ? stripLabel
+              : label
+        }
         isPFLInput={isPFLInput}
         onChange={(updatedLabel) => {
           setStripLabel(updatedLabel);
@@ -165,13 +171,11 @@ export const BaseStrip = ({
         }}
       />
 
-      {isOutputStrip && !isPFLInput && (
+      {isOutputStrip && !isPFLInput && handleOutputChange && (
         <StripDropdown
           options={['pre_fader', 'post_fader']}
           value={output?.input.origin || 'post_fader'}
-          onChange={(origin) =>
-            handleChange(type, stripId, 'origin', origin, config)
-          }
+          onChange={(origin) => handleOutputChange(stripId, 'origin', origin)}
         />
       )}
 
@@ -214,7 +218,7 @@ export const BaseStrip = ({
               options={['pre_fader', 'post_fader']}
               value={sendLevels?.origin}
               onChange={(origin) =>
-                handleStripChange(inputId, 'origin', origin)
+                handleChange(type, stripId, 'origin', origin, config)
               }
             />
           )}
