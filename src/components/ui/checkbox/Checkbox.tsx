@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Icons from '../../../assets/icons/Icons';
 
 interface CheckboxProps {
@@ -24,6 +24,10 @@ const Checkbox: React.FC<CheckboxProps> = ({
     setIsChecked(newChecked);
     onChange(newChecked);
   };
+
+  useEffect(() => {
+    setIsChecked(checked);
+  }, [checked]);
 
   return (
     <label
