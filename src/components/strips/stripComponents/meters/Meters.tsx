@@ -1,8 +1,8 @@
 import { JSX } from 'react';
 import { TOutput } from '../../../../types/types';
+import { EbuMeters } from '../../outputStrip/EbuMeters';
 import { ResetButton } from '../../outputStrip/ResetButton';
 import { AudioLevel } from '../audioLevel/AudioLevel';
-import { EbuMeters } from '../../outputStrip/EbuMeters';
 
 type TMetersProps = {
   isPFLInput: boolean;
@@ -18,7 +18,6 @@ type TMetersProps = {
     peak_right: number;
   };
   isOutputStrip?: boolean;
-  isScreenTall: boolean;
   showEbuMeters?: boolean;
   isScreenSmall: boolean;
   renderPanningAndActions: () => JSX.Element | undefined;
@@ -31,7 +30,6 @@ export const Meters = ({
   input,
   pre_fader_meter,
   isOutputStrip,
-  isScreenTall,
   showEbuMeters,
   isScreenSmall,
   renderPanningAndActions,
@@ -45,11 +43,9 @@ export const Meters = ({
         ${isScreenSmall && !isOutputStrip ? '' : 'mb-5'}
       `}
     >
-      <div
-        className={`${isScreenTall ? '' : 'scale-90'} flex flex-row space-x-4 px-4`}
-      >
+      <div className="flex flex-row px-4 space-x-4">
         {/* Audio Levels */}
-        {!isPFLInput && !output?.meters.enable_ebu_meters && (
+        {!isPFLInput && (
           <AudioLevel
             isStereo={input?.is_stereo ?? true}
             audioBarData={{
@@ -63,7 +59,7 @@ export const Meters = ({
           />
         )}
 
-        {!showEbuMeters && renderPanningAndActions()}
+        {!isOutputStrip && renderPanningAndActions()}
 
         {showEbuMeters && output && onReset && (
           <div className="flex flex-col items-center justify-center space-y-4">
@@ -76,7 +72,7 @@ export const Meters = ({
           </div>
         )}
 
-        {!isScreenTall && showEbuMeters && renderPanningAndActions()}
+        {isOutputStrip && !showEbuMeters && <div className="w-20 h-10" />}
       </div>
     </div>
   );

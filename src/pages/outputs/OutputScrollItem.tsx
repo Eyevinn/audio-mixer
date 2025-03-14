@@ -114,7 +114,7 @@ export const OutputScrollItem = ({
       <div className="flex flex-row space-x-2 items-center">
         <span>{outputName}</span>
         {output.input.index === 1000 || outputName === 'pfl' ? (
-          <div className="h-10" />
+          <div className="h-20" />
         ) : (
           <Select
             isOutputPage={true}
