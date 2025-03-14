@@ -6,8 +6,13 @@ export const useRemoveFromMixInputs = () => {
   const { sendMessage } = useWebSocket();
   const { mixes } = useGlobalState();
 
-  const removeFromMixInputs = (mixId: number, type: 'mixes' | 'strips') => {
+  const removeFromMixInputs = (
+    mixId: number,
+    type: 'mixes' | 'strips',
+    isDeletingAll?: boolean
+  ) => {
     mixes.forEach((mix) => {
+      if (isDeletingAll && mix.stripId !== 1000) return;
       const inputTypes = [
         { inputType: 'mixes', input: mix.inputs?.mixes },
         { inputType: 'strips', input: mix.inputs?.strips }
