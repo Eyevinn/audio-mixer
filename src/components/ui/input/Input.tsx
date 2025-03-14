@@ -14,6 +14,7 @@ type TStripInputProps = {
   type?: string;
   value: string;
   isPFLInput?: boolean;
+  readOnly?: boolean;
   onChange: (input: string) => void;
 };
 
@@ -59,11 +60,13 @@ export const StripInput = ({ type, value, onChange }: TStripInputProps) => {
 export const LabelInput = ({
   value,
   isPFLInput,
+  readOnly,
   onChange
 }: TStripInputProps) => {
   return (
     <div className="w-full px-4 items-center">
       <input
+        readOnly={readOnly}
         type="text"
         maxLength={15}
         value={value}

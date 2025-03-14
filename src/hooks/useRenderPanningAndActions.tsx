@@ -1,7 +1,7 @@
+import { PanningSlider } from '../components/strips/stripComponents/panningSlider/PanningSlider';
+import { ActionButton } from '../components/ui/buttons/Buttons';
 import { useWebSocket } from '../context/WebSocketContext';
 import { Filters } from '../types/types';
-import { ActionButton } from '../components/ui/buttons/Buttons';
-import { PanningSlider } from '../components/strips/stripComponents/panningSlider/PanningSlider';
 import { useHandleChange } from './useHandleChange';
 
 export const useRenderPanningAndActions = (

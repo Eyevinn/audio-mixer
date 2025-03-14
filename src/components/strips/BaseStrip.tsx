@@ -5,7 +5,6 @@ import { TAudioStrip, TBaseStrip, TMixStrip, TOutput } from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { StripDropdown } from '../ui/dropdown/Dropdown';
 import { LabelInput } from '../ui/input/Input';
-import { AudioLevel } from './stripComponents/audioLevel/AudioLevel';
 import { Meters } from './stripComponents/meters/Meters';
 import { StripHeader } from './stripComponents/stripHeader/StripHeader';
 import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
@@ -152,6 +151,7 @@ export const BaseStrip = ({
       )}
 
       {/* Label Input */}
+      {isOutputStrip && <span className="text-xs ml-4">Output label:</span>}
       <LabelInput
         value={
           isOutputStrip
@@ -161,6 +161,7 @@ export const BaseStrip = ({
               : label
         }
         isPFLInput={isPFLInput}
+        readOnly={isPFLInput}
         onChange={(updatedLabel) => {
           setStripLabel(updatedLabel);
           if (isOutputStrip && handleOutputChange) {
@@ -170,14 +171,6 @@ export const BaseStrip = ({
           }
         }}
       />
-
-      {isOutputStrip && !isPFLInput && handleOutputChange && (
-        <StripDropdown
-          options={['pre_fader', 'post_fader']}
-          value={output?.input.origin || 'post_fader'}
-          onChange={(origin) => handleOutputChange(stripId, 'origin', origin)}
-        />
-      )}
 
       {/* Audio Strip Fields */}
       {children}
@@ -194,21 +187,18 @@ export const BaseStrip = ({
           input={input}
           pre_fader_meter={pre_fader_meter}
           isOutputStrip={isOutputStrip}
-          isScreenTall={isScreenTall}
           showEbuMeters={showEbuMeters ? true : false}
           isScreenSmall={isScreenSmall}
           renderPanningAndActions={renderPanningAndActions}
           onReset={onReset}
         />
 
-        {isScreenTall && showEbuMeters && renderPanningAndActions()}
-
         {/* Volume Slider */}
         <div
           className={`
             flex pt-2 pb-5 w-full items-center
             ${output?.meters.enable_ebu_meters ? 'flex-row justify-center space-x-8 px-4' : 'flex-col'}
-            ${configMode ? 'scale-100 border border-selected-mix-border rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''}
+            ${configMode ? 'border border-selected-mix-border rounded-b-lg bg-dark-purple absolute bottom-0 left-0' : ''}
             ${isOutputStrip ? 'absolute bottom-0' : ''}
           `}
         >
@@ -223,42 +213,43 @@ export const BaseStrip = ({
             />
           )}
           {configMode && <p className="text-base pb-2 mt-2">Receive Level</p>}
-          {output?.meters.enable_ebu_meters && (
-            <AudioLevel
-              isStereo={input?.is_stereo ?? true}
-              audioBarData={{
-                peak_left: output?.meters.peak_left,
-                peak_right: output?.meters.peak_right
-              }}
-            />
-          )}
-          <div>
-            <VolumeSlider
-              isDisabled={
-                output && output.input.origin === 'pre_fader' && !isPFLInput
-              }
-              inputVolume={configMode ? sendLevels?.volume : fader?.volume}
-              onVolumeChange={(vol: number) =>
-                handleChange(type, stripId, 'volume', vol, config)
-              }
-            />
+
+          <div
+            className={`flex flex-col space-y-4 w-full items-center ${isScreenSmall ? 'scale-90 mb-[-20px]' : ''}`}
+          >
+            <div className="flex flex-row items-center justify-center space-x-8">
+              {!isScreenTall && isOutputStrip && renderPanningAndActions()}
+
+              <VolumeSlider
+                isDisabled={
+                  output && output.input.origin === 'pre_fader' && !isPFLInput
+                }
+                inputVolume={configMode ? sendLevels?.volume : fader?.volume}
+                onVolumeChange={(vol: number) =>
+                  handleChange(type, stripId, 'volume', vol, config)
+                }
+              />
+            </div>
+
+            {configMode && (
+              <ActionButton
+                label={'MUTE'}
+                buttonColor={
+                  sendLevels?.muted ? 'bg-mute-btn' : 'bg-default-btn'
+                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleChange(
+                    type,
+                    stripId,
+                    'muted',
+                    !sendLevels?.muted,
+                    config
+                  );
+                }}
+              />
+            )}
           </div>
-          {configMode && (
-            <ActionButton
-              label={'MUTE'}
-              buttonColor={sendLevels?.muted ? 'bg-mute-btn' : 'bg-default-btn'}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleChange(
-                  type,
-                  stripId,
-                  'muted',
-                  !sendLevels?.muted,
-                  config
-                );
-              }}
-            />
-          )}
         </div>
       </div>
     </div>
