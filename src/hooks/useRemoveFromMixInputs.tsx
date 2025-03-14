@@ -8,6 +8,8 @@ export const useRemoveFromMixInputs = () => {
 
   const removeFromMixInputs = (mixId: number, type: 'mixes' | 'strips') => {
     mixes.forEach((mix) => {
+      if (mixId === mix.stripId) return;
+
       const inputTypes = [
         { inputType: 'mixes', input: mix.inputs?.mixes },
         { inputType: 'strips', input: mix.inputs?.strips }
