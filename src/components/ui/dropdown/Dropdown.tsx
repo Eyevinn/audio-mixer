@@ -6,7 +6,7 @@ type TStripDropdownProps = {
   isStereo?: boolean | undefined;
   dropdownType?: 'settings';
   msStereo?: boolean;
-  isOutputStrip?: boolean;
+  disabled?: boolean;
   disabled?: boolean;
   onChange: (input: string) => void;
 };
@@ -19,7 +19,7 @@ export const StripDropdown = ({
   isStereo,
   dropdownType,
   msStereo,
-  isOutputStrip,
+  disabled,
   disabled,
   onChange
 }: TStripDropdownProps) => {
