@@ -1,7 +1,7 @@
 import { useHandleChange } from '../../../hooks/useHandleChange';
 import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { StripInput } from '../../ui/input/Input';
-import { MSStereo } from '../stripComponents/msStereo/MSStereo';
+import { ModeSelect } from '../stripComponents/msStereo/ModeSelect';
 
 type TStripFieldsProps = {
   slot: string;
@@ -42,17 +42,12 @@ export const StripFields = ({
       />
 
       {/* Mode Select */}
-      <StripDropdown
-        type="Mode"
-        options={['Mono', 'Stereo']}
-        value={isStereo ? 'stereo' : 'mono'}
-        onChange={(mode) =>
-          handleChange('strips', stripId, 'is_stereo', mode === 'stereo')
-        }
+      <ModeSelect
+        isStereo={isStereo}
+        filters={msStereoProps}
+        stripId={stripId}
+        handleChange={handleChange}
       />
-
-      {/* MS Stereo Select */}
-      <MSStereo isStereo={isStereo} filters={msStereoProps} stripId={stripId} />
 
       {/* Left Ch Select */}
       <StripDropdown

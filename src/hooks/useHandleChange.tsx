@@ -75,6 +75,31 @@ export const useHandleChange = () => {
         resource: `/audio/strips/${stripId}/input`,
         body: { [property]: value }
       });
+    } else if (property === 'mid_side') {
+      if (value === 'mono') {
+        sendMessage({
+          type: 'set',
+          resource: `/audio/strips/${stripId}/filters/mid_side`,
+          body: { enabled: false }
+        });
+        sendMessage({
+          type: 'set',
+          resource: `/audio/strips/${stripId}/input`,
+          body: { is_stereo: false }
+        });
+      } else {
+        console.log('value', value);
+        sendMessage({
+          type: 'set',
+          resource: `/audio/strips/${stripId}/filters/mid_side`,
+          body: { enabled: value === 'm/s_stereo' }
+        });
+        sendMessage({
+          type: 'set',
+          resource: `/audio/strips/${stripId}/input`,
+          body: { is_stereo: true }
+        });
+      }
     } else if (!configId && (property === 'volume' || property === 'muted')) {
       sendMessage({
         type: 'set',

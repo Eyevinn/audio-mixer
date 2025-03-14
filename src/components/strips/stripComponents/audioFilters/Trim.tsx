@@ -29,7 +29,7 @@ export const Trim = ({ strip, handleEffectChange }: TTrimProps) => {
           min={-15}
           max={15}
           value={trimValue}
-          step={0.1}
+          step={1}
           unit="dB"
           filter="trim"
           parameter="value"

@@ -50,7 +50,6 @@ export const StripDropdown = ({
         id={type}
         value={value.toLowerCase()}
         onChange={(e) => onChange(e.target.value)}
-        disabled={isStereo !== undefined ? !isStereo : false}
         className={
           dropdownType !== 'settings'
             ? `
@@ -67,10 +66,14 @@ export const StripDropdown = ({
           <option key={option} value={option.toLowerCase()}>
             {option
               .split('_')
-              .map(
-                (word) =>
+              .map((word) => {
+                if (word.toLowerCase() === 'm/s') {
+                  return 'M/S';
+                }
+                return (
                   word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-              )
+                );
+              })
               .join(' ')}
           </option>
         ))}

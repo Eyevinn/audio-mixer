@@ -37,11 +37,16 @@ export const EffectsPanel = ({ strip, type, onClose }: EffectsPanelProps) => {
     parameter: string,
     value: number | string | boolean
   ) => {
+    const body =
+      parameter === 'enabled'
+        ? { [parameter]: value, input_format: 'lr_stereo' }
+        : { [parameter]: value };
+
     if (isConnected) {
       sendMessage({
         type: 'set',
         resource: `/audio/${type}/${strip.stripId}/filters/${filter}`,
-        body: { [parameter]: value }
+        body: body
       });
     }
   };
