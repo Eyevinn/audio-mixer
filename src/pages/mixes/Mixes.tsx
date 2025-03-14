@@ -66,9 +66,9 @@ export const MixesPage = () => {
     navigate(`/mixes/${nextMixIndex}`);
   };
 
-  const handleRemoveMix = (mixId: number) => {
+  const handleRemoveMix = (mixId: number, isDeletingAll?: boolean) => {
     removeMix(mixId, sendMessage);
-    removeFromMixInputs(mixId, 'mixes');
+    removeFromMixInputs(mixId, 'mixes', isDeletingAll);
 
     if (selectedMix === mixId) {
       setSelectedMix(null);
@@ -78,7 +78,7 @@ export const MixesPage = () => {
   const handleRemoveAllMixes = () => {
     mixes.forEach((mix) => {
       if (mix.stripId !== 1000) {
-        handleRemoveMix(mix.stripId);
+        handleRemoveMix(mix.stripId, true);
       }
     });
   };
