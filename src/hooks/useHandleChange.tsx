@@ -115,7 +115,6 @@ export const useHandleChange = () => {
           body: { is_stereo: false }
         });
       } else {
-        console.log('value', value);
         sendMessage({
           type: 'set',
           resource: `/audio/strips/${stripId}/filters/mid_side`,
