@@ -6,7 +6,7 @@ type TStripDropdownProps = {
   isStereo?: boolean | undefined;
   dropdownType?: 'settings';
   msStereo?: boolean;
-  isOutputStrip?: boolean;
+  disabled?: boolean;
   onChange: (input: string) => void;
 };
 
@@ -18,19 +18,22 @@ export const StripDropdown = ({
   isStereo,
   dropdownType,
   msStereo,
-  isOutputStrip,
+  disabled,
   onChange
 }: TStripDropdownProps) => {
   return (
     <div
-      className={
-        dropdownType !== 'settings'
-          ? `
+      className={`
+        ${disabled ? 'pointer-events-none' : ''}
+        ${
+          dropdownType !== 'settings'
+            ? `
             flex justify-between items-center px-4 py-1 w-full
             ${msStereo || !isStereo ? 'text-xs' : 'text-sm'}
           `
-          : 'mb-2 text-sm'
-      }
+            : 'mb-2 text-sm'
+        }
+      `}
     >
       {type && (
         <label
