@@ -10,10 +10,16 @@ import { Trim } from './Trim';
 interface EffectsPanelProps {
   strip: TAudioStrip | TMixStrip | undefined;
   type: 'mixes' | 'strips';
+  isConfigPage?: boolean;
   onClose: () => void;
 }
 
-export const EffectsPanel = ({ strip, type, onClose }: EffectsPanelProps) => {
+export const EffectsPanel = ({
+  strip,
+  type,
+  isConfigPage,
+  onClose
+}: EffectsPanelProps) => {
   const { sendMessage, isConnected } = useWebSocket();
 
   const isStereo = () => {
@@ -68,7 +74,7 @@ export const EffectsPanel = ({ strip, type, onClose }: EffectsPanelProps) => {
       <Trim strip={strip} handleEffectChange={handleEffectChange} />
 
       {/* MS Stereo Section */}
-      {isStereo() && strip?.filters?.mid_side && (
+      {isStereo() && strip?.filters?.mid_side && !isConfigPage && (
         <MidSide
           midSide={strip.filters.mid_side}
           handleEffectChange={handleEffectChange}
