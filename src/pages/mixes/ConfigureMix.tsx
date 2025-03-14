@@ -219,6 +219,7 @@ export const ConfigureMixPage = () => {
                 : strips.find((strip) => strip.stripId === selectedStrip.id)
             }
             type={selectedStrip.type}
+            isConfigPage={true}
             onClose={() => setIsFirstMount(true)}
           />
         )}
