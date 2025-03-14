@@ -34,9 +34,9 @@ export const StripFields = ({
     if (mode === 'stereo') {
       return channel === 'first' ? 'Left Ch' : 'Right Ch';
     } else if (mode === 'ms-stereo') {
-      return channel === 'first' ? 'Mid' : 'Side';
+      return channel === 'first' ? 'Mid Ch' : 'Side Ch';
     } else {
-      return 'Mono channel';
+      return 'Mono Ch';
     }
   };
 
