@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { TAudioStrip, TMixStrip } from '../../../../types/types';
 import { CancelButton, DeleteButton } from '../../buttons/Buttons';
 
@@ -10,6 +10,7 @@ interface ConfirmationModalProps {
   errorMessage?: string | null;
   confirmText: string;
   isConfiguringMix?: boolean;
+  isDeletingAll?: boolean;
   onConfirm?: () => void;
   onConfirmMixConfig?: (input: TAudioStrip | TMixStrip) => void;
   onClose: () => void;
@@ -23,32 +24,54 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   errorMessage,
   confirmText,
   isConfiguringMix,
+  isDeletingAll,
   onConfirm,
   onConfirmMixConfig,
   onClose
 }) => {
+  const handleCancel = useCallback(() => {
+    onClose();
+  }, [onClose]);
+
+  const handleConfirm = useCallback(() => {
+    if (isConfiguringMix && input && onConfirmMixConfig) {
+      onConfirmMixConfig(input);
+    } else if (onConfirm) {
+      onConfirm();
+    }
+    onClose();
+  }, [isConfiguringMix, input, onConfirmMixConfig, onConfirm, onClose]);
+
+  const handleOutsideClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        if (isDeletingAll) {
+          return;
+        }
+        handleConfirm();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, handleConfirm, isDeletingAll]);
+
   if (!isOpen) {
     return null;
   }
-
-  const handleCancel = () => {
-    onClose();
-  };
-
-  const handleConfirm = () => {
-    if (isConfiguringMix && input && onConfirmMixConfig) {
-      onConfirmMixConfig(input);
-    } else {
-      onConfirm && onConfirm();
-    }
-    onClose();
-  };
-
-  const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
 
   return (
     <div

@@ -140,6 +140,7 @@ export const MixesPage = () => {
         message={`${warningTexts.length > 0 ? warningTexts + '\n' : ''} Are you sure you want to delete all mixes?`}
         confirmText="Yes, delete all"
         onConfirm={handleRemoveAllMixes}
+        isDeletingAll={true}
       />
     </PageContainer>
   );

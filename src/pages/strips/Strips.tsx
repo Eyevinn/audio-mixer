@@ -13,8 +13,8 @@ import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { useCheckOutputUsage } from '../../hooks/useCheckOutputUsage';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
-import { addStrip, removeStrip } from '../../utils/wsCommands';
 import { useRemoveFromMixInputs } from '../../hooks/useRemoveFromMixInputs';
+import { addStrip, removeStrip } from '../../utils/wsCommands';
 
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
@@ -107,6 +107,7 @@ export const StripsPage = () => {
           message={`${warningTexts.length > 0 ? warningTexts + '\n' : ''} Are you sure you want to delete all strips?`}
           isOpen={isModalOpen}
           confirmText="Yes, delete all"
+          isDeletingAll={true}
           onConfirm={() => handleRemoveAllStrips()}
           onClose={() => setIsModalOpen(false)}
         />
