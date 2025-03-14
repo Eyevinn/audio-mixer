@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { TOutput } from '../../../../types/types';
+import { Filters, TOutput } from '../../../../types/types';
 import { EbuMeters } from '../../outputStrip/EbuMeters';
 import { ResetButton } from '../../outputStrip/ResetButton';
 import { AudioLevel } from '../audioLevel/AudioLevel';
@@ -20,6 +20,7 @@ type TMetersProps = {
   isOutputStrip?: boolean;
   showEbuMeters?: boolean;
   isScreenSmall: boolean;
+  filters?: Filters;
   renderPanningAndActions: () => JSX.Element | undefined;
   onReset?: () => void;
 };
@@ -32,6 +33,7 @@ export const Meters = ({
   isOutputStrip,
   showEbuMeters,
   isScreenSmall,
+  filters,
   renderPanningAndActions,
   onReset
 }: TMetersProps) => {
@@ -59,7 +61,10 @@ export const Meters = ({
           />
         )}
 
-        {!isOutputStrip && renderPanningAndActions()}
+        {!isOutputStrip &&
+          filters &&
+          filters.pan.value &&
+          renderPanningAndActions()}
 
         {showEbuMeters && output && onReset && (
           <div className="flex flex-col items-center justify-center space-y-4">

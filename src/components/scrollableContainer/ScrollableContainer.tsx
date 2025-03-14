@@ -25,10 +25,10 @@ interface ScrollableContainerProps {
 }
 
 export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
-  audioStrips,
-  mixStrips,
+  audioStrips = [],
+  mixStrips = [],
   configurableMixStrips,
-  outputStrips,
+  outputStrips = {},
   isOutputPage,
   isPFL,
   handleRemoveStrip,

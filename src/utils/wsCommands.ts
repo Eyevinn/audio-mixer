@@ -205,7 +205,7 @@ export const subscribe = (
     resource: '/audio'
   });
 
-  const samplingRate = 100;
+  const samplingRate = 10000;
 
   // Start sampling
   sendMessage({

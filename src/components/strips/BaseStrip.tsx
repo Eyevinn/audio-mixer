@@ -189,6 +189,7 @@ export const BaseStrip = ({
           isOutputStrip={isOutputStrip}
           showEbuMeters={showEbuMeters ? true : false}
           isScreenSmall={isScreenSmall}
+          filters={filters}
           renderPanningAndActions={renderPanningAndActions}
           onReset={onReset}
         />

@@ -42,7 +42,7 @@ export const AudioLevel: React.FC<AudioLevelProps> = ({
           <div
             className="absolute top-0 left-0 right-0 bg-[#444c] transition-all duration-100"
             style={{
-              height: `${100 - levelToPercent(audioBarData?.peak_left ?? audioBarData?.peak)}%`
+              height: `${100 - levelToPercent(audioBarData?.peak_left ?? audioBarData?.peak ?? 0)}%`
             }}
           />
         </div>
@@ -67,7 +67,7 @@ export const AudioLevel: React.FC<AudioLevelProps> = ({
           <div
             className="absolute top-0 left-0 right-0 bg-[#444c] transition-all duration-100"
             style={{
-              height: `${100 - levelToPercent(audioBarData?.peak_right)}%`
+              height: `${100 - levelToPercent(audioBarData?.peak_right ?? audioBarData?.peak ?? 0)}%`
             }}
           />
         </div>

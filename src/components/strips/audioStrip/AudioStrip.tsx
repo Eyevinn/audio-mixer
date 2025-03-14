@@ -18,6 +18,8 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
     props.onStripSelect(props.selected ? null : props.stripId, 'strips');
   };
 
+  if (props.stripId === undefined || props.input === undefined) return null;
+
   return (
     <BaseStrip
       {...props}
