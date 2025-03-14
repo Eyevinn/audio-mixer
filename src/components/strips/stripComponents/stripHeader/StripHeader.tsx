@@ -58,8 +58,8 @@ export const StripHeader: React.FC<StripHeaderProps> = ({
       )}
       <ConfirmationModal
         isOpen={isModalOpen}
-        title={`${isRemovingFromMix ? 'Remove' : 'Delete'} ${header}: ${label}`}
-        message={`${removingOutputWarning && removingOutputWarning.length > 0 ? removingOutputWarning + '\n' : ''}Are you sure you want to ${isRemovingFromMix ? `remove ${label} from this mix?` : `delete ${label}?`}`}
+        title={`${isRemovingFromMix ? 'Remove' : 'Delete'} ${header}${label ? ': ' + label : ''}`}
+        message={`${removingOutputWarning && removingOutputWarning.length > 0 ? removingOutputWarning + '\n' : ''}Are you sure you want to ${isRemovingFromMix ? `remove ${label} from this mix?` : `delete ${label || header}?`}`}
         confirmText={`Yes, ${isRemovingFromMix ? 'remove' : 'delete'}`}
         onConfirm={onRemove}
         onConfirmMixConfig={onRemoveFromMix}
