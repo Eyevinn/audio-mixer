@@ -217,15 +217,6 @@ export const BaseStrip = ({
           <div
             className={`flex flex-col space-y-4 w-full items-center ${isScreenSmall ? 'scale-90 mb-[-20px]' : ''}`}
           >
-            {isOutputStrip && !isPFLInput && handleOutputChange && (
-              <StripDropdown
-                options={['pre_fader', 'post_fader']}
-                value={output?.input.origin || 'post_fader'}
-                onChange={(origin) =>
-                  handleOutputChange(stripId, 'origin', origin)
-                }
-              />
-            )}
             <div className="flex flex-row items-center justify-center space-x-8">
               {!isScreenTall && isOutputStrip && renderPanningAndActions()}
 

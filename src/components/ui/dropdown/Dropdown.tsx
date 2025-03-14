@@ -6,6 +6,7 @@ type TStripDropdownProps = {
   isStereo?: boolean | undefined;
   dropdownType?: 'settings';
   msStereo?: boolean;
+  isOutputStrip?: boolean;
   onChange: (input: string) => void;
 };
 
@@ -17,6 +18,7 @@ export const StripDropdown = ({
   isStereo,
   dropdownType,
   msStereo,
+  isOutputStrip,
   onChange
 }: TStripDropdownProps) => {
   return (
@@ -53,6 +55,7 @@ export const StripDropdown = ({
           dropdownType !== 'settings'
             ? `
               rounded
+              ${isOutputStrip ? 'bg-modal-bg border-2 border-border-bg text-white px-4 py-2 rounded-lg' : ''}
               ${type ? 'w-fit' : 'w-full'}
               ${hidden ? 'text-strip-bg bg-strip-bg cursor-grab' : 'bg-input-field text-black cursor-pointer'}
               ${msStereo ? 'text-xs px-1 py-[5px]' : 'text-sm px-2 py-1'}

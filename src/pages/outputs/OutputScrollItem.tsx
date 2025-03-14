@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { OutputStrip } from '../../components/strips/outputStrip/OutputStrip';
 import Checkbox from '../../components/ui/checkbox/Checkbox';
+import { StripDropdown } from '../../components/ui/dropdown/Dropdown';
 import { Select } from '../../components/ui/select/Select';
 import { useGlobalState } from '../../context/GlobalStateContext';
 import { useWebSocket } from '../../context/WebSocketContext';
@@ -30,7 +31,7 @@ export const OutputScrollItem = ({
   const [ebuMetersEnabled, setEbuMetersEnabled] = useState<boolean>(
     output.meters.enable_ebu_meters
   );
-  const { mixes, strips } = useGlobalState();
+  const { mixes, strips, setMixes, setStrips } = useGlobalState();
   const { sendMessage } = useWebSocket();
   const hasRemovedInputRef = useRef<boolean>(false);
 
@@ -105,16 +106,26 @@ export const OutputScrollItem = ({
     }
   }, [output, outputName, mixes, strips, sendMessage]);
 
+  const handleOriginChange = (origin: string) => {
+    sendMessage({
+      type: 'set',
+      resource: `/audio/outputs/${outputName}/input`,
+      body: { origin: origin }
+    });
+  };
+
   return (
     <div
       ref={ref}
       key={outputName}
       className="flex flex-col space-y-4 items-center border-2 border-modal-bg py-2 px-4 rounded-lg"
     >
-      <div className="flex flex-row space-x-2 items-center">
+      <div
+        className={`flex flex-row space-x-2 ${output.input.index === 1000 ? '' : 'items-center'}`}
+      >
         <span>{outputName}</span>
         {output.input.index === 1000 || outputName === 'pfl' ? (
-          <div className="h-20" />
+          <div className="h-36" />
         ) : (
           <Select
             isOutputPage={true}
@@ -131,6 +142,15 @@ export const OutputScrollItem = ({
           />
         )}
       </div>
+
+      {output.input.index !== 1000 && output.input.index !== 0 && (
+        <StripDropdown
+          value={output.input.origin}
+          onChange={(origin) => handleOriginChange(origin)}
+          isOutputStrip={true}
+          options={['pre_fader', 'post_fader']}
+        />
+      )}
 
       {output.input.index !== 1000 && output.input.index !== 0 && (
         <Checkbox
