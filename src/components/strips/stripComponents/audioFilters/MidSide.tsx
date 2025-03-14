@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { StripDropdown } from '../../../ui/dropdown/Dropdown';
 import { EffectsSlider } from './EffectsSlider';
 import styles from './filterComponents.module.css';
 import { TMidSide } from '../../../../types/types';
+import Checkbox from '../../../ui/checkbox/Checkbox';
 
 type TMidSideProps = {
   midSide: TMidSide;
@@ -28,38 +28,21 @@ export const MidSide = ({ midSide, handleEffectChange }: TMidSideProps) => {
     <section className={styles.settingsItem}>
       <h2 className="text-base font-bold mb-2">MS Stereo</h2>
       <div className="mb-2 ml-2">
-        <div className="flex items-center mb-2">
-          <input
-            type="checkbox"
-            id="ms_stereo_swap"
-            className="mr-2 h-4 w-4"
-            onChange={(e) => {
-              handleEffectChange(
-                'mid_side',
-                'invert_polarity',
-                e.target.checked
-              );
-            }}
-            checked={midSide.invert_polarity}
-          />
-          <label htmlFor="ms_stereo_swap" className="text-sm">
-            Invert Polarity
-          </label>
-        </div>
-
-        <StripDropdown
-          type="Input Mode"
-          options={['Left-Right', 'Mid-Side']}
-          value={
-            midSide.input_format === 'ms_stereo' ? 'Mid-Side' : 'Left-Right'
-          }
-          dropdownType="settings"
-          onChange={(mode) => {
-            handleEffectChange(
-              'mid_side',
-              'input_format',
-              mode === 'mid-side' ? 'ms_stereo' : 'lr_stereo'
-            );
+        <Checkbox
+          label="Enable MS Stereo"
+          type="filter-settings"
+          checked={midSide.enabled}
+          disabled={midSide.input_format === 'ms_stereo' && midSide.enabled}
+          onChange={(checked) => {
+            handleEffectChange('mid_side', 'enabled', checked);
+          }}
+        />
+        <Checkbox
+          label="Invert Polarity"
+          type="filter-settings"
+          checked={midSide.invert_polarity}
+          onChange={(checked) => {
+            handleEffectChange('mid_side', 'invert_polarity', checked);
           }}
         />
 

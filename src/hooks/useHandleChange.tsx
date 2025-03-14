@@ -45,13 +45,40 @@ export const useHandleChange = () => {
         )
       );
     } else if (type === 'strips') {
-      setStrips(
-        strips.map((strip) =>
-          strip.stripId === stripIdToUse
-            ? { ...strip, [property]: value }
-            : strip
-        )
-      );
+      if (property === 'mid_side') {
+        setStrips(
+          strips.map((strip) =>
+            strip.stripId === stripIdToUse &&
+            strip.filters &&
+            strip.filters.mid_side
+              ? {
+                  ...strip,
+                  input: {
+                    ...strip.input,
+                    is_stereo: value !== 'mono'
+                  },
+                  filters: {
+                    ...strip.filters,
+                    mid_side: {
+                      ...strip.filters.mid_side,
+                      enabled: value === 'm/s_stereo',
+                      input_format:
+                        value === 'm/s_stereo' ? 'ms_stereo' : 'lr_stereo'
+                    }
+                  }
+                }
+              : strip
+          )
+        );
+      } else {
+        setStrips(
+          strips.map((strip) =>
+            strip.stripId === stripIdToUse
+              ? { ...strip, [property]: value }
+              : strip
+          )
+        );
+      }
     }
 
     // If the value is undefined, do not send the message.
@@ -75,6 +102,33 @@ export const useHandleChange = () => {
         resource: `/audio/strips/${stripId}/input`,
         body: { [property]: value }
       });
+    } else if (property === 'mid_side') {
+      if (value === 'mono') {
+        sendMessage({
+          type: 'set',
+          resource: `/audio/strips/${stripId}/filters/mid_side`,
+          body: { enabled: false }
+        });
+        sendMessage({
+          type: 'set',
+          resource: `/audio/strips/${stripId}/input`,
+          body: { is_stereo: false }
+        });
+      } else {
+        sendMessage({
+          type: 'set',
+          resource: `/audio/strips/${stripId}/filters/mid_side`,
+          body: {
+            enabled: value === 'm/s_stereo',
+            input_format: value === 'm/s_stereo' ? 'ms_stereo' : 'lr_stereo'
+          }
+        });
+        sendMessage({
+          type: 'set',
+          resource: `/audio/strips/${stripId}/input`,
+          body: { is_stereo: true }
+        });
+      }
     } else if (!configId && (property === 'volume' || property === 'muted')) {
       sendMessage({
         type: 'set',

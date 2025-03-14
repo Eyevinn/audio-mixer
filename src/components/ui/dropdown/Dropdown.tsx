@@ -6,6 +6,7 @@ type TStripDropdownProps = {
   isStereo?: boolean | undefined;
   dropdownType?: 'settings';
   msStereo?: boolean;
+  disabled?: boolean;
   isOutputStrip?: boolean;
   onChange: (input: string) => void;
 };
@@ -18,19 +19,23 @@ export const StripDropdown = ({
   isStereo,
   dropdownType,
   msStereo,
+  disabled,
   isOutputStrip,
   onChange
 }: TStripDropdownProps) => {
   return (
     <div
-      className={
-        dropdownType !== 'settings'
-          ? `
+      className={`
+        ${disabled ? 'pointer-events-none' : ''}
+        ${
+          dropdownType !== 'settings'
+            ? `
             flex justify-between items-center px-4 py-1 w-full
             ${msStereo || !isStereo ? 'text-xs' : 'text-sm'}
           `
-          : 'mb-2 text-sm'
-      }
+            : 'mb-2 text-sm'
+        }
+      `}
     >
       {type && (
         <label
@@ -39,7 +44,7 @@ export const StripDropdown = ({
             dropdownType !== 'settings'
               ? hidden
                 ? 'text-strip-bg'
-                : 'text-white pr-4'
+                : 'text-white pr-1'
               : 'w-[150px] inline-block'
           }
         >
@@ -50,7 +55,6 @@ export const StripDropdown = ({
         id={type}
         value={value.toLowerCase()}
         onChange={(e) => onChange(e.target.value)}
-        disabled={isStereo !== undefined ? !isStereo : false}
         className={
           dropdownType !== 'settings'
             ? `
@@ -67,10 +71,14 @@ export const StripDropdown = ({
           <option key={option} value={option.toLowerCase()}>
             {option
               .split('_')
-              .map(
-                (word) =>
+              .map((word) => {
+                if (word.toLowerCase() === 'm/s') {
+                  return 'M/S';
+                }
+                return (
                   word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-              )
+                );
+              })
               .join(' ')}
           </option>
         ))}
