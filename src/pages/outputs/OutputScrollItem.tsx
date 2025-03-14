@@ -31,7 +31,7 @@ export const OutputScrollItem = ({
   const [ebuMetersEnabled, setEbuMetersEnabled] = useState<boolean>(
     output.meters.enable_ebu_meters
   );
-  const { mixes, strips, setMixes, setStrips } = useGlobalState();
+  const { mixes, strips } = useGlobalState();
   const { sendMessage } = useWebSocket();
   const hasRemovedInputRef = useRef<boolean>(false);
 
