@@ -19,7 +19,7 @@ export const ModeSelect = ({
 }: TMSStereoProps) => {
   const renderMSValue = () => {
     if (isStereo) {
-      if (filters.enabled) {
+      if (filters.enabled && filters.input_format === 'ms_stereo') {
         return 'm/s_stereo';
       } else {
         return 'stereo';
