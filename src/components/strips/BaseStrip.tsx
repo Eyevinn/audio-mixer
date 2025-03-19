@@ -157,8 +157,8 @@ export const BaseStrip = ({
           isOutputStrip
             ? output?.label || ''
             : label === ''
-              ? stripLabel
-              : label
+              ? stripLabel || ''
+              : label || ''
         }
         isPFLInput={isPFLInput}
         readOnly={isPFLInput}
