@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useHandleChange } from '../../../hooks/useHandleChange';
 import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { StripInput } from '../../ui/input/Input';
@@ -26,6 +27,43 @@ export const StripFields = ({
   msStereoProps
 }: TStripFieldsProps) => {
   const { handleChange } = useHandleChange();
+  const [inputSlot, setInputSlot] = useState<string>('');
+  const [firstChannel, setFirstChannel] = useState<string>('');
+  const [secondChannel, setSecondChannel] = useState<string>('');
+
+  useEffect(() => {
+    setInputSlot(slot);
+  }, [slot]);
+
+  useEffect(() => {
+    setFirstChannel(channel1 !== undefined ? (channel1 + 1).toString() : '');
+  }, [channel1]);
+
+  useEffect(() => {
+    setSecondChannel(channel2 !== undefined ? (channel2 + 1).toString() : '');
+  }, [channel2]);
+
+  const handleInputSlotChange = (val: string) => {
+    if (Number(val) >= 0) {
+      setInputSlot(val);
+      handleChange(
+        'strips',
+        stripId,
+        'input_slot',
+        val !== '' ? parseInt(val, 10) : ''
+      );
+    }
+  };
+
+  const handleFirstChannelChange = (val: string) => {
+    setFirstChannel(val);
+    handleChange('strips', stripId, 'first_channel', parseInt(val, 10) - 1);
+  };
+
+  const handleSecondChannelChange = (val: string) => {
+    setSecondChannel(val);
+    handleChange('strips', stripId, 'second_channel', parseInt(val, 10) - 1);
+  };
 
   const renderChannelLabel = (
     mode: 'stereo' | 'mono' | 'ms-stereo',
@@ -45,15 +83,8 @@ export const StripFields = ({
       {/* Slot Input */}
       <StripInput
         type="Slot"
-        value={slot !== undefined ? slot.toString() : ''}
-        onChange={(slot: string) =>
-          handleChange(
-            'strips',
-            stripId,
-            'input_slot',
-            slot !== '' ? parseInt(slot, 10) : ''
-          )
-        }
+        value={inputSlot}
+        onChange={handleInputSlotChange}
       />
 
       {/* Mode Select */}
@@ -71,15 +102,8 @@ export const StripFields = ({
           'first'
         )}
         options={channelOptions}
-        value={channel1 !== undefined ? (channel1 + 1).toString() : ''}
-        onChange={(channel1) =>
-          handleChange(
-            'strips',
-            stripId,
-            'first_channel',
-            parseInt(channel1, 10) - 1
-          )
-        }
+        value={firstChannel}
+        onChange={handleFirstChannelChange}
       />
 
       {/* Right Ch Select */}
@@ -89,15 +113,8 @@ export const StripFields = ({
           'second'
         )}
         options={channelOptions}
-        value={channel2 !== undefined ? (channel2 + 1).toString() : ''}
-        onChange={(channel2) =>
-          handleChange(
-            'strips',
-            stripId,
-            'second_channel',
-            parseInt(channel2, 10) - 1
-          )
-        }
+        value={secondChannel}
+        onChange={handleSecondChannelChange}
         disabled={!isStereo}
         hidden={!isStereo}
       />

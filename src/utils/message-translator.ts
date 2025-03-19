@@ -92,6 +92,7 @@ const messageTranslator = (
   if (!message || !sendMessage || !setStrips) return;
   try {
     const data = JSON.parse(message);
+    if (data.actor === 'self') return;
     logger.data(
       data.type,
       data.resource || data.event,
