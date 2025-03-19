@@ -28,9 +28,7 @@ export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
   }, [inputValue]);
 
   const onChangeHandler = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = parseInt(e.target.value);
-
+    (newValue: number) => {
       // Update local state immediately for smooth visual feedback
       setLocalValue(newValue);
 
@@ -43,7 +41,7 @@ export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
   return (
     <div className="relative w-[80px] h-[50px] mb-3">
       <PanningLegend />
-      <SetValueButtons onChange={onChange} />
+      <SetValueButtons onChange={onChangeHandler} />
       <input
         type="range"
         className="absolute w-[80px] h-[5px] left-[2px] bg-[#d3d3d3] outline-none
@@ -56,7 +54,7 @@ export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
         onMouseDown={(e) => {
           e.stopPropagation();
         }}
-        onChange={onChangeHandler}
+        onChange={(e) => onChangeHandler(parseInt(e.target.value))}
       />
     </div>
   );
