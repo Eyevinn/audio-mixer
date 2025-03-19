@@ -2,4 +2,4 @@ services:
   audio-mixer:
     build: .
     ports:
-      - 9000:9000
+      - 3000:3000

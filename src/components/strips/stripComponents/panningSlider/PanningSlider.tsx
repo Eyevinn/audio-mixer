@@ -9,7 +9,7 @@ type PanningSliderProps = {
 };
 
 export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
-  const [localValue, setLocalValue] = useState(inputValue);
+  const [localValue, setLocalValue] = useState(inputValue || 0);
 
   // Throttle WebSocket updates
   const throttledPanningChange = useMemo(
@@ -22,7 +22,7 @@ export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
 
   // Update local value when input changes from outside
   useEffect(() => {
-    if (typeof inputValue === 'number') {
+    if (typeof inputValue === 'number' && !isNaN(inputValue)) {
       setLocalValue(inputValue);
     }
   }, [inputValue]);

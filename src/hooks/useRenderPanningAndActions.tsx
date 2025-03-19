@@ -56,7 +56,7 @@ export const useRenderPanningAndActions = (
       <div className="flex flex-col">
         {/* Panning Slider */}
         <PanningSlider
-          inputValue={panningValToPos(filters ? filters.pan.value : 0)}
+          inputValue={panningValToPos(filters ? filters.pan?.value : 0)}
           onChange={(panning) =>
             handleChange(
               type,

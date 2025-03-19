@@ -30,13 +30,13 @@ export const AudioStrip: React.FC<AudioStripProps> = (props) => {
     >
       <StripFields
         slot={
-          props.input.input_slot !== undefined
-            ? props.input.input_slot.toString()
+          props.input?.input_slot !== undefined
+            ? props.input?.input_slot.toString()
             : ''
         }
-        isStereo={props.input.is_stereo}
-        channel1={props.input.first_channel}
-        channel2={props.input.second_channel}
+        isStereo={props.input?.is_stereo}
+        channel1={props.input?.first_channel}
+        channel2={props.input?.second_channel}
         stripId={props.stripId}
         msStereoProps={{
           enabled: props.filters?.mid_side?.enabled ?? false,
