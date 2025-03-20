@@ -191,7 +191,11 @@ const uploadFromFile = (
       });
     }
 
-    sendMessage(requests);
+    let empty = requests.length === 0;
+    while (!empty) {
+      sendMessage(requests.splice(0, 100));
+      empty = requests.length === 0;
+    }
     subscribe(sendMessage);
   };
   reader.readAsText(file);
