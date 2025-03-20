@@ -3,6 +3,7 @@ import React, {
   FC,
   ReactNode,
   useContext,
+  useEffect,
   useState
 } from 'react';
 import { TAudioStrip, TMixStrip, TOutput } from '../types/types';
@@ -27,6 +28,7 @@ export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
   const [mixes, setMixes] = useState<TMixStrip[]>([]);
   const [outputs, setOutputs] = useState<{ [key: string]: TOutput }>({});
   const [errorMessage, setErrorMessage] = useState<string>('');
+
   return (
     <GlobalStateContext.Provider
       value={{

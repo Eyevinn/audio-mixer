@@ -1,3 +1,4 @@
+import PFLButton from '../components/strips/stripComponents/buttons/PFLButton';
 import { PanningSlider } from '../components/strips/stripComponents/panningSlider/PanningSlider';
 import { ActionButton } from '../components/ui/buttons/Buttons';
 import { useWebSocket } from '../context/WebSocketContext';
@@ -68,7 +69,7 @@ export const useRenderPanningAndActions = (
           }
         />
         <div className="flex flex-col justify-end">
-          {['SELECT', 'PFL', 'MUTE'].map((label, index) => (
+          {['SELECT', 'MUTE'].map((label, index) => (
             <ActionButton
               key={index}
               label={label}
@@ -79,9 +80,6 @@ export const useRenderPanningAndActions = (
                   case 'SELECT':
                     handleSelection();
                     break;
-                  case 'PFL':
-                    handlePFLChange(!isPFLInactive);
-                    break;
                   case 'MUTE':
                     handleChange(type, stripId, 'muted', !fader?.muted, config);
                     break;
@@ -89,6 +87,7 @@ export const useRenderPanningAndActions = (
               }}
             />
           ))}
+          <PFLButton type={type} id={stripId} />
         </div>
       </div>
     );
