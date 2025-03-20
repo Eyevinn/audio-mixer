@@ -191,10 +191,8 @@ const uploadFromFile = (
       });
     }
 
-    let empty = requests.length === 0;
-    while (!empty) {
+    while (requests.length !== 0) {
       sendMessage(requests.splice(0, 100));
-      empty = requests.length === 0;
     }
     subscribe(sendMessage);
   };
