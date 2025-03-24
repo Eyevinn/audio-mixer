@@ -219,9 +219,12 @@ export const BaseStrip = ({
                   output && output.input.origin === 'pre_fader' && !isPFLInput
                 }
                 inputVolume={configMode ? sendLevels?.volume : fader?.volume}
-                onVolumeChange={(vol: number) =>
-                  handleChange(type, stripId, 'volume', vol, config)
-                }
+                type={type}
+                id={stripId}
+                config={config}
+                // onVolumeChange={(vol: number) =>
+                //   handleChange(type, stripId, 'volume', vol, config)
+                // }
               />
             </div>
 

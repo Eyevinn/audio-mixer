@@ -2,22 +2,32 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { PanningLegend } from '../../../../assets/icons/PanningLegend';
 import debounce from 'lodash/debounce';
 import { SetValueButtons } from './SetValueButtons';
+import { useHandleChange } from '../../../../hooks/useHandleChange';
 
 type PanningSliderProps = {
   inputValue: number;
-  onChange: (panning: number) => void;
+  type: 'strips' | 'mixes';
+  id: number;
+  config?: number;
 };
 
-export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
+export const PanningSlider = ({
+  inputValue,
+  type,
+  id,
+  config
+}: PanningSliderProps) => {
   const [localValue, setLocalValue] = useState(inputValue || 0);
+  const panningPosToVal = (pos: number): number => pos / 64 - 1.0;
+  const { handleChange } = useHandleChange();
 
   // Throttle WebSocket updates
   const throttledPanningChange = useMemo(
     () =>
       debounce((value: number) => {
-        onChange(value);
+        handleChange(type, id, 'panning', panningPosToVal(value), config);
       }, 500),
-    [onChange]
+    [handleChange, type, id, config]
   );
 
   // Update local value when input changes from outside
