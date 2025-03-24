@@ -2,12 +2,10 @@ import React from 'react';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { WebSocketDialog } from './WebSocketDialog';
 import { usePFLMixManager } from '../../hooks/usePFLMixManager';
-import { usePFLDefaultReset } from '../../hooks/usePFLDefaultReset';
 
 export const WebSocketLogOn = ({ children }: { children: React.ReactNode }) => {
   const { isConnected } = useWebSocket();
   usePFLMixManager();
-  usePFLDefaultReset();
 
   return (
     <div className="text-white text-2xl ">

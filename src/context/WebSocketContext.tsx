@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
 import toast from 'react-hot-toast';
 import { AudioState } from '../types/types';
 import logger from '../utils/logger';
@@ -6,6 +12,7 @@ import messageTranslator from '../utils/message-translator';
 import { showError, showInfo } from '../utils/notifications';
 import { useGlobalState } from './GlobalStateContext';
 import { useSamplingData } from './SamplingDataContext';
+import { getMixByIndex, getStripByIndex, subscribe } from '../utils/wsCommands';
 
 interface WebSocketContextType {
   wsUrl: string;
@@ -36,30 +43,33 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const [wsUrl, setWsUrl] = useState<string>('');
   const [connectionFailed, setConnectionFailed] = useState<boolean>(false);
 
-  function sendMessage(
-    this: WebSocket,
-    message: Record<string, unknown> | Record<string, unknown>[]
-  ) {
-    if (!this && !ws) {
-      toast.error('Websocket is not connected', {
-        duration: 3000,
-        position: 'bottom-right'
-      });
-      return;
-    }
+  const sendMessage = useCallback(
+    (
+      message: Record<string, unknown> | Record<string, unknown>[],
+      websocket?: WebSocket
+    ) => {
+      if (!websocket && !ws) {
+        toast.error('Websocket is not connected', {
+          duration: 3000,
+          position: 'bottom-right'
+        });
+        return;
+      }
 
-    if ((this || ws).readyState !== WebSocket.OPEN) {
-      toast.error('Websocket lost connection', {
-        duration: 3000,
-        position: 'bottom-right'
-      });
-      setIsConnected(false);
-      return;
-    }
+      if ((websocket || ws)?.readyState !== WebSocket.OPEN) {
+        toast.error('Websocket lost connection', {
+          duration: 3000,
+          position: 'bottom-right'
+        });
+        setIsConnected(false);
+        return;
+      }
 
-    const messageString = JSON.stringify(message);
-    (this || ws).send(messageString);
-  }
+      const messageString = JSON.stringify(message);
+      (websocket || ws)?.send(messageString);
+    },
+    [ws]
+  );
 
   const connect = (address: string) => {
     try {
@@ -88,9 +98,15 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
             logger.data(jsonData.type, jsonData.resource, jsonData.body);
             setAudioState(jsonData);
           } else {
+            // TODO Cleanup
+            const wrappedSendMessage = (
+              msg: Record<string, unknown> | Record<string, unknown>[]
+            ) => sendMessage(msg, websocket);
             messageTranslator(
               event.data,
-              sendMessage.bind(websocket),
+              () => subscribe(wrappedSendMessage),
+              (index: number) => getStripByIndex(wrappedSendMessage, index),
+              (index: number) => getMixByIndex(wrappedSendMessage, index),
               setStrips,
               setMixes,
               setOutputs,

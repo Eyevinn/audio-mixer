@@ -22,44 +22,47 @@ const devLoggerLevel = Number(process.env.REACT_APP_DEV_LOGGER_LEVEL) || 3;
 const loggerLevel =
   env === 'production' ? productionLoggerLevel : devLoggerLevel;
 
+type MsgType = string | number | object | null | boolean | undefined;
+
 class Logger {
-  log(colorCode: string, msg: string) {
-    if (loggerLevel > 0) console.log(`\x1b[${colorCode}m${msg}\x1b[0m`);
+  log(colorCode: string, msg: MsgType) {
+    if (loggerLevel > 0)
+      console.log(`\x1b[${colorCode}m${JSON.stringify(msg)}\x1b[0m`);
   }
 
-  black(msg: string) {
+  black(msg: MsgType) {
     if (loggerLevel > 1) this.log(Colors.black, msg);
   }
 
-  red(msg: string) {
+  red(msg: MsgType) {
     if (loggerLevel > 1) this.log(Colors.red, msg);
   }
 
-  green(msg: string) {
+  green(msg: MsgType) {
     if (loggerLevel > 1) this.log(Colors.green, msg);
   }
 
-  yellow(msg: string) {
+  yellow(msg: MsgType) {
     if (loggerLevel > 1) this.log(Colors.yellow, msg);
   }
 
-  blue(msg: string) {
+  blue(msg: MsgType) {
     if (loggerLevel > 1) this.log(Colors.blue, msg);
   }
 
-  magenta(msg: string) {
+  magenta(msg: MsgType) {
     if (loggerLevel > 1) this.log(Colors.magenta, msg);
   }
 
-  cyan(msg: string) {
+  cyan(msg: MsgType) {
     if (loggerLevel > 1) this.log(Colors.cyan, msg);
   }
 
-  white(msg: string) {
+  white(msg: MsgType) {
     if (loggerLevel > 1) this.log(Colors.white, msg);
   }
 
-  data(msgType: string, msgResource: string, msg: string) {
+  data(msgType: string, msgResource: string, msg: MsgType) {
     if (loggerLevel > 2) {
       let massagedMsgResource: string = msgResource;
       if (msgResource?.slice(0, 1) === '/') {

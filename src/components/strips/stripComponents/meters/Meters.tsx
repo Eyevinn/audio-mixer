@@ -62,8 +62,8 @@ export const Meters = ({
         });
       } else if (type) {
         const data = ['mixes', 'mix'].includes(type)
-          ? mixesSamplingData[id]
-          : stripsSamplingData[id];
+          ? mixesSamplingData?.[id]
+          : stripsSamplingData?.[id];
         setCurrentData({
           left: data?.pre_fader_meter?.peak_left,
           right: data?.pre_fader_meter?.peak_right

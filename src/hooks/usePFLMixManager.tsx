@@ -7,6 +7,7 @@ import {
   addMixToMix,
   addStripToMix
 } from '../utils/wsCommands';
+import logger from '../utils/logger';
 
 export const usePFLMixManager = () => {
   const { mixes, strips } = useGlobalState();
@@ -55,6 +56,15 @@ export const usePFLMixManager = () => {
     (isAlreadyInPFL: boolean, id: number) => {
       if (!isAlreadyInPFL) {
         addStripToMix(sendMessage, 1000, id);
+        sendMessage({
+          type: 'set',
+          resource: `/audio/mixes/1000/inputs/strips/${id}`,
+          body: {
+            muted: true,
+            origin: 'pre_fader',
+            volume: 1
+          }
+        });
       }
     },
     [sendMessage]
@@ -82,6 +92,15 @@ export const usePFLMixManager = () => {
     (isAlreadyInPFL: boolean, id: number) => {
       if (!isAlreadyInPFL) {
         addMixToMix(sendMessage, 1000, id);
+        sendMessage({
+          type: 'set',
+          resource: `/audio/mixes/1000/inputs/mixes/${id}`,
+          body: {
+            muted: true,
+            origin: 'pre_fader',
+            volume: 1
+          }
+        });
       }
     },
     [sendMessage]

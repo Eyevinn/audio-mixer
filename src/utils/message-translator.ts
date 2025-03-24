@@ -1,3 +1,4 @@
+import { subscribe } from './wsCommands';
 import {
   OutputSamplingData,
   StripsSamplingData
@@ -5,7 +6,6 @@ import {
 import { TAudioStrip, TBaseStrip, TMixStrip, TOutput } from '../types/types';
 import deepMerge from './deep-merge';
 import logger from './logger';
-import { getMixByIndex, getStripByIndex, subscribe } from './wsCommands';
 
 //TODO rewrite these update functions
 function mapData<T extends TBaseStrip>(
@@ -85,9 +85,9 @@ function updateData<T extends TBaseStrip>(
 
 const messageTranslator = (
   message: string,
-  sendMessage: (
-    message: Record<string, unknown> | Record<string, unknown>[]
-  ) => void,
+  subscribe: () => void,
+  getStripByIndex: (index: number) => void,
+  getMixByIndex: (index: number) => void,
   setStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>,
   setMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>,
   setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: TOutput }>>,
@@ -102,7 +102,7 @@ const messageTranslator = (
     React.SetStateAction<OutputSamplingData>
   >
 ) => {
-  if (!message || !sendMessage || !setStrips) return;
+  if (!message || !setStrips) return;
   try {
     const data = JSON.parse(message);
     if (data.type !== 'sampling-update') logger.red(message);
@@ -170,7 +170,7 @@ const messageTranslator = (
 
       case 'event':
         if (data.event === 'connect') {
-          subscribe(sendMessage);
+          subscribe();
         }
         break;
 
@@ -179,10 +179,8 @@ const messageTranslator = (
         const resourceType = resourceArray[1];
         const resourceIndex = resourceArray[2];
         if (resourceType && resourceIndex) {
-          if (resourceType === 'strips')
-            getStripByIndex(sendMessage, resourceIndex);
-          else if (resourceType === 'mixes')
-            getMixByIndex(sendMessage, resourceIndex);
+          if (resourceType === 'strips') getStripByIndex(resourceIndex);
+          else if (resourceType === 'mixes') getMixByIndex(resourceIndex);
         }
         break;
       }
@@ -243,7 +241,7 @@ const messageTranslator = (
         break;
       case 'sampling-update':
         if (data.resource === '/audio/strips/*/pre_fader_meter/*') {
-          setStripsSamplingData(data.body.audio.strips);
+          setStripsSamplingData(data.body.audio?.strips);
           // const dataStrips = data.body.audio?.strips || {};
           // Object.entries(dataStrips).forEach(([stripId, stripData]) => {
           //   const typedStripData = stripData as {
@@ -269,7 +267,7 @@ const messageTranslator = (
           // });
         }
         if (data.resource === '/audio/mixes/*/pre_fader_meter/*') {
-          setMixesSamplingData(data.body.audio.mixes);
+          setMixesSamplingData(data.body.audio?.mixes);
           // const dataMixes = data.body.audio?.mixes || {};
           // Object.entries(dataMixes).forEach(([mixId, mixData]) => {
           //   const typedMixData = mixData as {
@@ -295,7 +293,7 @@ const messageTranslator = (
           // });
         }
         if (data.resource === '/audio/outputs/*/meters/*') {
-          setOutputsSamplingData(data.body.audio.outputs);
+          setOutputsSamplingData(data.body.audio?.outputs);
           // const dataOutputs = data.body.audio?.outputs || {};
           // Object.entries(dataOutputs).forEach(([outputName, outputData]) => {
           //   const typedOutputData = outputData as {

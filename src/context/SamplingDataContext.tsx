@@ -5,6 +5,7 @@ import React, {
   useContext,
   useState
 } from 'react';
+import logger from '../utils/logger';
 
 interface PreFaderMeters {
   peak_left: number;

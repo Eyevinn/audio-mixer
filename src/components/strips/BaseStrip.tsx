@@ -55,13 +55,11 @@ export const BaseStrip = ({
   filters,
   input,
   output,
-  pre_fader_meter,
   backgroundColor,
   header,
   copyButton,
   config,
   sendLevels,
-  isPFLInactive,
   isOutputStrip,
   onReset,
   onRemove,
@@ -89,8 +87,6 @@ export const BaseStrip = ({
 
   const isPFLInput =
     output?.input.index === 1000 && output?.input.source === 'mix';
-  const showEbuMeters =
-    isOutputStrip && output && output.meters.enable_ebu_meters && onReset;
   const type = header.includes('Mix') ? 'mixes' : 'strips';
 
   const { renderPanningAndActions } = useRenderPanningAndActions(
@@ -100,7 +96,6 @@ export const BaseStrip = ({
     configMode,
     handleSelection,
     selected,
-    isPFLInactive,
     fader,
     filters,
     config
