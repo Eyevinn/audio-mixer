@@ -21,16 +21,14 @@ export interface TOutputScrollItem {
 }
 
 export const OutputScrollItem = ({
-  output,
+  output: outputProp,
   outputName,
   isPFLInactive,
   ref,
   onSelect
 }: TOutputScrollItem) => {
+  const [output, setOutput] = useState<TOutput>(outputProp);
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
-  const [ebuMetersEnabled, setEbuMetersEnabled] = useState<boolean>(
-    output.meters.enable_ebu_meters
-  );
   const { mixes, strips } = useGlobalState();
   const { sendMessage } = useWebSocket();
   const hasRemovedInputRef = useRef<boolean>(false);
@@ -54,6 +52,14 @@ export const OutputScrollItem = ({
   ) => {
     const isMix = selectedInput.inputs !== undefined;
 
+    setOutput({
+      ...output,
+      input: {
+        ...output.input,
+        source: isMix ? 'mix' : 'strip',
+        index: selectedInput.stripId
+      }
+    });
     addInputToOutput(
       sendMessage,
       outputName,
@@ -106,7 +112,14 @@ export const OutputScrollItem = ({
     }
   }, [output, outputName, mixes, strips, sendMessage]);
 
-  const handleOriginChange = (origin: string) => {
+  const handleOriginChange = (origin: 'pre_fader' | 'post_fader') => {
+    setOutput({
+      ...output,
+      input: {
+        ...output.input,
+        origin: origin
+      }
+    });
     sendMessage({
       type: 'set',
       resource: `/audio/outputs/${outputName}/input`,
@@ -146,7 +159,9 @@ export const OutputScrollItem = ({
       {output.input.index !== 1000 && output.input.index !== 0 && (
         <StripDropdown
           value={output.input.origin}
-          onChange={(origin) => handleOriginChange(origin)}
+          onChange={(origin) =>
+            handleOriginChange(origin as 'pre_fader' | 'post_fader')
+          }
           isOutputStrip={true}
           options={['pre_fader', 'post_fader']}
         />
@@ -155,10 +170,16 @@ export const OutputScrollItem = ({
       {output.input.index !== 1000 && output.input.index !== 0 && (
         <Checkbox
           label="Enable EBU meters for output"
-          checked={ebuMetersEnabled}
+          checked={!!output?.meters?.enable_ebu_meters}
           onChange={() => {
-            const newValue = !ebuMetersEnabled;
-            setEbuMetersEnabled(newValue);
+            const newValue = !output?.meters?.enable_ebu_meters;
+            setOutput({
+              ...output,
+              meters: {
+                ...output.meters,
+                enable_ebu_meters: newValue
+              }
+            });
             enableEbuMeters(sendMessage, outputName, newValue);
           }}
         />

@@ -5,7 +5,6 @@ import React, {
   useContext,
   useState
 } from 'react';
-import logger from '../utils/logger';
 
 interface PreFaderMeters {
   peak_left: number;
@@ -19,7 +18,6 @@ export interface StripsSamplingData {
 }
 
 interface OutputMeters extends PreFaderMeters {
-  enable_ebu_meter: boolean;
   ebu_i: number;
   ebu_m: number;
   ebu_s: number;

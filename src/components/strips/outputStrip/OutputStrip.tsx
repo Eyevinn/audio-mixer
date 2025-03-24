@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGlobalState } from '../../../context/GlobalStateContext';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { TOutputStrip } from '../../../types/types';
@@ -6,7 +6,7 @@ import { resetOutputMeters } from '../../../utils/wsCommands';
 import { BaseStrip } from '../BaseStrip';
 import { OutputFields } from './OutputFields';
 
-interface TOutputStripProps extends TOutputStrip {
+export interface TOutputStripProps extends TOutputStrip {
   outputName: string;
   backgroundColor: string;
   stripId: number;
@@ -18,6 +18,11 @@ interface TOutputStripProps extends TOutputStrip {
 export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
   const { sendMessage } = useWebSocket();
   const { mixes, strips, setMixes, setStrips } = useGlobalState();
+  const [localLabel, setLocalLabel] = useState<string>(props.label);
+
+  useEffect(() => {
+    setLocalLabel(props.label);
+  }, [props.label, setLocalLabel]);
 
   const originMix = mixes.find((mix) => mix.stripId === props.input.index);
   const originStrip = strips.find(
@@ -64,6 +69,7 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
     if (value === undefined) return;
 
     if (property === 'label') {
+      setLocalLabel(value.toString());
       sendMessage({
         type: 'set',
         resource: `/audio/outputs/${props.outputName}`,
@@ -94,7 +100,7 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
     <BaseStrip
       {...(props.input.source === 'mix' ? originMix : originStrip)}
       isOutputStrip={true}
-      label={props.label}
+      label={localLabel}
       output={props}
       backgroundColor={props.backgroundColor}
       header={`${props.input.source === 'mix' ? 'Mix ' : 'Strip '} ${props.stripId}`}

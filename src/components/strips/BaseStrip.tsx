@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useHandleChange } from '../../hooks/useHandleChange';
 import { useRenderPanningAndActions } from '../../hooks/useRenderPanningAndActions';
-import { TAudioStrip, TBaseStrip, TMixStrip, TOutput } from '../../types/types';
+import {
+  TAudioStrip,
+  TBaseStrip,
+  TMixStrip,
+  TOutput,
+  TOutputStrip
+} from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { StripDropdown } from '../ui/dropdown/Dropdown';
 import { LabelInput } from '../ui/input/Input';
 import { Meters } from './stripComponents/meters/Meters';
 import { StripHeader } from './stripComponents/stripHeader/StripHeader';
 import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
+import { TOutputStripProps } from './outputStrip/OutputStrip';
 
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;
@@ -18,7 +25,7 @@ interface BaseStripProps extends TBaseStrip {
     is_stereo: boolean;
     second_channel: number;
   };
-  output?: TOutput;
+  output?: TOutputStripProps;
   backgroundColor: string;
   header: string;
   copyButton?: boolean;
@@ -148,13 +155,7 @@ export const BaseStrip = ({
       {/* Label Input */}
       {isOutputStrip && <span className="text-xs ml-4">Output label:</span>}
       <LabelInput
-        value={
-          isOutputStrip
-            ? output?.label || ''
-            : label === ''
-              ? stripLabel || ''
-              : label || ''
-        }
+        value={label === '' ? stripLabel || '' : label || ''}
         isPFLInput={isPFLInput}
         readOnly={isPFLInput}
         onChange={(updatedLabel) => {
@@ -180,7 +181,10 @@ export const BaseStrip = ({
           isPFLInput={isPFLInput}
           type={type}
           isOutputStrip={isOutputStrip}
-          id={isOutputStrip ? output?.label : stripId}
+          id={isOutputStrip ? output?.outputName : stripId}
+          EBUMetersAreEnabled={
+            isOutputStrip && output?.meters?.enable_ebu_meters
+          }
           input={input}
           isScreenSmall={isScreenSmall}
           renderPanningAndActions={renderPanningAndActions}
@@ -222,9 +226,6 @@ export const BaseStrip = ({
                 type={type}
                 id={stripId}
                 config={config}
-                // onVolumeChange={(vol: number) =>
-                //   handleChange(type, stripId, 'volume', vol, config)
-                // }
               />
             </div>
 

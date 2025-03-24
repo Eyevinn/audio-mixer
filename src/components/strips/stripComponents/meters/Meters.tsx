@@ -1,5 +1,4 @@
 import { JSX, useEffect, useState } from 'react';
-import { TOutput } from '../../../../types/types';
 import { EbuMeters } from '../../outputStrip/EbuMeters';
 import { ResetButton } from '../../outputStrip/ResetButton';
 import { AudioLevel } from '../audioLevel/AudioLevel';
@@ -20,6 +19,7 @@ type TMetersProps = {
   isScreenSmall: boolean;
   renderPanningAndActions: () => JSX.Element | undefined;
   onReset?: () => void;
+  EBUMetersAreEnabled?: boolean;
 };
 
 interface MetersData {
@@ -38,7 +38,8 @@ export const Meters = ({
   isOutputStrip,
   isScreenSmall,
   renderPanningAndActions,
-  onReset
+  onReset,
+  EBUMetersAreEnabled
 }: TMetersProps) => {
   const { stripsSamplingData, mixesSamplingData, outputsSamplingData } =
     useSamplingData();
@@ -46,13 +47,11 @@ export const Meters = ({
     left: 0,
     right: 0
   });
-  const [isEBUMetersEnabled, setIsEBUMetersEnabled] = useState<boolean>(false);
 
   useEffect(() => {
     if (id) {
       if (isOutputStrip) {
         const outputData = outputsSamplingData[id];
-        setIsEBUMetersEnabled(outputData?.meters?.enable_ebu_meter);
         setCurrentData({
           left: outputData?.meters?.peak_left,
           right: outputData?.meters?.peak_right,
@@ -83,7 +82,7 @@ export const Meters = ({
     <div
       className={`
         w-full flex justify-evenly
-        ${isOutputStrip && isEBUMetersEnabled ? 'flex-col items-center' : ''} 
+        ${isOutputStrip && EBUMetersAreEnabled ? 'flex-col items-center' : ''} 
         ${isScreenSmall && !isOutputStrip ? '' : 'mb-5'}
       `}
     >
@@ -101,7 +100,7 @@ export const Meters = ({
 
         {!isOutputStrip && renderPanningAndActions()}
 
-        {isEBUMetersEnabled && onReset && (
+        {EBUMetersAreEnabled && onReset && (
           <div className="flex flex-col items-center justify-center space-y-4">
             <EbuMeters
               ebu_i={currentData?.ebu_i || 0}
@@ -112,7 +111,7 @@ export const Meters = ({
           </div>
         )}
 
-        {isOutputStrip && !isEBUMetersEnabled && <div className="w-20 h-10" />}
+        {isOutputStrip && !EBUMetersAreEnabled && <div className="w-20 h-10" />}
       </div>
     </div>
   );
