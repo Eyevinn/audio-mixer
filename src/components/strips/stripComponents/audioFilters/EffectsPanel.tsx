@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { useWebSocket } from '../../../../context/WebSocketContext';
 import { TAudioStrip, TMixStrip } from '../../../../types/types';
 import Icons from '../../../../assets/icons/Icons';
@@ -6,6 +6,7 @@ import { MidSide } from './MidSide';
 import { Equalizer } from './Equalizer';
 import { Compressor } from './Compressor';
 import { Trim } from './Trim';
+import debounce from 'lodash/debounce';
 
 interface EffectsPanelProps {
   strip: TAudioStrip | TMixStrip | undefined;
@@ -36,26 +37,33 @@ export const EffectsPanel = ({
     }
   };
 
+  const handleEffectChange = useMemo(
+    () =>
+      debounce(
+        (
+          filter: string,
+          parameter: string,
+          value: number | string | boolean
+        ) => {
+          const body =
+            parameter === 'enabled'
+              ? { [parameter]: value, input_format: 'lr_stereo' }
+              : { [parameter]: value };
+
+          if (isConnected && strip) {
+            sendMessage({
+              type: 'set',
+              resource: `/audio/${type}/${strip.stripId}/filters/${filter}`,
+              body: body
+            });
+          }
+        },
+        500
+      ),
+    [isConnected, strip, type, sendMessage]
+  );
+
   if (!strip) return null;
-
-  const handleEffectChange = (
-    filter: string,
-    parameter: string,
-    value: number | string | boolean
-  ) => {
-    const body =
-      parameter === 'enabled'
-        ? { [parameter]: value, input_format: 'lr_stereo' }
-        : { [parameter]: value };
-
-    if (isConnected) {
-      sendMessage({
-        type: 'set',
-        resource: `/audio/${type}/${strip.stripId}/filters/${filter}`,
-        body: body
-      });
-    }
-  };
 
   return (
     <div className="h-full min-w-[38rem] overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg p-2 text-white scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin box-border">

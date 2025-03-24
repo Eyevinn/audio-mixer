@@ -1,18 +1,22 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ActionButton } from '../../../ui/buttons/Buttons';
 import { useHandleChange } from '../../../../hooks/useHandleChange';
 
 interface MuteButtonProps {
   type: 'strips' | 'mixes';
   id: number;
-  initMuted?: boolean;
+  muted?: boolean;
   config?: number;
 }
 
 const MuteButton: FC<MuteButtonProps> = (props) => {
-  const { type, id, initMuted, config } = props;
+  const { type, id, muted, config } = props;
   const { handleChange } = useHandleChange();
-  const [isMuted, setIsMuted] = useState<boolean>(!!initMuted);
+  const [isMuted, setIsMuted] = useState<boolean>(!!muted);
+
+  useEffect(() => {
+    setIsMuted(!!muted);
+  }, [muted]);
 
   const handleMuteChange = () => {
     setIsMuted(!isMuted);

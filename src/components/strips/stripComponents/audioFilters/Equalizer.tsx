@@ -101,6 +101,7 @@ export const Equalizer = ({
 
   useEffect(() => {
     // setTrimValue(strip?.filters?.gain.value || 0);
+    // console.log(Object.keys(strip?.filters?.eq?.bands || {}).length);
     setEqBandsArray(
       EQ_BAND_FILTERS[Object.keys(strip?.filters?.eq.bands || {}).length].array
     );

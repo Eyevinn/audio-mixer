@@ -190,24 +190,38 @@ const messageTranslator = (
         const resourceType = resourceArray[1];
         const resourceIndex = resourceArray[2];
         const resourceCommand = resourceArray[3];
-        const resourceCommandType: 'strips' | 'mixes' = resourceArray[4];
+        const resourceCommandType = resourceArray[4];
         const resourceCommandIndex = resourceArray[5];
-        if (resourceType === 'strips') {
+        const band = resourceArray[6];
+        if (resourceCommand === 'filters' && resourceCommandType === 'eq') {
+          setStrips((prevStrips) =>
+            prevStrips.map((prevStrip) => {
+              if (prevStrip.stripId.toString() === resourceIndex) {
+                const stripCopy: TAudioStrip = JSON.parse(
+                  JSON.stringify(prevStrip)
+                );
+                if (stripCopy.filters?.eq?.bands?.[band])
+                  delete stripCopy.filters?.eq?.bands?.[band];
+                return stripCopy;
+              }
+              return prevStrip;
+            })
+          );
+        } else if (resourceType === 'strips') {
           setStrips((prevStrips) =>
             prevStrips.filter(
               (prevStrip) => prevStrip.stripId.toString() !== resourceIndex
             )
           );
-        }
-        if (resourceType === 'mixes') {
+        } else if (resourceType === 'mixes') {
           if (resourceCommand === 'inputs') {
             setMixes((prevMixes: TMixStrip[]) =>
               prevMixes.map((prevMix) => {
                 if (prevMix.stripId.toString() === resourceIndex) {
                   const updatedMix = prevMix;
-                  delete updatedMix.inputs[resourceCommandType][
-                    resourceCommandIndex
-                  ];
+                  delete updatedMix.inputs[
+                    resourceCommandType as 'mixes' | 'strips'
+                  ][resourceCommandIndex];
                   return updatedMix;
                 }
                 return prevMix;

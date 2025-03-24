@@ -57,7 +57,7 @@ export const useRenderPanningAndActions = (
             <MuteButton
               type={type}
               id={stripId}
-              initMuted={fader?.muted}
+              muted={fader?.muted}
               config={config}
             />
           )}
