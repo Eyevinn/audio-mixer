@@ -9,26 +9,29 @@ import { ConfigureMixPage } from './pages/mixes/ConfigureMix';
 import { MixesPage } from './pages/mixes/Mixes';
 import { OutputMappingPage } from './pages/outputs/OutputMapping';
 import { StripsPage } from './pages/strips/Strips';
+import { SamplingDataProvider } from './context/SamplingDataContext';
 
 function App() {
   return (
     <BrowserRouter>
       <GlobalStateProvider>
-        <WebSocketProvider>
-          <WebSocketLogOn>
-            <SideNav />
-            <Routes>
-              <>
-                <Route path="/" element={<Navigate to="/strips" replace />} />
-                <Route path="/strips" element={<StripsPage />} />
-                <Route path="/mixes" element={<MixesPage />} />
-                <Route path="/mixes/:mixId" element={<ConfigureMixPage />} />
-                <Route path="/outputs" element={<OutputMappingPage />} />
-              </>
-            </Routes>
-            <ErrorToast />
-          </WebSocketLogOn>
-        </WebSocketProvider>
+        <SamplingDataProvider>
+          <WebSocketProvider>
+            <WebSocketLogOn>
+              <SideNav />
+              <Routes>
+                <>
+                  <Route path="/" element={<Navigate to="/strips" replace />} />
+                  <Route path="/strips" element={<StripsPage />} />
+                  <Route path="/mixes" element={<MixesPage />} />
+                  <Route path="/mixes/:mixId" element={<ConfigureMixPage />} />
+                  <Route path="/outputs" element={<OutputMappingPage />} />
+                </>
+              </Routes>
+              <ErrorToast />
+            </WebSocketLogOn>
+          </WebSocketProvider>
+        </SamplingDataProvider>
       </GlobalStateProvider>
     </BrowserRouter>
   );

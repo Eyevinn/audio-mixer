@@ -183,11 +183,10 @@ export const BaseStrip = ({
       >
         <Meters
           isPFLInput={isPFLInput}
-          output={output}
-          input={input}
-          pre_fader_meter={pre_fader_meter}
+          type={type}
           isOutputStrip={isOutputStrip}
-          showEbuMeters={showEbuMeters ? true : false}
+          id={isOutputStrip ? output?.label : stripId}
+          input={input}
           isScreenSmall={isScreenSmall}
           renderPanningAndActions={renderPanningAndActions}
           onReset={onReset}

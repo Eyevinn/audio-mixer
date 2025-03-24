@@ -5,6 +5,7 @@ import logger from '../utils/logger';
 import messageTranslator from '../utils/message-translator';
 import { showError, showInfo } from '../utils/notifications';
 import { useGlobalState } from './GlobalStateContext';
+import { useSamplingData } from './SamplingDataContext';
 
 interface WebSocketContextType {
   wsUrl: string;
@@ -24,6 +25,11 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
   const { setStrips, setMixes, setOutputs, setErrorMessage } = useGlobalState();
+  const {
+    setStripsSamplingData,
+    setMixesSamplingData,
+    setOutputsSamplingData
+  } = useSamplingData();
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [audioState, setAudioState] = useState<AudioState | undefined>();
@@ -88,7 +94,10 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
               setStrips,
               setMixes,
               setOutputs,
-              setErrorMessage
+              setErrorMessage,
+              setStripsSamplingData,
+              setMixesSamplingData,
+              setOutputsSamplingData
             );
           }
         } catch (error) {
