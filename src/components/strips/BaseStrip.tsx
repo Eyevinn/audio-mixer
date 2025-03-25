@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHandleChange } from '../../hooks/useHandleChange';
 import { useRenderPanningAndActions } from '../../hooks/useRenderPanningAndActions';
-import {
-  TAudioStrip,
-  TBaseStrip,
-  TMixStrip,
-  TOutput,
-  TOutputStrip
-} from '../../types/types';
+import { TAudioStrip, TBaseStrip, TMixStrip } from '../../types/types';
 import { ActionButton } from '../ui/buttons/Buttons';
 import { StripDropdown } from '../ui/dropdown/Dropdown';
 import { LabelInput } from '../ui/input/Input';
@@ -15,6 +9,8 @@ import { Meters } from './stripComponents/meters/Meters';
 import { StripHeader } from './stripComponents/stripHeader/StripHeader';
 import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
 import { TOutputStripProps } from './outputStrip/OutputStrip';
+
+type SendLevelOrigins = 'pre_fader' | 'post_fader';
 
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;
@@ -33,7 +29,7 @@ interface BaseStripProps extends TBaseStrip {
   sendLevels?: {
     muted: boolean;
     volume: number;
-    origin: 'pre_fader' | 'post_fader';
+    origin: SendLevelOrigins;
   };
   isPFLInactive: boolean | undefined;
   isOutputStrip?: boolean;
@@ -77,6 +73,9 @@ export const BaseStrip = ({
   children
 }: BaseStripProps) => {
   const [stripLabel, setStripLabel] = useState<string>(stripId.toString());
+  const [sendLevelOrigin, setSendLevelOrigin] = useState<SendLevelOrigins>(
+    sendLevels?.origin || 'pre_fader'
+  );
   const [isScreenTall, setIsScreenTall] = useState<boolean>(
     window.innerHeight > 1100
   );
@@ -107,6 +106,15 @@ export const BaseStrip = ({
     filters,
     config
   );
+
+  useEffect(() => {
+    setSendLevelOrigin(sendLevels?.origin || 'pre_fader');
+  }, [sendLevels?.origin]);
+
+  const handleSendLevelOrigin = (val: string) => {
+    setSendLevelOrigin(val as SendLevelOrigins);
+    handleChange(type, stripId, 'origin', val, config);
+  };
 
   const { handleChange } = useHandleChange();
 
@@ -204,10 +212,8 @@ export const BaseStrip = ({
           {configMode && (
             <StripDropdown
               options={['pre_fader', 'post_fader']}
-              value={sendLevels?.origin}
-              onChange={(origin) =>
-                handleChange(type, stripId, 'origin', origin, config)
-              }
+              value={sendLevelOrigin}
+              onChange={handleSendLevelOrigin}
             />
           )}
           {configMode && <p className="text-base pb-2 mt-2">Receive Level</p>}
