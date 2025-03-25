@@ -3,6 +3,9 @@ import { PanningLegend } from '../../../../assets/icons/PanningLegend';
 import debounce from 'lodash/debounce';
 import { SetValueButtons } from './SetValueButtons';
 import { useHandleChange } from '../../../../hooks/useHandleChange';
+import { useGlobalState } from '../../../../context/GlobalStateContext';
+import { TAudioStrip, TMixStrip } from '../../../../types/types';
+import logger from '../../../../utils/logger';
 
 type PanningSliderProps = {
   inputValue: number;
@@ -19,15 +22,33 @@ export const PanningSlider = ({
 }: PanningSliderProps) => {
   const [localValue, setLocalValue] = useState(inputValue || 0);
   const panningPosToVal = (pos: number): number => pos / 64 - 1.0;
+  const { setStrips, setMixes } = useGlobalState();
   const { handleChange } = useHandleChange();
 
   // Throttle WebSocket updates
   const throttledPanningChange = useMemo(
     () =>
       debounce((value: number) => {
-        handleChange(type, id, 'panning', panningPosToVal(value), config);
+        const newVal = panningPosToVal(value);
+        handleChange(type, id, 'panning', newVal, config);
+        const editFunc = type === 'strips' ? setStrips : setMixes;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        editFunc((prevState: any) =>
+          prevState.map((strip: TAudioStrip | TMixStrip) => {
+            if (strip.stripId !== id) return strip;
+            return {
+              ...strip,
+              filters: {
+                ...strip.filters,
+                pan: {
+                  value: newVal
+                }
+              }
+            };
+          })
+        );
       }, 500),
-    [handleChange, type, id, config]
+    [handleChange, type, id, config, setMixes, setStrips]
   );
 
   // Update local value when input changes from outside
@@ -35,7 +56,7 @@ export const PanningSlider = ({
     if (typeof inputValue === 'number' && !isNaN(inputValue)) {
       setLocalValue(inputValue);
     }
-  }, [inputValue]);
+  }, [inputValue, id]);
 
   const onChangeHandler = useCallback(
     (newValue: number) => {

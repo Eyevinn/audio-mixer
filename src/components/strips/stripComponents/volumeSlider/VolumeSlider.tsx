@@ -2,6 +2,8 @@ import debounce from 'lodash/debounce';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SliderLegend } from '../../../../assets/icons/SliderLegend';
 import { useHandleChange } from '../../../../hooks/useHandleChange';
+import { useGlobalState } from '../../../../context/GlobalStateContext';
+import { TAudioStrip, TMixStrip } from '../../../../types/types';
 
 type VolumeSliderProps = {
   inputVolume?: number;
@@ -60,6 +62,7 @@ export const VolumeSlider = ({
   config
 }: VolumeSliderProps) => {
   const [volume, setVolume] = useState(inputVolume ?? 0);
+  const { setStrips, setMixes } = useGlobalState();
   const { handleChange } = useHandleChange();
 
   // Throttle WebSocket updates
@@ -67,8 +70,22 @@ export const VolumeSlider = ({
     () =>
       debounce((value: number) => {
         handleChange(type, id, 'volume', value, config);
+        const editFunc = type === 'strips' ? setStrips : setMixes;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        editFunc((prevState: any) =>
+          prevState.map((strip: TAudioStrip | TMixStrip) => {
+            if (strip.stripId !== id) return strip;
+            return {
+              ...strip,
+              fader: {
+                ...strip.fader,
+                volume: value
+              }
+            };
+          })
+        );
       }, 500),
-    [handleChange, config, id, type]
+    [handleChange, config, id, type, setStrips, setMixes]
   );
 
   useEffect(() => {

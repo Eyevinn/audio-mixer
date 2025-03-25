@@ -15,6 +15,7 @@ import { useCheckOutputUsage } from '../../hooks/useCheckOutputUsage';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { useRemoveFromMixInputs } from '../../hooks/useRemoveFromMixInputs';
 import { addStrip, removeStrip } from '../../utils/wsCommands';
+import logger from '../../utils/logger';
 
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);

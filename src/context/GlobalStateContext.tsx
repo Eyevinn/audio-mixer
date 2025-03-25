@@ -7,6 +7,7 @@ import React, {
   useState
 } from 'react';
 import { TAudioStrip, TMixStrip, TOutput } from '../types/types';
+import logger from '../utils/logger';
 
 interface GlobalStateContextType {
   strips: TAudioStrip[];
