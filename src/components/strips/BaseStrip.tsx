@@ -9,6 +9,7 @@ import { StripHeader } from './stripComponents/stripHeader/StripHeader';
 import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
 import { TOutputStripProps } from './outputStrip/OutputStrip';
 import MuteButton from './stripComponents/buttons/MuteButton';
+import { useGlobalState } from '../../context/GlobalStateContext';
 
 type SendLevelOrigins = 'pre_fader' | 'post_fader';
 
@@ -73,9 +74,7 @@ export const BaseStrip = ({
   children
 }: BaseStripProps) => {
   const [stripLabel, setStripLabel] = useState<string>(stripId.toString());
-  const [sendLevelOrigin, setSendLevelOrigin] = useState<SendLevelOrigins>(
-    sendLevels?.origin || 'pre_fader'
-  );
+  const { updateStrip } = useGlobalState();
   const [isScreenTall, setIsScreenTall] = useState<boolean>(
     window.innerHeight > 1100
   );
@@ -107,12 +106,8 @@ export const BaseStrip = ({
     config
   );
 
-  useEffect(() => {
-    setSendLevelOrigin(sendLevels?.origin || 'pre_fader');
-  }, [sendLevels?.origin]);
-
   const handleSendLevelOrigin = (val: string) => {
-    setSendLevelOrigin(val as SendLevelOrigins);
+    updateStrip(type, stripId, { origin: val }, config);
     handleChange(type, stripId, 'origin', val, config);
   };
 
@@ -217,7 +212,7 @@ export const BaseStrip = ({
           {configMode && (
             <StripDropdown
               options={['pre_fader', 'post_fader']}
-              value={sendLevelOrigin}
+              value={sendLevels?.origin}
               onChange={handleSendLevelOrigin}
             />
           )}
