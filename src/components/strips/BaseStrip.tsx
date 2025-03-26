@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHandleChange } from '../../hooks/useHandleChange';
 import { useRenderPanningAndActions } from '../../hooks/useRenderPanningAndActions';
 import { TAudioStrip, TBaseStrip, TMixStrip } from '../../types/types';
@@ -129,6 +129,18 @@ export const BaseStrip = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handleLabelChange = useCallback(
+    (updatedLabel: string) => {
+      setStripLabel(updatedLabel);
+      if (isOutputStrip && handleOutputChange) {
+        handleOutputChange(stripId, 'label', updatedLabel);
+      } else {
+        handleChange(type, stripId, 'label', updatedLabel, config);
+      }
+    },
+    [config, handleChange, handleOutputChange, isOutputStrip, stripId, type]
+  );
+
   return (
     <div
       className={`box-border flex flex-col relative rounded-lg
@@ -166,14 +178,7 @@ export const BaseStrip = ({
         value={label === '' ? stripLabel || '' : label || ''}
         isPFLInput={isPFLInput}
         readOnly={isPFLInput}
-        onChange={(updatedLabel) => {
-          setStripLabel(updatedLabel);
-          if (isOutputStrip && handleOutputChange) {
-            handleOutputChange(stripId, 'label', updatedLabel);
-          } else {
-            handleChange(type, stripId, 'label', updatedLabel, config);
-          }
-        }}
+        onChange={handleLabelChange}
       />
 
       {/* Audio Strip Fields */}
