@@ -208,7 +208,7 @@ export const ConfigureMixPage = () => {
         {mixToConfigure && (
           <div className="p-4">
             <MixStrip
-              key={`mix-${mixToConfigure.stripId}`}
+              key={`mix-${mixToConfigure.stripId}-wrapper`}
               {...mixToConfigure}
               isPFLInactive={
                 isPFL?.inputs?.mixes[mixToConfigure.stripId]?.muted ?? undefined
