@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useGlobalState } from '../../../context/GlobalStateContext';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { TOutputStrip } from '../../../types/types';
@@ -17,12 +17,7 @@ export interface TOutputStripProps extends TOutputStrip {
 
 export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
   const { sendMessage } = useWebSocket();
-  const { mixes, strips, setMixes, setStrips } = useGlobalState();
-  const [localLabel, setLocalLabel] = useState<string>(props.label);
-
-  useEffect(() => {
-    setLocalLabel(props.label);
-  }, [props.label, setLocalLabel]);
+  const { mixes, strips, setMixes, setStrips, updateOutput } = useGlobalState();
 
   const originMix = mixes.find((mix) => mix.stripId === props.input.index);
   const originStrip = strips.find(
@@ -70,7 +65,8 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
       if (value === undefined) return;
 
       if (property === 'label') {
-        setLocalLabel(value.toString());
+        // setLocalLabel(value.toString());
+        updateOutput(props.outputName, { label: value });
         sendMessage({
           type: 'set',
           resource: `/audio/outputs/${props.outputName}`,
@@ -103,7 +99,8 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
       sendMessage,
       setMixes,
       setStrips,
-      strips
+      strips,
+      updateOutput
     ]
   );
 
@@ -111,7 +108,7 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
     <BaseStrip
       {...(props.input.source === 'mix' ? originMix : originStrip)}
       isOutputStrip={true}
-      label={localLabel}
+      label={props.label}
       output={props}
       backgroundColor={props.backgroundColor}
       header={`${props.input.source === 'mix' ? 'Mix ' : 'Strip '} ${props.stripId}`}

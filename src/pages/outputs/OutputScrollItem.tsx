@@ -29,9 +29,14 @@ export const OutputScrollItem = ({
 }: TOutputScrollItem) => {
   const [output, setOutput] = useState<TOutput>(outputProp);
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
-  const { mixes, strips } = useGlobalState();
+  const [selectedInput, setSelectedInput] = useState<TAudioStrip | TMixStrip>();
+  const { mixes, strips, updateOutput } = useGlobalState();
   const { sendMessage } = useWebSocket();
   const hasRemovedInputRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    setOutput(outputProp);
+  }, [outputProp]);
 
   useEffect(() => {
     const sortedInputs = [...mixes, ...strips].sort((a, b) => {
@@ -52,14 +57,20 @@ export const OutputScrollItem = ({
   ) => {
     const isMix = selectedInput.inputs !== undefined;
 
-    setOutput({
-      ...output,
+    updateOutput(outputName, {
       input: {
-        ...output.input,
         source: isMix ? 'mix' : 'strip',
         index: selectedInput.stripId
       }
     });
+    // setOutput({
+    //   ...output,
+    //   input: {
+    //     ...output.input,
+    //     source: isMix ? 'mix' : 'strip',
+    //     index: selectedInput.stripId
+    //   }
+    // });
     addInputToOutput(
       sendMessage,
       outputName,
@@ -81,16 +92,15 @@ export const OutputScrollItem = ({
     }
   };
 
-  const renderMixOrStripFromInput = (
-    stripId: number,
-    origin: 'strip' | 'mix'
-  ) => {
-    if (origin === 'strip') {
-      return strips.find((strip) => strip.stripId === stripId);
-    } else if (origin === 'mix') {
-      return mixes.find((mix) => mix.stripId === stripId);
+  useEffect(() => {
+    if (output.input.source === 'strip') {
+      setSelectedInput(
+        strips.find((strip) => strip.stripId === output.input.index)
+      );
+    } else if (output.input.source === 'mix') {
+      setSelectedInput(mixes.find((mix) => mix.stripId === output.input.index));
     }
-  };
+  }, [mixes, output, strips]);
 
   useEffect(() => {
     if (hasRemovedInputRef.current) return;
@@ -113,13 +123,18 @@ export const OutputScrollItem = ({
   }, [output, outputName, mixes, strips, sendMessage]);
 
   const handleOriginChange = (origin: 'pre_fader' | 'post_fader') => {
-    setOutput({
-      ...output,
+    updateOutput(outputName, {
       input: {
-        ...output.input,
         origin: origin
       }
     });
+    // setOutput({
+    //   ...output,
+    //   input: {
+    //     ...output.input,
+    //     origin: origin
+    //   }
+    // });
     sendMessage({
       type: 'set',
       resource: `/audio/outputs/${outputName}/input`,
@@ -173,8 +188,7 @@ export const OutputScrollItem = ({
           checked={!!output?.meters?.enable_ebu_meters}
           onChange={() => {
             const newValue = !output?.meters?.enable_ebu_meters;
-            setOutput({
-              ...output,
+            updateOutput(outputName, {
               meters: {
                 ...output.meters,
                 enable_ebu_meters: newValue
@@ -195,10 +209,7 @@ export const OutputScrollItem = ({
           input={output.input}
           meters={output.meters}
           label={output.label || outputName}
-          selectedInput={renderMixOrStripFromInput(
-            output.input.index,
-            output.input.source
-          )}
+          selectedInput={selectedInput}
           type={output.input.source === 'mix' ? 'mixes' : 'strips'}
           onStripSelect={onSelect}
           isPFLInactive={isPFLInactive}

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { OutputScrollItem } from '../../pages/outputs/OutputScrollItem';
 import { TAudioStrip, TMixStrip, TOutput } from '../../types/types';
 import { AudioStrip } from '../strips/audioStrip/AudioStrip';

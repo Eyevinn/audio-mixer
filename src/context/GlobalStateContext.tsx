@@ -18,6 +18,7 @@ interface GlobalStateContextType {
   setMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>;
   updateStrip: (type: 'strips' | 'mixes', id: number, object: any) => void;
   setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: TOutput }>>;
+  updateOutput: (name: string, object: any) => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -49,6 +50,13 @@ export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
     updateState(updateFunc, id, object);
   };
 
+  const updateOutput = (name: string, object: any) => {
+    setOutputs((prevState: any) => ({
+      ...prevState,
+      [name]: merge(prevState[name], object)
+    }));
+  };
+
   return (
     <GlobalStateContext.Provider
       value={{
@@ -60,6 +68,7 @@ export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
         setMixes,
         updateStrip,
         setOutputs,
+        updateOutput,
         setErrorMessage
       }}
     >
