@@ -63,14 +63,6 @@ export const OutputScrollItem = ({
         index: selectedInput.stripId
       }
     });
-    // setOutput({
-    //   ...output,
-    //   input: {
-    //     ...output.input,
-    //     source: isMix ? 'mix' : 'strip',
-    //     index: selectedInput.stripId
-    //   }
-    // });
     addInputToOutput(
       sendMessage,
       outputName,
@@ -117,10 +109,17 @@ export const OutputScrollItem = ({
       !existsInSavedStrips &&
       output.input.index !== 0
     ) {
+      updateOutput(outputName, {
+        input: {
+          index: 0,
+          origin: 'post_fader',
+          source: 'mix'
+        }
+      });
       removeInputFromOutput(sendMessage, outputName);
       hasRemovedInputRef.current = true;
     }
-  }, [output, outputName, mixes, strips, sendMessage]);
+  }, [output, outputName, mixes, strips, sendMessage, updateOutput]);
 
   const handleOriginChange = (origin: 'pre_fader' | 'post_fader') => {
     updateOutput(outputName, {
@@ -128,13 +127,6 @@ export const OutputScrollItem = ({
         origin: origin
       }
     });
-    // setOutput({
-    //   ...output,
-    //   input: {
-    //     ...output.input,
-    //     origin: origin
-    //   }
-    // });
     sendMessage({
       type: 'set',
       resource: `/audio/outputs/${outputName}/input`,
