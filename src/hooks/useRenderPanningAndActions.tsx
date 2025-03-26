@@ -1,10 +1,8 @@
-import { useEffect } from 'react';
 import MuteButton from '../components/strips/stripComponents/buttons/MuteButton';
 import PFLButton from '../components/strips/stripComponents/buttons/PFLButton';
 import { PanningSlider } from '../components/strips/stripComponents/panningSlider/PanningSlider';
 import { ActionButton } from '../components/ui/buttons/Buttons';
 import { Filters } from '../types/types';
-import logger from '../utils/logger';
 
 export const useRenderPanningAndActions = (
   stripId: number,

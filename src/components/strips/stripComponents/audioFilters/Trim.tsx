@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
 import { EffectsSlider } from './EffectsSlider';
 import styles from './filterComponents.module.css';
 import { TAudioStrip, TMixStrip } from '../../../../types/types';
+import { debounce } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
 
 type TTrimProps = {
   strip: TAudioStrip | TMixStrip;
@@ -13,11 +14,13 @@ type TTrimProps = {
 };
 
 export const Trim = ({ strip, handleEffectChange }: TTrimProps) => {
-  const [trimValue, setTrimValue] = useState(0);
+  const [trimValue, setTrimValue] = useState<number>(
+    strip?.filters?.gain.value || 0
+  );
 
   useEffect(() => {
     setTrimValue(strip?.filters?.gain.value || 0);
-  }, [strip]);
+  }, [strip?.filters?.gain.value]);
 
   return (
     <section className={styles.settingsItem}>
@@ -31,12 +34,9 @@ export const Trim = ({ strip, handleEffectChange }: TTrimProps) => {
           value={trimValue}
           step={1}
           unit="dB"
-          filter="trim"
+          filter="gain"
           parameter="value"
-          onChange={(value) => {
-            setTrimValue(value);
-            handleEffectChange('gain', 'value', value);
-          }}
+          onChange={handleEffectChange}
         />
       </div>
     </section>

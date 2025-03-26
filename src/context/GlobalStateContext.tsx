@@ -1,13 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   createContext,
   FC,
   ReactNode,
   useContext,
-  useEffect,
   useState
 } from 'react';
 import { TAudioStrip, TMixStrip, TOutput } from '../types/types';
-import logger from '../utils/logger';
+import { merge } from 'lodash';
 
 interface GlobalStateContextType {
   strips: TAudioStrip[];
@@ -16,6 +16,7 @@ interface GlobalStateContextType {
   errorMessage: string;
   setStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>;
   setMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>;
+  updateStrip: (type: 'strips' | 'mixes', id: number, object: any) => void;
   setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: TOutput }>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -30,6 +31,24 @@ export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
   const [outputs, setOutputs] = useState<{ [key: string]: TOutput }>({});
   const [errorMessage, setErrorMessage] = useState<string>('');
 
+  const updateState = (
+    updateFunc: React.Dispatch<React.SetStateAction<any>>,
+    id: number,
+    object: any
+  ) => {
+    updateFunc((prevState: any) =>
+      prevState.map((state: TAudioStrip | TMixStrip) => {
+        if (state.stripId !== id) return state;
+        return merge(state, object);
+      })
+    );
+  };
+
+  const updateStrip = (type: 'strips' | 'mixes', id: number, object: any) => {
+    const updateFunc = type === 'strips' ? setStrips : setMixes;
+    updateState(updateFunc, id, object);
+  };
+
   return (
     <GlobalStateContext.Provider
       value={{
@@ -39,6 +58,7 @@ export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
         errorMessage,
         setStrips,
         setMixes,
+        updateStrip,
         setOutputs,
         setErrorMessage
       }}

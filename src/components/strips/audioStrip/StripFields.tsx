@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import { useHandleChange } from '../../../hooks/useHandleChange';
 import { StripDropdown } from '../../ui/dropdown/Dropdown';
 import { StripInput } from '../../ui/input/Input';
 import { ModeSelect } from '../stripComponents/msStereo/ModeSelect';
+import { useGlobalState } from '../../../context/GlobalStateContext';
 
 type TStripFieldsProps = {
   slot: string;
@@ -27,25 +27,13 @@ export const StripFields = ({
   msStereoProps
 }: TStripFieldsProps) => {
   const { handleChange } = useHandleChange();
-  const [inputSlot, setInputSlot] = useState<string>('');
-  const [firstChannel, setFirstChannel] = useState<string>('');
-  const [secondChannel, setSecondChannel] = useState<string>('');
-
-  useEffect(() => {
-    setInputSlot(slot);
-  }, [slot]);
-
-  useEffect(() => {
-    setFirstChannel(channel1 !== undefined ? (channel1 + 1).toString() : '');
-  }, [channel1]);
-
-  useEffect(() => {
-    setSecondChannel(channel2 !== undefined ? (channel2 + 1).toString() : '');
-  }, [channel2]);
+  const { updateStrip } = useGlobalState();
 
   const handleInputSlotChange = (val: string) => {
     if (Number(val) >= 0) {
-      setInputSlot(val);
+      updateStrip('strips', stripId, {
+        input: { input_slot: parseInt(val, 10) }
+      });
       handleChange(
         'strips',
         stripId,
@@ -56,12 +44,16 @@ export const StripFields = ({
   };
 
   const handleFirstChannelChange = (val: string) => {
-    setFirstChannel(val);
+    updateStrip('strips', stripId, {
+      input: { first_channel: parseInt(val, 10) - 1 }
+    });
     handleChange('strips', stripId, 'first_channel', parseInt(val, 10) - 1);
   };
 
   const handleSecondChannelChange = (val: string) => {
-    setSecondChannel(val);
+    updateStrip('strips', stripId, {
+      input: { second_channel: parseInt(val, 10) - 1 }
+    });
     handleChange('strips', stripId, 'second_channel', parseInt(val, 10) - 1);
   };
 
@@ -81,11 +73,7 @@ export const StripFields = ({
   return (
     <div className="flex flex-col pb-1">
       {/* Slot Input */}
-      <StripInput
-        type="Slot"
-        value={inputSlot}
-        onChange={handleInputSlotChange}
-      />
+      <StripInput type="Slot" value={slot} onChange={handleInputSlotChange} />
 
       {/* Mode Select */}
       <ModeSelect
@@ -102,7 +90,7 @@ export const StripFields = ({
           'first'
         )}
         options={channelOptions}
-        value={firstChannel}
+        value={channel1 !== undefined ? (channel1 + 1).toString() : ''}
         onChange={handleFirstChannelChange}
       />
 
@@ -113,7 +101,7 @@ export const StripFields = ({
           'second'
         )}
         options={channelOptions}
-        value={secondChannel}
+        value={channel2 !== undefined ? (channel2 + 1).toString() : ''}
         onChange={handleSecondChannelChange}
         disabled={!isStereo}
         hidden={!isStereo}

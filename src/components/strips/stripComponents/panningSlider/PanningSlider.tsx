@@ -1,11 +1,9 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { PanningLegend } from '../../../../assets/icons/PanningLegend';
 import debounce from 'lodash/debounce';
 import { SetValueButtons } from './SetValueButtons';
 import { useHandleChange } from '../../../../hooks/useHandleChange';
 import { useGlobalState } from '../../../../context/GlobalStateContext';
-import { TAudioStrip, TMixStrip } from '../../../../types/types';
-import logger from '../../../../utils/logger';
 
 type PanningSliderProps = {
   inputValue: number;
@@ -22,7 +20,7 @@ export const PanningSlider = ({
 }: PanningSliderProps) => {
   const [localValue, setLocalValue] = useState(inputValue || 0);
   const panningPosToVal = (pos: number): number => pos / 64 - 1.0;
-  const { setStrips, setMixes } = useGlobalState();
+  const { updateStrip } = useGlobalState();
   const { handleChange } = useHandleChange();
 
   // Throttle WebSocket updates
@@ -31,24 +29,9 @@ export const PanningSlider = ({
       debounce((value: number) => {
         const newVal = panningPosToVal(value);
         handleChange(type, id, 'panning', newVal, config);
-        const editFunc = type === 'strips' ? setStrips : setMixes;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        editFunc((prevState: any) =>
-          prevState.map((strip: TAudioStrip | TMixStrip) => {
-            if (strip.stripId !== id) return strip;
-            return {
-              ...strip,
-              filters: {
-                ...strip.filters,
-                pan: {
-                  value: newVal
-                }
-              }
-            };
-          })
-        );
+        updateStrip(type, id, { filters: { pan: { value: newVal } } });
       }, 500),
-    [handleChange, type, id, config, setMixes, setStrips]
+    [handleChange, type, id, config, updateStrip]
   );
 
   // Update local value when input changes from outside

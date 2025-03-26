@@ -1,4 +1,3 @@
-import { subscribe } from './wsCommands';
 import {
   OutputSamplingData,
   StripsSamplingData

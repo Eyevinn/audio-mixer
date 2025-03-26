@@ -62,7 +62,7 @@ export const VolumeSlider = ({
   config
 }: VolumeSliderProps) => {
   const [volume, setVolume] = useState(inputVolume ?? 0);
-  const { setStrips, setMixes } = useGlobalState();
+  const { updateStrip } = useGlobalState();
   const { handleChange } = useHandleChange();
 
   // Throttle WebSocket updates
@@ -70,22 +70,9 @@ export const VolumeSlider = ({
     () =>
       debounce((value: number) => {
         handleChange(type, id, 'volume', value, config);
-        const editFunc = type === 'strips' ? setStrips : setMixes;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        editFunc((prevState: any) =>
-          prevState.map((strip: TAudioStrip | TMixStrip) => {
-            if (strip.stripId !== id) return strip;
-            return {
-              ...strip,
-              fader: {
-                ...strip.fader,
-                volume: value
-              }
-            };
-          })
-        );
+        updateStrip(type, id, { fader: { volume: value } });
       }, 500),
-    [handleChange, config, id, type, setStrips, setMixes]
+    [handleChange, config, id, type, updateStrip]
   );
 
   useEffect(() => {

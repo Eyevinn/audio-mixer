@@ -1,6 +1,7 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { ActionButton } from '../../../ui/buttons/Buttons';
 import { useHandleChange } from '../../../../hooks/useHandleChange';
+import { useGlobalState } from '../../../../context/GlobalStateContext';
 
 interface MuteButtonProps {
   type: 'strips' | 'mixes';
@@ -12,21 +13,17 @@ interface MuteButtonProps {
 const MuteButton: FC<MuteButtonProps> = (props) => {
   const { type, id, muted, config } = props;
   const { handleChange } = useHandleChange();
-  const [isMuted, setIsMuted] = useState<boolean>(!!muted);
-
-  useEffect(() => {
-    setIsMuted(!!muted);
-  }, [muted]);
+  const { updateStrip } = useGlobalState();
 
   const handleMuteChange = () => {
-    setIsMuted(!isMuted);
-    handleChange(type, id, 'muted', !isMuted, config);
+    updateStrip(type, id, { fader: { muted: !muted } });
+    handleChange(type, id, 'muted', !muted, config);
   };
 
   return (
     <ActionButton
       label="MUTE"
-      buttonColor={isMuted ? 'bg-mute-btn' : 'bg-default-btn'}
+      buttonColor={muted ? 'bg-mute-btn' : 'bg-default-btn'}
       onClick={(e) => {
         e.stopPropagation();
         handleMuteChange();

@@ -7,6 +7,8 @@ import { Equalizer } from './Equalizer';
 import { Compressor } from './Compressor';
 import { Trim } from './Trim';
 import debounce from 'lodash/debounce';
+import { useGlobalState } from '../../../../context/GlobalStateContext';
+import logger from '../../../../utils/logger';
 
 interface EffectsPanelProps {
   strip: TAudioStrip | TMixStrip | undefined;
@@ -22,6 +24,7 @@ export const EffectsPanel = ({
   onClose
 }: EffectsPanelProps) => {
   const { sendMessage, isConnected } = useWebSocket();
+  const { updateStrip } = useGlobalState();
 
   const isStereo = () => {
     if (
@@ -39,28 +42,26 @@ export const EffectsPanel = ({
 
   const handleEffectChange = useMemo(
     () =>
-      debounce(
-        (
-          filter: string,
-          parameter: string,
-          value: number | string | boolean
-        ) => {
-          const body =
-            parameter === 'enabled'
-              ? { [parameter]: value, input_format: 'lr_stereo' }
-              : { [parameter]: value };
+      (filter: string, parameter: string, value: number | string | boolean) => {
+        const body =
+          parameter === 'enabled'
+            ? { [parameter]: value, input_format: 'lr_stereo' }
+            : { [parameter]: value };
 
-          if (isConnected && strip) {
-            sendMessage({
-              type: 'set',
-              resource: `/audio/${type}/${strip.stripId}/filters/${filter}`,
-              body: body
-            });
-          }
-        },
-        500
-      ),
-    [isConnected, strip, type, sendMessage]
+        if (isConnected && strip) {
+          logger.green(parameter);
+          logger.magenta(value);
+          updateStrip(type, strip.stripId, {
+            filters: { [filter]: { [parameter]: value } }
+          });
+          sendMessage({
+            type: 'set',
+            resource: `/audio/${type}/${strip.stripId}/filters/${filter}`,
+            body: body
+          });
+        }
+      },
+    [isConnected, strip, type, sendMessage, updateStrip]
   );
 
   if (!strip) return null;

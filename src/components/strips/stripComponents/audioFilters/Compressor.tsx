@@ -37,13 +37,13 @@ export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
 
   useEffect(() => {
     setCompressorState({
-      attack: strip?.filters?.compressor?.attack || defaultValues.attack,
-      gain: strip?.filters?.compressor?.gain || defaultValues.gain,
-      knee: strip?.filters?.compressor?.knee || defaultValues.knee,
-      ratio: strip?.filters?.compressor?.ratio || defaultValues.ratio,
-      release: strip?.filters?.compressor?.release || defaultValues.release,
+      attack: strip?.filters?.compressor?.attack ?? defaultValues.attack,
+      gain: strip?.filters?.compressor?.gain ?? defaultValues.gain,
+      knee: strip?.filters?.compressor?.knee ?? defaultValues.knee,
+      ratio: strip?.filters?.compressor?.ratio ?? defaultValues.ratio,
+      release: strip?.filters?.compressor?.release ?? defaultValues.release,
       threshold:
-        strip?.filters?.compressor?.threshold || defaultValues.threshold
+        strip?.filters?.compressor?.threshold ?? defaultValues.threshold
     });
   }, [strip?.filters?.compressor]);
 
@@ -108,13 +108,17 @@ export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
             unit={compressor.unit}
             filter="compressor"
             parameter={compressor.name}
-            onChange={(value) => {
-              setCompressorState((prev) => ({
-                ...prev,
-                [compressor.name]: value
-              }));
-              handleEffectChange('compressor', compressor.name, value);
-            }}
+            onChange={handleEffectChange}
+            // onChange={(value) => {
+            //   handleEffectChange('compressor', compressor.name, value);
+            // }}
+            // onChange={(value) => {
+            //   setCompressorState((prev) => ({
+            //     ...prev,
+            //     [compressor.name]: value
+            //   }));
+            //   handleEffectChange('compressor', compressor.name, value);
+            // }}
           />
         ))}
       </div>

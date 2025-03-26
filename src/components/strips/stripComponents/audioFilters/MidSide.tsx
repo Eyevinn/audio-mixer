@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { EffectsSlider } from './EffectsSlider';
 import styles from './filterComponents.module.css';
 import { TMidSide } from '../../../../types/types';
@@ -23,6 +23,13 @@ export const MidSide = ({ midSide, handleEffectChange }: TMidSideProps) => {
     setMidAmount(midSide.mid_amount);
     setSideAmount(midSide.side_amount);
   }, [midSide]);
+
+  const onChange = useCallback(
+    (filterType: string, filter: string, value: number) => {
+      handleEffectChange(filterType, filter, amountPosToVal(value));
+    },
+    [handleEffectChange]
+  );
 
   return (
     <section className={styles.settingsItem}>
@@ -54,12 +61,13 @@ export const MidSide = ({ midSide, handleEffectChange }: TMidSideProps) => {
           value={amountValToPos(midAmount)}
           step={1}
           unit="%"
-          filter="mid_amaount"
-          parameter="value"
-          onChange={(value) => {
-            setMidAmount(amountPosToVal(value));
-            handleEffectChange('mid_side', 'mid_amount', amountPosToVal(value));
-          }}
+          filter="mid_side"
+          parameter="mid_amount"
+          onChange={onChange}
+          // onChange={(value) => {
+          //   setMidAmount(amountPosToVal(value));
+          //   handleEffectChange('mid_side', 'mid_amount', amountPosToVal(value));
+          // }}
         />
         <EffectsSlider
           id="side_amount"
@@ -69,16 +77,17 @@ export const MidSide = ({ midSide, handleEffectChange }: TMidSideProps) => {
           value={amountValToPos(sideAmount)}
           step={1}
           unit="%"
-          filter="side_amount"
-          parameter="value"
-          onChange={(value) => {
-            setSideAmount(amountPosToVal(value));
-            handleEffectChange(
-              'mid_side',
-              'side_amount',
-              amountPosToVal(value)
-            );
-          }}
+          filter="mid_side"
+          parameter="side_amount"
+          onChange={onChange}
+          // onChange={(value) => {
+          //   setSideAmount(amountPosToVal(value));
+          //   handleEffectChange(
+          //     'mid_side',
+          //     'side_amount',
+          //     amountPosToVal(value)
+          //   );
+          // }}
         />
       </div>
     </section>
