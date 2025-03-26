@@ -8,6 +8,7 @@ import { TMixStrip } from '../../../types/types';
 import { addMix, addMixToMix, addStripToMix } from '../../../utils/wsCommands';
 import { BaseStrip } from '../BaseStrip';
 import { MixFields } from './MixFields';
+import logger from '../../../utils/logger';
 
 interface MixStripProps extends TMixStrip {
   isRemovingFromMix?: boolean;

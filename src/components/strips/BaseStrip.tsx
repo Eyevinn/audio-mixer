@@ -73,7 +73,6 @@ export const BaseStrip = ({
   handleOutputChange,
   children
 }: BaseStripProps) => {
-  const [stripLabel, setStripLabel] = useState<string>(stripId.toString());
   const { updateStrip } = useGlobalState();
   const [isScreenTall, setIsScreenTall] = useState<boolean>(
     window.innerHeight > 1100
@@ -126,14 +125,13 @@ export const BaseStrip = ({
 
   const handleLabelChange = useCallback(
     (updatedLabel: string) => {
-      setStripLabel(updatedLabel);
       if (isOutputStrip && handleOutputChange) {
         handleOutputChange(stripId, 'label', updatedLabel);
       } else {
-        handleChange(type, stripId, 'label', updatedLabel, config);
+        handleChange(type, stripId, 'label', updatedLabel);
       }
     },
-    [config, handleChange, handleOutputChange, isOutputStrip, stripId, type]
+    [handleChange, handleOutputChange, isOutputStrip, stripId, type]
   );
 
   return (
@@ -170,7 +168,7 @@ export const BaseStrip = ({
       {/* Label Input */}
       {isOutputStrip && <span className="text-xs ml-4">Output label:</span>}
       <LabelInput
-        value={label === '' ? stripLabel || '' : label || ''}
+        value={label || stripId.toString()}
         isPFLInput={isPFLInput}
         readOnly={isPFLInput}
         onChange={handleLabelChange}
