@@ -9,6 +9,7 @@ import { Meters } from './stripComponents/meters/Meters';
 import { StripHeader } from './stripComponents/stripHeader/StripHeader';
 import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
 import { TOutputStripProps } from './outputStrip/OutputStrip';
+import MuteButton from './stripComponents/buttons/MuteButton';
 
 type SendLevelOrigins = 'pre_fader' | 'post_fader';
 
@@ -241,21 +242,11 @@ export const BaseStrip = ({
             </div>
 
             {configMode && (
-              <ActionButton
-                label={'MUTE'}
-                buttonColor={
-                  sendLevels?.muted ? 'bg-mute-btn' : 'bg-default-btn'
-                }
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleChange(
-                    type,
-                    stripId,
-                    'muted',
-                    !sendLevels?.muted,
-                    config
-                  );
-                }}
+              <MuteButton
+                type={type}
+                id={stripId}
+                config={config}
+                muted={sendLevels?.muted}
               />
             )}
           </div>

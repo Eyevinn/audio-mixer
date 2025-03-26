@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { TAudioStrip, TMixStrip, TOutput } from '../types/types';
 import { merge } from 'lodash';
+import logger from '../utils/logger';
 
 interface GlobalStateContextType {
   strips: TAudioStrip[];
@@ -16,7 +17,12 @@ interface GlobalStateContextType {
   errorMessage: string;
   setStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>;
   setMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>;
-  updateStrip: (type: 'strips' | 'mixes', id: number, object: any) => void;
+  updateStrip: (
+    type: 'strips' | 'mixes',
+    id: number,
+    object: any,
+    mixId?: number
+  ) => void;
   setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: TOutput }>>;
   updateOutput: (name: string, object: any) => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -45,9 +51,24 @@ export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
     );
   };
 
-  const updateStrip = (type: 'strips' | 'mixes', id: number, object: any) => {
-    const updateFunc = type === 'strips' ? setStrips : setMixes;
-    updateState(updateFunc, id, object);
+  const updateStrip = (
+    type: 'strips' | 'mixes',
+    id: number,
+    object: any,
+    mixId?: number
+  ) => {
+    if (mixId) {
+      updateState(setMixes, mixId, {
+        inputs: {
+          [type]: {
+            [id]: object
+          }
+        }
+      });
+    } else {
+      const updateFunc = type === 'strips' ? setStrips : setMixes;
+      updateState(updateFunc, id, object);
+    }
   };
 
   const updateOutput = (name: string, object: any) => {

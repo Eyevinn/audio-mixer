@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SliderLegend } from '../../../../assets/icons/SliderLegend';
 import { useHandleChange } from '../../../../hooks/useHandleChange';
 import { useGlobalState } from '../../../../context/GlobalStateContext';
+import logger from '../../../../utils/logger';
 
 type VolumeSliderProps = {
   inputVolume?: number;
@@ -69,7 +70,11 @@ export const VolumeSlider = ({
     () =>
       debounce((value: number) => {
         handleChange(type, id, 'volume', value, config);
-        updateStrip(type, id, { fader: { volume: value } });
+        if (config) {
+          updateStrip(type, id, { volume: value }, config);
+        } else {
+          updateStrip(type, id, { fader: { volume: value } });
+        }
       }, 500),
     [handleChange, config, id, type, updateStrip]
   );

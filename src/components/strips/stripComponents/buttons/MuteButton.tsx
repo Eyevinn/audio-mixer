@@ -16,7 +16,11 @@ const MuteButton: FC<MuteButtonProps> = (props) => {
   const { updateStrip } = useGlobalState();
 
   const handleMuteChange = () => {
-    updateStrip(type, id, { fader: { muted: !muted } });
+    if (config) {
+      updateStrip(type, id, { muted: !muted }, config);
+    } else {
+      updateStrip(type, id, { fader: { muted: !muted } });
+    }
     handleChange(type, id, 'muted', !muted, config);
   };
 
