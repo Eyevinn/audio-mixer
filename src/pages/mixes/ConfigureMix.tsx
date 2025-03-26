@@ -17,7 +17,6 @@ import {
   removeInputFromMix,
   removeMix
 } from '../../utils/wsCommands';
-import logger from '../../utils/logger';
 
 export const ConfigureMixPage = () => {
   const { mixId } = useParams();
@@ -94,7 +93,6 @@ export const ConfigureMixPage = () => {
   useEffect(() => {
     if (mixes && mixId) {
       const mixToConf = mixes.find((mix) => mix.stripId.toString() === mixId);
-      logger.blue(mixToConf);
       setMixToConfigure(
         mixToConf ? JSON.parse(JSON.stringify(mixToConf)) : mixToConf
       );

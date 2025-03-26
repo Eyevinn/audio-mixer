@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useHandleChange } from '../../hooks/useHandleChange';
 import { useRenderPanningAndActions } from '../../hooks/useRenderPanningAndActions';
 import { TAudioStrip, TBaseStrip, TMixStrip } from '../../types/types';
-import { ActionButton } from '../ui/buttons/Buttons';
 import { StripDropdown } from '../ui/dropdown/Dropdown';
 import { LabelInput } from '../ui/input/Input';
 import { Meters } from './stripComponents/meters/Meters';

@@ -104,7 +104,6 @@ const messageTranslator = (
   if (!message || !setStrips) return;
   try {
     const data = JSON.parse(message);
-    if (data.type !== 'sampling-update') logger.red(message);
     if (data.actor === 'self') return;
     logger.data(
       data.type,
@@ -193,10 +192,12 @@ const messageTranslator = (
         const resourceCommandIndex = resourceArray[5];
         const band = resourceArray[6];
         if (resourceCommand === 'filters' && resourceCommandType === 'eq') {
-          setStrips((prevStrips) =>
-            prevStrips.map((prevStrip) => {
+          const updateFunc = resourceType === 'strips' ? setStrips : setMixes;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          updateFunc((prevStrips: any) =>
+            prevStrips.map((prevStrip: TAudioStrip | TMixStrip) => {
               if (prevStrip.stripId.toString() === resourceIndex) {
-                const stripCopy: TAudioStrip = JSON.parse(
+                const stripCopy: TAudioStrip | TMixStrip = JSON.parse(
                   JSON.stringify(prevStrip)
                 );
                 if (stripCopy.filters?.eq?.bands?.[band])
@@ -255,81 +256,12 @@ const messageTranslator = (
       case 'sampling-update':
         if (data.resource === '/audio/strips/*/pre_fader_meter/*') {
           setStripsSamplingData(data.body.audio?.strips);
-          // const dataStrips = data.body.audio?.strips || {};
-          // Object.entries(dataStrips).forEach(([stripId, stripData]) => {
-          //   const typedStripData = stripData as {
-          //     pre_fader_meter: TAudioStrip['pre_fader_meter'];
-          //   };
-          //   setStrips((prevStrips) => {
-          //     return prevStrips.map((strip) => {
-          //       if (
-          //         strip.stripId === parseInt(stripId) &&
-          //         typedStripData.pre_fader_meter
-          //       ) {
-          //         return {
-          //           ...strip,
-          //           pre_fader_meter: {
-          //             peak_left: typedStripData.pre_fader_meter?.peak_left,
-          //             peak_right: typedStripData.pre_fader_meter?.peak_right
-          //           }
-          //         };
-          //       }
-          //       return strip;
-          //     });
-          //   });
-          // });
         }
         if (data.resource === '/audio/mixes/*/pre_fader_meter/*') {
           setMixesSamplingData(data.body.audio?.mixes);
-          // const dataMixes = data.body.audio?.mixes || {};
-          // Object.entries(dataMixes).forEach(([mixId, mixData]) => {
-          //   const typedMixData = mixData as {
-          //     pre_fader_meter: TMixStrip['pre_fader_meter'];
-          //   };
-          //   setMixes((prevMixes) => {
-          //     return prevMixes.map((mix) => {
-          //       if (
-          //         mix.stripId === parseInt(mixId) &&
-          //         typedMixData.pre_fader_meter
-          //       ) {
-          //         return {
-          //           ...mix,
-          //           pre_fader_meter: {
-          //             peak_left: typedMixData.pre_fader_meter?.peak_left,
-          //             peak_right: typedMixData.pre_fader_meter?.peak_right
-          //           }
-          //         };
-          //       }
-          //       return mix;
-          //     });
-          //   });
-          // });
         }
         if (data.resource === '/audio/outputs/*/meters/*') {
           setOutputsSamplingData(data.body.audio?.outputs);
-          // const dataOutputs = data.body.audio?.outputs || {};
-          // Object.entries(dataOutputs).forEach(([outputName, outputData]) => {
-          //   const typedOutputData = outputData as {
-          //     meters: TOutput['meters'];
-          //   };
-          //   setOutputs((prevOutputs) => {
-          //     return {
-          //       ...prevOutputs,
-          //       [outputName]: {
-          //         ...prevOutputs[outputName],
-          //         meters: {
-          //           enable_ebu_meters:
-          //             prevOutputs[outputName].meters.enable_ebu_meters,
-          //           ebu_i: typedOutputData.meters.ebu_i,
-          //           ebu_m: typedOutputData.meters.ebu_m,
-          //           ebu_s: typedOutputData.meters.ebu_s,
-          //           peak_left: typedOutputData.meters.peak_left,
-          //           peak_right: typedOutputData.meters.peak_right
-          //         }
-          //       }
-          //     };
-          //   });
-          // });
         }
         break;
     }

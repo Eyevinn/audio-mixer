@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import { TAudioStrip, TMixStrip, TOutput } from '../types/types';
 import { merge } from 'lodash';
-import logger from '../utils/logger';
 
 interface GlobalStateContextType {
   strips: TAudioStrip[];

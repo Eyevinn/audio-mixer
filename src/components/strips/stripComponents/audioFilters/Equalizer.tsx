@@ -131,7 +131,8 @@ export const Equalizer = ({
           ...prev,
           [`band${i}`]: { type: 'none', freq: 1000, gain: 0, q: 0.707 }
         }));
-        removeEQBand(sendMessage, type, strip.stripId, i);
+        const key = Number(Object.keys(strip?.filters?.eq.bands || {})[i]);
+        removeEQBand(sendMessage, type, strip.stripId, key);
       }
     }
   };
@@ -171,16 +172,6 @@ export const Equalizer = ({
                 onChange={(value) =>
                   handleEffectChange('eq', `bands/${bandIndex}/type`, value)
                 }
-                // onChange={(value) => {
-                //   setEqState((prev) => ({
-                //     ...prev,
-                //     [`band${bandIndex}`]: {
-                //       ...prev[`band${bandIndex}` as keyof EQState],
-                //       type: value
-                //     }
-                //   }));
-                //   handleEffectChange(`eq/bands/${bandIndex}`, 'type', value);
-                // }}
               />
               {renderEQ.map((eqType) => (
                 <EffectsSlider

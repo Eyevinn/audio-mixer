@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SliderLegend } from '../../../../assets/icons/SliderLegend';
 import { useHandleChange } from '../../../../hooks/useHandleChange';
 import { useGlobalState } from '../../../../context/GlobalStateContext';
-import logger from '../../../../utils/logger';
 
 type VolumeSliderProps = {
   inputVolume?: number;
