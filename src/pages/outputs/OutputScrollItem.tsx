@@ -72,6 +72,17 @@ export const OutputScrollItem = ({
     );
   };
 
+  const handleRemoveInput = () => {
+    updateOutput(outputName, {
+      input: {
+        index: 0,
+        origin: 'post_fader',
+        source: 'mix'
+      }
+    });
+    removeInputFromOutput(sendMessage, outputName);
+  };
+
   const renderLabel = (stripId: number, origin: 'strip' | 'mix') => {
     if (origin === 'strip') {
       const strip = strips.find((strip) => strip.stripId === stripId);
@@ -158,7 +169,7 @@ export const OutputScrollItem = ({
             onChange={(selectedInput) =>
               handleAddInputToOutput(outputName, selectedInput)
             }
-            removeInput={() => removeInputFromOutput(sendMessage, outputName)}
+            removeInput={handleRemoveInput}
           />
         )}
       </div>

@@ -104,7 +104,7 @@ const messageTranslator = (
   if (!message || !setStrips) return;
   try {
     const data = JSON.parse(message);
-    if (data.type !== 'sampling-update') logger.red(message);
+    // if (data.type !== 'sampling-update') logger.red(message);
     if (data.actor === 'self') return;
     logger.data(
       data.type,

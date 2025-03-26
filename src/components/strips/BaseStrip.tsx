@@ -83,6 +83,7 @@ export const BaseStrip = ({
   const [isScreenSmall, setIsScreenSmall] = useState<boolean>(
     window.innerHeight < 900
   );
+
   const configMode =
     sendLevels?.muted !== undefined &&
     sendLevels?.volume !== undefined &&
@@ -153,7 +154,7 @@ export const BaseStrip = ({
       ) : (
         <StripHeader
           header={header}
-          label={label}
+          label={label || stripId.toString()}
           configMode={configMode}
           copyButton={isBeingConfigured ? undefined : copyButton}
           isRemovingFromMix={configMode}
@@ -210,7 +211,7 @@ export const BaseStrip = ({
           {configMode && (
             <StripDropdown
               options={['pre_fader', 'post_fader']}
-              value={sendLevels?.origin}
+              value={sendLevels?.origin || ''}
               onChange={handleSendLevelOrigin}
             />
           )}
