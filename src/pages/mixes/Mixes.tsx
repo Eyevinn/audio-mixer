@@ -16,9 +16,11 @@ import { useCheckOutputUsage } from '../../hooks/useCheckOutputUsage';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { useRemoveFromMixInputs } from '../../hooks/useRemoveFromMixInputs';
 import { addMix, removeMix } from '../../utils/wsCommands';
+import { TMixStrip } from '../../types/types';
 
 export const MixesPage = () => {
   const [selectedMix, setSelectedMix] = useState<number | null>(null);
+  const [fullSelectedMix, setFullSelectedMix] = useState<TMixStrip>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const [isFirstMount, setIsFirstMount] = useState(true);
@@ -29,6 +31,12 @@ export const MixesPage = () => {
   const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
   const navigate = useNavigate();
   const warningTexts = useCheckOutputUsage(mixes, 'mix');
+
+  useEffect(() => {
+    // TODO REMOVE WORKAROUND
+    const mix = mixes.find((s) => s.stripId === selectedMix);
+    setFullSelectedMix(mix ? JSON.parse(JSON.stringify(mix)) : mix);
+  }, [mixes, selectedMix]);
 
   useEffect(() => {
     if (!isFirstMount) return;
@@ -126,7 +134,7 @@ export const MixesPage = () => {
         {/* Effects Panel */}
         {selectedMix !== null && (
           <EffectsPanel
-            strip={mixes.find((m) => m.stripId === selectedMix)}
+            strip={fullSelectedMix}
             type="mixes"
             onClose={() => setIsFirstMount(true)}
           />

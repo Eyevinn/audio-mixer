@@ -1,8 +1,7 @@
 import { EffectsSlider } from './EffectsSlider';
 import styles from './filterComponents.module.css';
 import { TAudioStrip, TMixStrip } from '../../../../types/types';
-import { debounce } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type TTrimProps = {
   strip: TAudioStrip | TMixStrip;

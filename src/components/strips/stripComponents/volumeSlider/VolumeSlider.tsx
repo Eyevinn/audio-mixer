@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SliderLegend } from '../../../../assets/icons/SliderLegend';
 import { useHandleChange } from '../../../../hooks/useHandleChange';
 import { useGlobalState } from '../../../../context/GlobalStateContext';
-import { TAudioStrip, TMixStrip } from '../../../../types/types';
 
 type VolumeSliderProps = {
   inputVolume?: number;

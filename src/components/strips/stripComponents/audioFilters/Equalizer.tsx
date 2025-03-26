@@ -100,8 +100,6 @@ export const Equalizer = ({
   ];
 
   useEffect(() => {
-    // setTrimValue(strip?.filters?.gain.value || 0);
-    // console.log(Object.keys(strip?.filters?.eq?.bands || {}).length);
     setEqBandsArray(
       EQ_BAND_FILTERS[Object.keys(strip?.filters?.eq.bands || {}).length].array
     );
@@ -138,6 +136,7 @@ export const Equalizer = ({
     }
   };
 
+  // "eq":{"bands":{"0":{"freq":1000,"gain":0,"q":0.7070000171661377,"type":"low_pass"}}},
   return (
     <section className="mb-5">
       <label htmlFor="equalizer" className="text-lg font-bold mr-10">
@@ -169,16 +168,19 @@ export const Equalizer = ({
                 options={filterTypes}
                 value={eqState[`band${bandIndex}` as keyof EQState].type}
                 dropdownType="settings"
-                onChange={(value) => {
-                  setEqState((prev) => ({
-                    ...prev,
-                    [`band${bandIndex}`]: {
-                      ...prev[`band${bandIndex}` as keyof EQState],
-                      type: value
-                    }
-                  }));
-                  handleEffectChange(`eq/bands/${bandIndex}`, 'type', value);
-                }}
+                onChange={(value) =>
+                  handleEffectChange('eq', `bands/${bandIndex}/type`, value)
+                }
+                // onChange={(value) => {
+                //   setEqState((prev) => ({
+                //     ...prev,
+                //     [`band${bandIndex}`]: {
+                //       ...prev[`band${bandIndex}` as keyof EQState],
+                //       type: value
+                //     }
+                //   }));
+                //   handleEffectChange(`eq/bands/${bandIndex}`, 'type', value);
+                // }}
               />
               {renderEQ.map((eqType) => (
                 <EffectsSlider
@@ -197,21 +199,22 @@ export const Equalizer = ({
                   step={eqType.step}
                   unit={eqType.unit}
                   filter="eq"
-                  parameter={`${bandIndex} ${eqType.type}`}
-                  onChange={(value) => {
-                    setEqState((prev) => ({
-                      ...prev,
-                      [`band${bandIndex}`]: {
-                        ...prev[`band${bandIndex}` as keyof EQState],
-                        [eqType.type as keyof EQBand]: value
-                      }
-                    }));
-                    handleEffectChange(
-                      `eq/bands/${bandIndex}`,
-                      eqType.type,
-                      value
-                    );
-                  }}
+                  parameter={`bands/${bandIndex}/${eqType.type}`}
+                  onChange={handleEffectChange}
+                  // onChange={(value) => {
+                  //   setEqState((prev) => ({
+                  //     ...prev,
+                  //     [`band${bandIndex}`]: {
+                  //       ...prev[`band${bandIndex}` as keyof EQState],
+                  //       [eqType.type as keyof EQBand]: value
+                  //     }
+                  //   }));
+                  //   handleEffectChange(
+                  //     `eq/bands/${bandIndex}`,
+                  //     eqType.type,
+                  //     value
+                  //   );
+                  // }}
                 />
               ))}
             </div>

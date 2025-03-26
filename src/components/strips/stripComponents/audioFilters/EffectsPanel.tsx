@@ -6,9 +6,7 @@ import { MidSide } from './MidSide';
 import { Equalizer } from './Equalizer';
 import { Compressor } from './Compressor';
 import { Trim } from './Trim';
-import debounce from 'lodash/debounce';
 import { useGlobalState } from '../../../../context/GlobalStateContext';
-import logger from '../../../../utils/logger';
 
 interface EffectsPanelProps {
   strip: TAudioStrip | TMixStrip | undefined;
@@ -49,16 +47,31 @@ export const EffectsPanel = ({
             : { [parameter]: value };
 
         if (isConnected && strip) {
-          logger.green(parameter);
-          logger.magenta(value);
-          updateStrip(type, strip.stripId, {
-            filters: { [filter]: { [parameter]: value } }
-          });
-          sendMessage({
-            type: 'set',
-            resource: `/audio/${type}/${strip.stripId}/filters/${filter}`,
-            body: body
-          });
+          if (filter === 'eq' && parameter.includes('bands')) {
+            const keys = parameter.split('/');
+            const bands = keys[0];
+            const index = keys[1];
+            const param = keys[2];
+            updateStrip(type, strip.stripId, {
+              filters: {
+                [filter]: { [bands]: { [index]: { [param]: value } } }
+              }
+            });
+            sendMessage({
+              type: 'set',
+              resource: `/audio/${type}/${strip.stripId}/filters/${filter}/${bands}/${index}`,
+              body: { [param]: value }
+            });
+          } else {
+            updateStrip(type, strip.stripId, {
+              filters: { [filter]: { [parameter]: value } }
+            });
+            sendMessage({
+              type: 'set',
+              resource: `/audio/${type}/${strip.stripId}/filters/${filter}`,
+              body: body
+            });
+          }
         }
       },
     [isConnected, strip, type, sendMessage, updateStrip]

@@ -109,16 +109,6 @@ export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
             filter="compressor"
             parameter={compressor.name}
             onChange={handleEffectChange}
-            // onChange={(value) => {
-            //   handleEffectChange('compressor', compressor.name, value);
-            // }}
-            // onChange={(value) => {
-            //   setCompressorState((prev) => ({
-            //     ...prev,
-            //     [compressor.name]: value
-            //   }));
-            //   handleEffectChange('compressor', compressor.name, value);
-            // }}
           />
         ))}
       </div>

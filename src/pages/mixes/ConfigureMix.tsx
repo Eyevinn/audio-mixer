@@ -25,6 +25,9 @@ export const ConfigureMixPage = () => {
     id: number;
     type: 'mixes' | 'strips';
   } | null>(null);
+  const [fullSelectedStrip, setFullSelectedStrip] = useState<
+    TAudioStrip | TMixStrip
+  >();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFirstMount, setIsFirstMount] = useState(true);
   const [allInputs, setAllInputs] = useState<(TAudioStrip | TMixStrip)[]>([]);
@@ -39,6 +42,19 @@ export const ConfigureMixPage = () => {
     [mixes]
   );
   const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
+
+  useEffect(() => {
+    // TODO REMOVE WORKAROUND
+    if (!selectedStrip) {
+      setFullSelectedStrip(undefined);
+    } else {
+      const strip =
+        selectedStrip.type === 'mixes'
+          ? mixes.find((mix) => mix.stripId === selectedStrip.id)
+          : strips.find((strip) => strip.stripId === selectedStrip.id);
+      setFullSelectedStrip(strip ? JSON.parse(JSON.stringify(strip)) : strip);
+    }
+  }, [strips, selectedStrip, mixes]);
 
   useEffect(() => {
     if (!isFirstMount) return;
@@ -213,11 +229,7 @@ export const ConfigureMixPage = () => {
 
         {selectedStrip !== null && (
           <EffectsPanel
-            strip={
-              selectedStrip.type === 'mixes'
-                ? mixes.find((mix) => mix.stripId === selectedStrip.id)
-                : strips.find((strip) => strip.stripId === selectedStrip.id)
-            }
+            strip={fullSelectedStrip}
             type={selectedStrip.type}
             isConfigPage={true}
             onClose={() => setIsFirstMount(true)}
