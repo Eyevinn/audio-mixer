@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useGlobalState } from '../../../context/GlobalStateContext';
 import { useWebSocket } from '../../../context/WebSocketContext';
 import { TOutputStrip } from '../../../types/types';
@@ -47,54 +47,65 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
     resetOutputMeters(sendMessage, props.outputName);
   };
 
-  const handleOutputChange = (
-    id: number,
-    property: string,
-    value: number | boolean | string | undefined
-  ) => {
-    if (props.type === 'mixes' && property !== 'label') {
-      setMixes(
-        mixes.map((mix) =>
-          mix.stripId === id ? { ...mix, [property]: value } : mix
-        )
-      );
-    } else if (props.type === 'strips' && property !== 'label') {
-      setStrips(
-        strips.map((strip) =>
-          strip.stripId === id ? { ...strip, [property]: value } : strip
-        )
-      );
-    }
+  const handleOutputChange = useCallback(
+    (
+      id: number,
+      property: string,
+      value: number | boolean | string | undefined
+    ) => {
+      if (props.type === 'mixes' && property !== 'label') {
+        setMixes(
+          mixes.map((mix) =>
+            mix.stripId === id ? { ...mix, [property]: value } : mix
+          )
+        );
+      } else if (props.type === 'strips' && property !== 'label') {
+        setStrips(
+          strips.map((strip) =>
+            strip.stripId === id ? { ...strip, [property]: value } : strip
+          )
+        );
+      }
 
-    if (value === undefined) return;
+      if (value === undefined) return;
 
-    if (property === 'label') {
-      setLocalLabel(value.toString());
-      sendMessage({
-        type: 'set',
-        resource: `/audio/outputs/${props.outputName}`,
-        body: { [property]: value }
-      });
-    } else if (property === 'origin') {
-      sendMessage({
-        type: 'set',
-        resource: `/audio/outputs/${props.outputName}/input`,
-        body: { origin: value }
-      });
-    } else if (property === 'volume' || property === 'muted') {
-      sendMessage({
-        type: 'set',
-        resource: `/audio/${props.type}/${id}/fader`,
-        body: { [property]: value }
-      });
-    } else if (property === 'panning') {
-      sendMessage({
-        type: 'set',
-        resource: `/audio/${props.type}/${id}/filters/pan`,
-        body: { value: value }
-      });
-    }
-  };
+      if (property === 'label') {
+        setLocalLabel(value.toString());
+        sendMessage({
+          type: 'set',
+          resource: `/audio/outputs/${props.outputName}`,
+          body: { [property]: value }
+        });
+      } else if (property === 'origin') {
+        sendMessage({
+          type: 'set',
+          resource: `/audio/outputs/${props.outputName}/input`,
+          body: { origin: value }
+        });
+      } else if (property === 'volume' || property === 'muted') {
+        sendMessage({
+          type: 'set',
+          resource: `/audio/${props.type}/${id}/fader`,
+          body: { [property]: value }
+        });
+      } else if (property === 'panning') {
+        sendMessage({
+          type: 'set',
+          resource: `/audio/${props.type}/${id}/filters/pan`,
+          body: { value: value }
+        });
+      }
+    },
+    [
+      mixes,
+      props.outputName,
+      props.type,
+      sendMessage,
+      setMixes,
+      setStrips,
+      strips
+    ]
+  );
 
   return (
     <BaseStrip
