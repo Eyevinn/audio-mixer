@@ -137,7 +137,6 @@ export const Equalizer = ({
     }
   };
 
-  // "eq":{"bands":{"0":{"freq":1000,"gain":0,"q":0.7070000171661377,"type":"low_pass"}}},
   return (
     <section className="mb-5">
       <label htmlFor="equalizer" className="text-lg font-bold mr-10">
@@ -192,20 +191,6 @@ export const Equalizer = ({
                   filter="eq"
                   parameter={`bands/${bandIndex}/${eqType.type}`}
                   onChange={handleEffectChange}
-                  // onChange={(value) => {
-                  //   setEqState((prev) => ({
-                  //     ...prev,
-                  //     [`band${bandIndex}`]: {
-                  //       ...prev[`band${bandIndex}` as keyof EQState],
-                  //       [eqType.type as keyof EQBand]: value
-                  //     }
-                  //   }));
-                  //   handleEffectChange(
-                  //     `eq/bands/${bandIndex}`,
-                  //     eqType.type,
-                  //     value
-                  //   );
-                  // }}
                 />
               ))}
             </div>

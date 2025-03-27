@@ -65,7 +65,6 @@ export const OutputStrip: React.FC<TOutputStripProps> = (props) => {
       if (value === undefined) return;
 
       if (property === 'label') {
-        // setLocalLabel(value.toString());
         updateOutput(props.outputName, { label: value });
         sendMessage({
           type: 'set',

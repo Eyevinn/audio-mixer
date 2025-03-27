@@ -64,10 +64,6 @@ export const MidSide = ({ midSide, handleEffectChange }: TMidSideProps) => {
           filter="mid_side"
           parameter="mid_amount"
           onChange={onChange}
-          // onChange={(value) => {
-          //   setMidAmount(amountPosToVal(value));
-          //   handleEffectChange('mid_side', 'mid_amount', amountPosToVal(value));
-          // }}
         />
         <EffectsSlider
           id="side_amount"
@@ -80,14 +76,6 @@ export const MidSide = ({ midSide, handleEffectChange }: TMidSideProps) => {
           filter="mid_side"
           parameter="side_amount"
           onChange={onChange}
-          // onChange={(value) => {
-          //   setSideAmount(amountPosToVal(value));
-          //   handleEffectChange(
-          //     'mid_side',
-          //     'side_amount',
-          //     amountPosToVal(value)
-          //   );
-          // }}
         />
       </div>
     </section>
