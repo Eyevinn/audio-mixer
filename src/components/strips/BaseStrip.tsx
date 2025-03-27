@@ -154,7 +154,7 @@ export const BaseStrip = ({
       ) : (
         <StripHeader
           header={header}
-          label={label || stripId.toString()}
+          label={label || ''}
           configMode={configMode}
           copyButton={isBeingConfigured ? undefined : copyButton}
           isRemovingFromMix={configMode}
@@ -169,7 +169,10 @@ export const BaseStrip = ({
       {/* Label Input */}
       {isOutputStrip && <span className="text-xs ml-4">Output label:</span>}
       <LabelInput
-        value={label || stripId.toString()}
+        value={
+          label ||
+          `${type === 'strips' ? 'Strip' : 'Mix'} #${stripId.toString()}`
+        }
         isPFLInput={isPFLInput}
         readOnly={isPFLInput}
         onChange={handleLabelChange}
