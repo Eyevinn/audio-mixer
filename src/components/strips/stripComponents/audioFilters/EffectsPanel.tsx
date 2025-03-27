@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { useWebSocket } from '../../../../context/WebSocketContext';
 import { TAudioStrip, TMixStrip } from '../../../../types/types';
 import Icons from '../../../../assets/icons/Icons';
@@ -6,6 +6,7 @@ import { MidSide } from './MidSide';
 import { Equalizer } from './Equalizer';
 import { Compressor } from './Compressor';
 import { Trim } from './Trim';
+import { useGlobalState } from '../../../../context/GlobalStateContext';
 
 interface EffectsPanelProps {
   strip: TAudioStrip | TMixStrip | undefined;
@@ -21,6 +22,7 @@ export const EffectsPanel = ({
   onClose
 }: EffectsPanelProps) => {
   const { sendMessage, isConnected } = useWebSocket();
+  const { updateStrip } = useGlobalState();
 
   const isStereo = () => {
     if (
@@ -36,26 +38,46 @@ export const EffectsPanel = ({
     }
   };
 
+  const handleEffectChange = useMemo(
+    () =>
+      (filter: string, parameter: string, value: number | string | boolean) => {
+        const body =
+          parameter === 'enabled'
+            ? { [parameter]: value, input_format: 'lr_stereo' }
+            : { [parameter]: value };
+
+        if (isConnected && strip) {
+          if (filter === 'eq' && parameter.includes('bands')) {
+            const keys = parameter.split('/');
+            const bands = keys[0];
+            const index = keys[1];
+            const param = keys[2];
+            updateStrip(type, strip.stripId, {
+              filters: {
+                [filter]: { [bands]: { [index]: { [param]: value } } }
+              }
+            });
+            sendMessage({
+              type: 'set',
+              resource: `/audio/${type}/${strip.stripId}/filters/${filter}/${bands}/${index}`,
+              body: { [param]: value }
+            });
+          } else {
+            updateStrip(type, strip.stripId, {
+              filters: { [filter]: { [parameter]: value } }
+            });
+            sendMessage({
+              type: 'set',
+              resource: `/audio/${type}/${strip.stripId}/filters/${filter}`,
+              body: body
+            });
+          }
+        }
+      },
+    [isConnected, strip, type, sendMessage, updateStrip]
+  );
+
   if (!strip) return null;
-
-  const handleEffectChange = (
-    filter: string,
-    parameter: string,
-    value: number | string | boolean
-  ) => {
-    const body =
-      parameter === 'enabled'
-        ? { [parameter]: value, input_format: 'lr_stereo' }
-        : { [parameter]: value };
-
-    if (isConnected) {
-      sendMessage({
-        type: 'set',
-        resource: `/audio/${type}/${strip.stripId}/filters/${filter}`,
-        body: body
-      });
-    }
-  };
 
   return (
     <div className="h-full min-w-[38rem] overflow-y-auto rounded-tl-lg rounded-bl-lg border border-r-0 border-filter-highlited-bg bg-filter-bg p-2 text-white scrollbar-thumb-border-bg scrollbar-track-transparent scrollbar-thin box-border">

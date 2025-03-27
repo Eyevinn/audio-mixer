@@ -100,7 +100,6 @@ export const Equalizer = ({
   ];
 
   useEffect(() => {
-    // setTrimValue(strip?.filters?.gain.value || 0);
     setEqBandsArray(
       EQ_BAND_FILTERS[Object.keys(strip?.filters?.eq.bands || {}).length].array
     );
@@ -132,7 +131,8 @@ export const Equalizer = ({
           ...prev,
           [`band${i}`]: { type: 'none', freq: 1000, gain: 0, q: 0.707 }
         }));
-        removeEQBand(sendMessage, type, strip.stripId, i);
+        const key = Number(Object.keys(strip?.filters?.eq.bands || {})[i]);
+        removeEQBand(sendMessage, type, strip.stripId, key);
       }
     }
   };
@@ -168,16 +168,9 @@ export const Equalizer = ({
                 options={filterTypes}
                 value={eqState[`band${bandIndex}` as keyof EQState].type}
                 dropdownType="settings"
-                onChange={(value) => {
-                  setEqState((prev) => ({
-                    ...prev,
-                    [`band${bandIndex}`]: {
-                      ...prev[`band${bandIndex}` as keyof EQState],
-                      type: value
-                    }
-                  }));
-                  handleEffectChange(`eq/bands/${bandIndex}`, 'type', value);
-                }}
+                onChange={(value) =>
+                  handleEffectChange('eq', `bands/${bandIndex}/type`, value)
+                }
               />
               {renderEQ.map((eqType) => (
                 <EffectsSlider
@@ -196,21 +189,8 @@ export const Equalizer = ({
                   step={eqType.step}
                   unit={eqType.unit}
                   filter="eq"
-                  parameter={`${bandIndex} ${eqType.type}`}
-                  onChange={(value) => {
-                    setEqState((prev) => ({
-                      ...prev,
-                      [`band${bandIndex}`]: {
-                        ...prev[`band${bandIndex}` as keyof EQState],
-                        [eqType.type as keyof EQBand]: value
-                      }
-                    }));
-                    handleEffectChange(
-                      `eq/bands/${bandIndex}`,
-                      eqType.type,
-                      value
-                    );
-                  }}
+                  parameter={`bands/${bandIndex}/${eqType.type}`}
+                  onChange={handleEffectChange}
                 />
               ))}
             </div>

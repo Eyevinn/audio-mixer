@@ -15,9 +15,11 @@ import { useCheckOutputUsage } from '../../hooks/useCheckOutputUsage';
 import { useNextAvailableIndex } from '../../hooks/useNextAvailableIndex';
 import { useRemoveFromMixInputs } from '../../hooks/useRemoveFromMixInputs';
 import { addStrip, removeStrip } from '../../utils/wsCommands';
+import { TAudioStrip } from '../../types/types';
 
 export const StripsPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<number | null>(null);
+  const [fullSelectedStrip, setFullSelectedStrip] = useState<TAudioStrip>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteAllDisabled, setIsDeleteAllDisabled] = useState<boolean>(true);
   const { sendMessage } = useWebSocket();
@@ -32,6 +34,12 @@ export const StripsPage = () => {
   useEffect(() => {
     setIsDeleteAllDisabled(strips.length === 0);
   }, [strips]);
+
+  useEffect(() => {
+    // TODO REMOVE WORKAROUND
+    const strip = strips.find((s) => s.stripId === selectedStrip);
+    setFullSelectedStrip(strip ? JSON.parse(JSON.stringify(strip)) : strip);
+  }, [strips, selectedStrip]);
 
   useEffect(() => {
     if (isFirstMount) return;
@@ -127,7 +135,7 @@ export const StripsPage = () => {
         {/* Effects Panel */}
         {selectedStrip !== null && (
           <EffectsPanel
-            strip={strips.find((s) => s.stripId === selectedStrip)}
+            strip={fullSelectedStrip}
             type="strips"
             onClose={() => setIsFirstMount(true)}
           />

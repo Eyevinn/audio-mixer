@@ -1,4 +1,5 @@
-import React from 'react';
+import { debounce } from 'lodash';
+import React, { useEffect, useMemo, useState } from 'react';
 
 interface EffectsSliderProps {
   id: string;
@@ -10,7 +11,7 @@ interface EffectsSliderProps {
   unit: string;
   filter: string;
   parameter: string;
-  onChange: (value: number) => void;
+  onChange: (filterType: string, filter: string, value: number) => void;
   onDoubleClick?: () => void;
 }
 
@@ -22,9 +23,27 @@ export const EffectsSlider = ({
   value,
   step,
   unit,
+  filter,
+  parameter,
   onChange,
   onDoubleClick
 }: EffectsSliderProps) => {
+  const [sliderValue, setSliderValue] = useState<number>(value);
+
+  useEffect(() => {
+    setSliderValue(value);
+  }, [value]);
+
+  const debouncedChange = useMemo(
+    () => debounce((value: number) => onChange(filter, parameter, value), 500),
+    [onChange, parameter, filter]
+  );
+
+  const handleChange = (val: number) => {
+    setSliderValue(val);
+    debouncedChange(val);
+  };
+
   return (
     <div className="py-[5px] text-sm">
       <label htmlFor={`${id}_slider`} className="w-[150px] inline-block">
@@ -35,14 +54,14 @@ export const EffectsSlider = ({
         id={`${id}_slider`}
         min={min}
         max={max}
-        value={value}
+        value={sliderValue}
         step={step}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => handleChange(Number(e.target.value))}
         onDoubleClick={onDoubleClick}
         className="w-[200px] slider-track [&::-webkit-slider-thumb]:slider-thumb [&::-moz-range-thumb]:slider-thumb"
       />
       <output id={`${id}_slider_value`} className="ml-2">
-        {value} {unit}
+        {sliderValue} {unit}
       </output>
     </div>
   );

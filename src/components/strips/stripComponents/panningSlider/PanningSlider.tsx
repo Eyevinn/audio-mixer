@@ -1,23 +1,37 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { PanningLegend } from '../../../../assets/icons/PanningLegend';
 import debounce from 'lodash/debounce';
 import { SetValueButtons } from './SetValueButtons';
+import { useHandleChange } from '../../../../hooks/useHandleChange';
+import { useGlobalState } from '../../../../context/GlobalStateContext';
 
 type PanningSliderProps = {
   inputValue: number;
-  onChange: (panning: number) => void;
+  type: 'strips' | 'mixes';
+  id: number;
+  config?: number;
 };
 
-export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
+export const PanningSlider = ({
+  inputValue,
+  type,
+  id,
+  config
+}: PanningSliderProps) => {
   const [localValue, setLocalValue] = useState(inputValue || 0);
+  const panningPosToVal = (pos: number): number => pos / 64 - 1.0;
+  const { updateStrip } = useGlobalState();
+  const { handleChange } = useHandleChange();
 
   // Throttle WebSocket updates
   const throttledPanningChange = useMemo(
     () =>
       debounce((value: number) => {
-        onChange(value);
+        const newVal = panningPosToVal(value);
+        handleChange(type, id, 'panning', newVal, config);
+        updateStrip(type, id, { filters: { pan: { value: newVal } } });
       }, 500),
-    [onChange]
+    [handleChange, type, id, config, updateStrip]
   );
 
   // Update local value when input changes from outside
@@ -25,12 +39,10 @@ export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
     if (typeof inputValue === 'number' && !isNaN(inputValue)) {
       setLocalValue(inputValue);
     }
-  }, [inputValue]);
+  }, [inputValue, id]);
 
   const onChangeHandler = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = parseInt(e.target.value);
-
+    (newValue: number) => {
       // Update local state immediately for smooth visual feedback
       setLocalValue(newValue);
 
@@ -43,7 +55,7 @@ export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
   return (
     <div className="relative w-[80px] h-[50px] mb-3">
       <PanningLegend />
-      <SetValueButtons onChange={onChange} />
+      <SetValueButtons onChange={onChangeHandler} />
       <input
         type="range"
         className="absolute w-[80px] h-[5px] left-[2px] bg-[#d3d3d3] outline-none
@@ -56,7 +68,7 @@ export const PanningSlider = ({ inputValue, onChange }: PanningSliderProps) => {
         onMouseDown={(e) => {
           e.stopPropagation();
         }}
-        onChange={onChangeHandler}
+        onChange={(e) => onChangeHandler(parseInt(e.target.value))}
       />
     </div>
   );

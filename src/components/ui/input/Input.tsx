@@ -1,4 +1,5 @@
-import React from 'react';
+import { debounce } from 'lodash';
+import React, { useEffect, useMemo, useState } from 'react';
 
 type TInputProps = {
   className?: string;
@@ -63,18 +64,35 @@ export const LabelInput = ({
   readOnly,
   onChange
 }: TStripInputProps) => {
+  const [localValue, setLocalValue] = useState<string>(value);
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  const debouncedOnChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        onChange(value);
+      }, 500),
+    [onChange]
+  );
+
+  const handleChange = (val: string) => {
+    if (!isPFLInput) {
+      setLocalValue(val);
+      debouncedOnChange(val);
+    }
+  };
+
   return (
     <div className="w-full px-4 items-center">
       <input
         readOnly={readOnly}
         type="text"
         maxLength={15}
-        value={value}
-        onChange={(e) => {
-          if (!isPFLInput) {
-            onChange(e.target.value);
-          }
-        }}
+        value={localValue}
+        onChange={(e) => handleChange(e.target.value)}
         className={`w-full bg-label-field text-black g-transparent outline-none text-center py-1 text-sm rounded mb-1 truncate overflow-hidden whitespace-nowrap px-2`}
       />
     </div>

@@ -5,15 +5,32 @@ import { PageHeader } from '../../components/pageLayout/pageHeader/PageHeader';
 import { ScrollableContainer } from '../../components/scrollableContainer/ScrollableContainer';
 import { EffectsPanel } from '../../components/strips/stripComponents/audioFilters/EffectsPanel';
 import { useGlobalState } from '../../context/GlobalStateContext';
+import { TAudioStrip, TMixStrip } from '../../types/types';
 
 export const OutputMappingPage = () => {
   const [selectedStrip, setSelectedStrip] = useState<{
     id: number;
     type: 'mixes' | 'strips';
   } | null>(null);
+  const [fullSelectedStrip, setFullSelectedStrip] = useState<
+    TAudioStrip | TMixStrip
+  >();
   const [isFirstMount, setIsFirstMount] = useState<boolean>(true);
   const { strips, mixes, outputs, setStrips, setMixes } = useGlobalState();
   const isPFL = useMemo(() => mixes?.find((m) => m.stripId === 1000), [mixes]);
+
+  useEffect(() => {
+    // TODO REMOVE WORKAROUND
+    if (!selectedStrip) {
+      setFullSelectedStrip(undefined);
+    } else {
+      const strip =
+        selectedStrip.type === 'mixes'
+          ? mixes.find((mix) => mix.stripId === selectedStrip.id)
+          : strips.find((strip) => strip.stripId === selectedStrip.id);
+      setFullSelectedStrip(strip ? JSON.parse(JSON.stringify(strip)) : strip);
+    }
+  }, [strips, selectedStrip, mixes]);
 
   useEffect(() => {
     if (!isFirstMount) return;
@@ -86,11 +103,7 @@ export const OutputMappingPage = () => {
 
         {selectedStrip !== null && (
           <EffectsPanel
-            strip={
-              selectedStrip.type === 'mixes'
-                ? mixes.find((mix) => mix.stripId === selectedStrip.id)
-                : strips.find((strip) => strip.stripId === selectedStrip.id)
-            }
+            strip={fullSelectedStrip}
             type={selectedStrip.type}
             onClose={() => setIsFirstMount(true)}
           />

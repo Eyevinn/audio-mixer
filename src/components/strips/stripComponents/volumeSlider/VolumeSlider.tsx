@@ -1,11 +1,15 @@
 import debounce from 'lodash/debounce';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SliderLegend } from '../../../../assets/icons/SliderLegend';
+import { useHandleChange } from '../../../../hooks/useHandleChange';
+import { useGlobalState } from '../../../../context/GlobalStateContext';
 
 type VolumeSliderProps = {
   inputVolume?: number;
   isDisabled?: boolean;
-  onVolumeChange: (volume: number) => void;
+  type: 'strips' | 'mixes';
+  id: number;
+  config?: number;
 };
 
 function dBToRatio(db: number) {
@@ -52,17 +56,26 @@ function volumeValToPos(val: number) {
 export const VolumeSlider = ({
   inputVolume,
   isDisabled,
-  onVolumeChange
+  type,
+  id,
+  config
 }: VolumeSliderProps) => {
   const [volume, setVolume] = useState(inputVolume ?? 0);
+  const { updateStrip } = useGlobalState();
+  const { handleChange } = useHandleChange();
 
   // Throttle WebSocket updates
   const throttledVolumeChange = useMemo(
     () =>
       debounce((value: number) => {
-        onVolumeChange(value);
+        handleChange(type, id, 'volume', value, config);
+        if (config) {
+          updateStrip(type, id, { volume: value }, config);
+        } else {
+          updateStrip(type, id, { fader: { volume: value } });
+        }
       }, 500),
-    [onVolumeChange]
+    [handleChange, config, id, type, updateStrip]
   );
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   createContext,
   FC,
@@ -6,6 +7,7 @@ import React, {
   useState
 } from 'react';
 import { TAudioStrip, TMixStrip, TOutput } from '../types/types';
+import { merge } from 'lodash';
 
 interface GlobalStateContextType {
   strips: TAudioStrip[];
@@ -14,7 +16,14 @@ interface GlobalStateContextType {
   errorMessage: string;
   setStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>;
   setMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>;
+  updateStrip: (
+    type: 'strips' | 'mixes',
+    id: number,
+    object: any,
+    mixId?: number
+  ) => void;
   setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: TOutput }>>;
+  updateOutput: (name: string, object: any) => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -27,6 +36,47 @@ export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
   const [mixes, setMixes] = useState<TMixStrip[]>([]);
   const [outputs, setOutputs] = useState<{ [key: string]: TOutput }>({});
   const [errorMessage, setErrorMessage] = useState<string>('');
+
+  const updateState = (
+    updateFunc: React.Dispatch<React.SetStateAction<any>>,
+    id: number,
+    object: any
+  ) => {
+    updateFunc((prevState: any) =>
+      prevState.map((state: TAudioStrip | TMixStrip) => {
+        if (state.stripId !== id) return state;
+        return merge(state, object);
+      })
+    );
+  };
+
+  const updateStrip = (
+    type: 'strips' | 'mixes',
+    id: number,
+    object: any,
+    mixId?: number
+  ) => {
+    if (mixId) {
+      updateState(setMixes, mixId, {
+        inputs: {
+          [type]: {
+            [id]: object
+          }
+        }
+      });
+    } else {
+      const updateFunc = type === 'strips' ? setStrips : setMixes;
+      updateState(updateFunc, id, object);
+    }
+  };
+
+  const updateOutput = (name: string, object: any) => {
+    setOutputs((prevState: any) => ({
+      ...prevState,
+      [name]: merge(prevState[name], object)
+    }));
+  };
+
   return (
     <GlobalStateContext.Provider
       value={{
@@ -36,7 +86,9 @@ export const GlobalStateProvider: FC<{ children: ReactNode }> = ({
         errorMessage,
         setStrips,
         setMixes,
+        updateStrip,
         setOutputs,
+        updateOutput,
         setErrorMessage
       }}
     >

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TAudioStrip, TMixStrip } from '../../../../types/types';
 import { EffectsSlider } from './EffectsSlider';
 import { CompressorVisualisation } from './CompressorVisualisation';
@@ -13,20 +13,45 @@ type TCompressorProps = {
   ) => void;
 };
 
-export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
-  const [compressorState, setCompressorState] = useState({
-    threshold: 0,
-    ratio: 4,
-    knee: 2,
-    makeUpGain: 0
-  });
+interface compressorState {
+  attack: number;
+  gain: number;
+  knee: number;
+  ratio: number;
+  release: number;
+  threshold: number;
+}
 
-  const compressorArray = strip.filters && [
+const defaultValues = {
+  attack: 50,
+  gain: 0,
+  knee: 0,
+  ratio: 0,
+  release: 200,
+  threshold: 0
+};
+
+export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
+  const [compressorState, setCompressorState] =
+    useState<compressorState>(defaultValues);
+
+  useEffect(() => {
+    setCompressorState({
+      attack: strip?.filters?.compressor?.attack ?? defaultValues.attack,
+      gain: strip?.filters?.compressor?.gain ?? defaultValues.gain,
+      knee: strip?.filters?.compressor?.knee ?? defaultValues.knee,
+      ratio: strip?.filters?.compressor?.ratio ?? defaultValues.ratio,
+      release: strip?.filters?.compressor?.release ?? defaultValues.release,
+      threshold:
+        strip?.filters?.compressor?.threshold ?? defaultValues.threshold
+    });
+  }, [strip?.filters?.compressor]);
+
+  const compressorArray = [
     {
       name: 'attack',
       min: 0,
       max: 120,
-      value: strip.filters.compressor.attack,
       step: 1,
       unit: 'ms'
     },
@@ -34,7 +59,6 @@ export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
       name: 'gain',
       min: 0,
       max: 30,
-      value: strip.filters.compressor.gain,
       step: 1,
       unit: 'dB'
     },
@@ -42,7 +66,6 @@ export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
       name: 'knee',
       min: 0,
       max: 30,
-      value: strip.filters.compressor.knee,
       step: 1,
       unit: 'dB'
     },
@@ -50,7 +73,6 @@ export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
       name: 'ratio',
       min: 0,
       max: 30,
-      value: strip.filters.compressor.ratio,
       step: 1,
       unit: ':1'
     },
@@ -58,7 +80,6 @@ export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
       name: 'release',
       min: 10,
       max: 1000,
-      value: strip.filters.compressor.release,
       step: 1,
       unit: 'ms'
     },
@@ -66,7 +87,6 @@ export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
       name: 'threshold',
       min: -60,
       max: 0,
-      value: strip.filters.compressor.threshold,
       step: 1,
       unit: 'dB'
     }
@@ -76,35 +96,28 @@ export const Compressor = ({ strip, handleEffectChange }: TCompressorProps) => {
     <section className={styles.settingsItem}>
       <h2 className="text-base font-bold mb-2">Compressor</h2>
       <div className="mb-2 ml-2">
-        {compressorArray &&
-          compressorArray.map((compressor) => (
-            <EffectsSlider
-              key={compressor.name}
-              id={`compressor_${compressor.name}`}
-              text={`${compressor.name.charAt(0).toUpperCase() + compressor.name.slice(1)}:`}
-              min={compressor.min}
-              max={compressor.max}
-              value={compressor.value}
-              step={compressor.step}
-              unit={compressor.unit}
-              filter="compressor"
-              parameter={compressor.name}
-              onChange={(value) => {
-                setCompressorState((prev) => ({
-                  ...prev,
-                  [compressor.name]: value
-                }));
-                handleEffectChange('compressor', compressor.name, value);
-              }}
-            />
-          ))}
+        {compressorArray?.map((compressor) => (
+          <EffectsSlider
+            key={compressor.name}
+            id={`compressor_${compressor.name}`}
+            text={`${compressor.name.charAt(0).toUpperCase() + compressor.name.slice(1)}:`}
+            min={compressor.min}
+            max={compressor.max}
+            value={compressorState[compressor.name as keyof compressorState]}
+            step={compressor.step}
+            unit={compressor.unit}
+            filter="compressor"
+            parameter={compressor.name}
+            onChange={handleEffectChange}
+          />
+        ))}
       </div>
 
       <CompressorVisualisation
         threshold={compressorState.threshold}
         ratio={compressorState.ratio}
         kneeWidth={compressorState.knee}
-        makeUpGain={compressorState.makeUpGain}
+        makeUpGain={compressorState.gain}
       />
     </section>
   );

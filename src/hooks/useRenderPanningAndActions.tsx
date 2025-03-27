@@ -1,8 +1,8 @@
+import MuteButton from '../components/strips/stripComponents/buttons/MuteButton';
+import PFLButton from '../components/strips/stripComponents/buttons/PFLButton';
 import { PanningSlider } from '../components/strips/stripComponents/panningSlider/PanningSlider';
 import { ActionButton } from '../components/ui/buttons/Buttons';
-import { useWebSocket } from '../context/WebSocketContext';
 import { Filters } from '../types/types';
-import { useHandleChange } from './useHandleChange';
 
 export const useRenderPanningAndActions = (
   stripId: number,
@@ -11,43 +11,19 @@ export const useRenderPanningAndActions = (
   configMode: boolean,
   handleSelection: () => void,
   selected?: boolean,
-  isPFLInactive?: boolean,
   fader?: { muted: boolean; volume: number },
   filters?: Filters,
   config?: number
 ) => {
   const panningValToPos = (val: number): number => Math.round((val + 1) * 64);
-  const panningPosToVal = (pos: number): number => pos / 64 - 1.0;
-  const { sendMessage } = useWebSocket();
-  const { handleChange } = useHandleChange();
 
   const renderButtonColor = (label: string) => {
     switch (label) {
       case 'SELECT':
         return selected ? 'bg-select-btn' : 'bg-default-btn';
-      case 'PFL':
-        return !isPFLInactive ? 'bg-pfl-btn' : 'bg-default-btn';
-      case 'MUTE':
-        if (configMode) {
-          return 'invisible';
-        } else {
-          return fader?.muted ? 'bg-mute-btn' : 'bg-default-btn';
-        }
       default:
         return 'bg-default-btn';
     }
-  };
-
-  const handlePFLChange = (value: boolean | undefined) => {
-    if (value === undefined) return;
-
-    sendMessage({
-      type: 'set',
-      resource: `/audio/mixes/1000/inputs/${type}/${stripId}`,
-      body: {
-        muted: value
-      }
-    });
   };
 
   const renderPanningAndActions = () => {
@@ -57,18 +33,12 @@ export const useRenderPanningAndActions = (
         {/* Panning Slider */}
         <PanningSlider
           inputValue={panningValToPos(filters ? filters.pan?.value : 0)}
-          onChange={(panning) =>
-            handleChange(
-              type,
-              stripId,
-              'panning',
-              panningPosToVal(panning),
-              config
-            )
-          }
+          type={type}
+          id={stripId}
+          config={config}
         />
         <div className="flex flex-col justify-end">
-          {['SELECT', 'PFL', 'MUTE'].map((label, index) => (
+          {['SELECT'].map((label, index) => (
             <ActionButton
               key={index}
               label={label}
@@ -79,16 +49,19 @@ export const useRenderPanningAndActions = (
                   case 'SELECT':
                     handleSelection();
                     break;
-                  case 'PFL':
-                    handlePFLChange(!isPFLInactive);
-                    break;
-                  case 'MUTE':
-                    handleChange(type, stripId, 'muted', !fader?.muted, config);
-                    break;
                 }
               }}
             />
           ))}
+          {!configMode && (
+            <MuteButton
+              type={type}
+              id={stripId}
+              muted={fader?.muted}
+              config={config}
+            />
+          )}
+          <PFLButton type={type} id={stripId} />
         </div>
       </div>
     );

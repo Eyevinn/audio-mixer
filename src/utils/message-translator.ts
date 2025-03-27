@@ -1,7 +1,10 @@
+import {
+  OutputSamplingData,
+  StripsSamplingData
+} from '../context/SamplingDataContext';
 import { TAudioStrip, TBaseStrip, TMixStrip, TOutput } from '../types/types';
 import deepMerge from './deep-merge';
 import logger from './logger';
-import { getMixByIndex, getStripByIndex, subscribe } from './wsCommands';
 
 //TODO rewrite these update functions
 function mapData<T extends TBaseStrip>(
@@ -81,17 +84,28 @@ function updateData<T extends TBaseStrip>(
 
 const messageTranslator = (
   message: string,
-  sendMessage: (
-    message: Record<string, unknown> | Record<string, unknown>[]
-  ) => void,
+  subscribe: () => void,
+  getStripByIndex: (index: number) => void,
+  getMixByIndex: (index: number) => void,
   setStrips: React.Dispatch<React.SetStateAction<TAudioStrip[]>>,
   setMixes: React.Dispatch<React.SetStateAction<TMixStrip[]>>,
   setOutputs: React.Dispatch<React.SetStateAction<{ [key: string]: TOutput }>>,
-  setErrorMessage: React.Dispatch<React.SetStateAction<string>>
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>,
+  setStripsSamplingData: React.Dispatch<
+    React.SetStateAction<StripsSamplingData>
+  >,
+  setMixesSamplingData: React.Dispatch<
+    React.SetStateAction<StripsSamplingData>
+  >,
+  setOutputsSamplingData: React.Dispatch<
+    React.SetStateAction<OutputSamplingData>
+  >
 ) => {
-  if (!message || !sendMessage || !setStrips) return;
+  if (!message || !setStrips) return;
   try {
     const data = JSON.parse(message);
+    // if (data.type !== 'sampling-update') logger.red(message);
+    if (data.actor === 'self') return;
     logger.data(
       data.type,
       data.resource || data.event,
@@ -155,7 +169,7 @@ const messageTranslator = (
 
       case 'event':
         if (data.event === 'connect') {
-          subscribe(sendMessage);
+          subscribe();
         }
         break;
 
@@ -164,10 +178,8 @@ const messageTranslator = (
         const resourceType = resourceArray[1];
         const resourceIndex = resourceArray[2];
         if (resourceType && resourceIndex) {
-          if (resourceType === 'strips')
-            getStripByIndex(sendMessage, resourceIndex);
-          else if (resourceType === 'mixes')
-            getMixByIndex(sendMessage, resourceIndex);
+          if (resourceType === 'strips') getStripByIndex(resourceIndex);
+          else if (resourceType === 'mixes') getMixByIndex(resourceIndex);
         }
         break;
       }
@@ -177,24 +189,40 @@ const messageTranslator = (
         const resourceType = resourceArray[1];
         const resourceIndex = resourceArray[2];
         const resourceCommand = resourceArray[3];
-        const resourceCommandType: 'strips' | 'mixes' = resourceArray[4];
+        const resourceCommandType = resourceArray[4];
         const resourceCommandIndex = resourceArray[5];
-        if (resourceType === 'strips') {
+        const band = resourceArray[6];
+        if (resourceCommand === 'filters' && resourceCommandType === 'eq') {
+          const updateFunc = resourceType === 'strips' ? setStrips : setMixes;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          updateFunc((prevStrips: any) =>
+            prevStrips.map((prevStrip: TAudioStrip | TMixStrip) => {
+              if (prevStrip.stripId.toString() === resourceIndex) {
+                const stripCopy: TAudioStrip | TMixStrip = JSON.parse(
+                  JSON.stringify(prevStrip)
+                );
+                if (stripCopy.filters?.eq?.bands?.[band])
+                  delete stripCopy.filters?.eq?.bands?.[band];
+                return stripCopy;
+              }
+              return prevStrip;
+            })
+          );
+        } else if (resourceType === 'strips') {
           setStrips((prevStrips) =>
             prevStrips.filter(
               (prevStrip) => prevStrip.stripId.toString() !== resourceIndex
             )
           );
-        }
-        if (resourceType === 'mixes') {
+        } else if (resourceType === 'mixes') {
           if (resourceCommand === 'inputs') {
             setMixes((prevMixes: TMixStrip[]) =>
               prevMixes.map((prevMix) => {
                 if (prevMix.stripId.toString() === resourceIndex) {
                   const updatedMix = prevMix;
-                  delete updatedMix.inputs[resourceCommandType][
-                    resourceCommandIndex
-                  ];
+                  delete updatedMix.inputs[
+                    resourceCommandType as 'mixes' | 'strips'
+                  ][resourceCommandIndex];
                   return updatedMix;
                 }
                 return prevMix;
@@ -228,79 +256,13 @@ const messageTranslator = (
         break;
       case 'sampling-update':
         if (data.resource === '/audio/strips/*/pre_fader_meter/*') {
-          const dataStrips = data.body.audio?.strips || {};
-          Object.entries(dataStrips).forEach(([stripId, stripData]) => {
-            const typedStripData = stripData as {
-              pre_fader_meter: TAudioStrip['pre_fader_meter'];
-            };
-            setStrips((prevStrips) => {
-              return prevStrips.map((strip) => {
-                if (
-                  strip.stripId === parseInt(stripId) &&
-                  typedStripData.pre_fader_meter
-                ) {
-                  return {
-                    ...strip,
-                    pre_fader_meter: {
-                      peak_left: typedStripData.pre_fader_meter?.peak_left,
-                      peak_right: typedStripData.pre_fader_meter?.peak_right
-                    }
-                  };
-                }
-                return strip;
-              });
-            });
-          });
+          setStripsSamplingData(data.body.audio?.strips);
         }
         if (data.resource === '/audio/mixes/*/pre_fader_meter/*') {
-          const dataMixes = data.body.audio?.mixes || {};
-          Object.entries(dataMixes).forEach(([mixId, mixData]) => {
-            const typedMixData = mixData as {
-              pre_fader_meter: TMixStrip['pre_fader_meter'];
-            };
-            setMixes((prevMixes) => {
-              return prevMixes.map((mix) => {
-                if (
-                  mix.stripId === parseInt(mixId) &&
-                  typedMixData.pre_fader_meter
-                ) {
-                  return {
-                    ...mix,
-                    pre_fader_meter: {
-                      peak_left: typedMixData.pre_fader_meter?.peak_left,
-                      peak_right: typedMixData.pre_fader_meter?.peak_right
-                    }
-                  };
-                }
-                return mix;
-              });
-            });
-          });
+          setMixesSamplingData(data.body.audio?.mixes);
         }
         if (data.resource === '/audio/outputs/*/meters/*') {
-          const dataOutputs = data.body.audio?.outputs || {};
-          Object.entries(dataOutputs).forEach(([outputName, outputData]) => {
-            const typedOutputData = outputData as {
-              meters: TOutput['meters'];
-            };
-            setOutputs((prevOutputs) => {
-              return {
-                ...prevOutputs,
-                [outputName]: {
-                  ...prevOutputs[outputName],
-                  meters: {
-                    enable_ebu_meters:
-                      prevOutputs[outputName].meters.enable_ebu_meters,
-                    ebu_i: typedOutputData.meters.ebu_i,
-                    ebu_m: typedOutputData.meters.ebu_m,
-                    ebu_s: typedOutputData.meters.ebu_s,
-                    peak_left: typedOutputData.meters.peak_left,
-                    peak_right: typedOutputData.meters.peak_right
-                  }
-                }
-              };
-            });
-          });
+          setOutputsSamplingData(data.body.audio?.outputs);
         }
         break;
     }

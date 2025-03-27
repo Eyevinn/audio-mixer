@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHandleChange } from '../../hooks/useHandleChange';
 import { useRenderPanningAndActions } from '../../hooks/useRenderPanningAndActions';
-import { TAudioStrip, TBaseStrip, TMixStrip, TOutput } from '../../types/types';
-import { ActionButton } from '../ui/buttons/Buttons';
+import { TAudioStrip, TBaseStrip, TMixStrip } from '../../types/types';
 import { StripDropdown } from '../ui/dropdown/Dropdown';
 import { LabelInput } from '../ui/input/Input';
 import { Meters } from './stripComponents/meters/Meters';
 import { StripHeader } from './stripComponents/stripHeader/StripHeader';
 import { VolumeSlider } from './stripComponents/volumeSlider/VolumeSlider';
+import { TOutputStripProps } from './outputStrip/OutputStrip';
+import MuteButton from './stripComponents/buttons/MuteButton';
+import { useGlobalState } from '../../context/GlobalStateContext';
+
+type SendLevelOrigins = 'pre_fader' | 'post_fader';
 
 interface BaseStripProps extends TBaseStrip {
   isBeingConfigured?: boolean;
@@ -18,7 +22,7 @@ interface BaseStripProps extends TBaseStrip {
     is_stereo: boolean;
     second_channel: number;
   };
-  output?: TOutput;
+  output?: TOutputStripProps;
   backgroundColor: string;
   header: string;
   copyButton?: boolean;
@@ -26,7 +30,7 @@ interface BaseStripProps extends TBaseStrip {
   sendLevels?: {
     muted: boolean;
     volume: number;
-    origin: 'pre_fader' | 'post_fader';
+    origin: SendLevelOrigins;
   };
   isPFLInactive: boolean | undefined;
   isOutputStrip?: boolean;
@@ -55,13 +59,11 @@ export const BaseStrip = ({
   filters,
   input,
   output,
-  pre_fader_meter,
   backgroundColor,
   header,
   copyButton,
   config,
   sendLevels,
-  isPFLInactive,
   isOutputStrip,
   onReset,
   onRemove,
@@ -71,7 +73,7 @@ export const BaseStrip = ({
   handleOutputChange,
   children
 }: BaseStripProps) => {
-  const [stripLabel, setStripLabel] = useState<string>(stripId.toString());
+  const { updateStrip } = useGlobalState();
   const [isScreenTall, setIsScreenTall] = useState<boolean>(
     window.innerHeight > 1100
   );
@@ -81,6 +83,7 @@ export const BaseStrip = ({
   const [isScreenSmall, setIsScreenSmall] = useState<boolean>(
     window.innerHeight < 900
   );
+
   const configMode =
     sendLevels?.muted !== undefined &&
     sendLevels?.volume !== undefined &&
@@ -89,8 +92,6 @@ export const BaseStrip = ({
 
   const isPFLInput =
     output?.input.index === 1000 && output?.input.source === 'mix';
-  const showEbuMeters =
-    isOutputStrip && output && output.meters.enable_ebu_meters && onReset;
   const type = header.includes('Mix') ? 'mixes' : 'strips';
 
   const { renderPanningAndActions } = useRenderPanningAndActions(
@@ -100,11 +101,15 @@ export const BaseStrip = ({
     configMode,
     handleSelection,
     selected,
-    isPFLInactive,
     fader,
     filters,
     config
   );
+
+  const handleSendLevelOrigin = (val: string) => {
+    updateStrip(type, stripId, { origin: val }, config);
+    handleChange(type, stripId, 'origin', val, config);
+  };
 
   const { handleChange } = useHandleChange();
 
@@ -118,6 +123,17 @@ export const BaseStrip = ({
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const handleLabelChange = useCallback(
+    (updatedLabel: string) => {
+      if (isOutputStrip && handleOutputChange) {
+        handleOutputChange(stripId, 'label', updatedLabel);
+      } else {
+        handleChange(type, stripId, 'label', updatedLabel);
+      }
+    },
+    [handleChange, handleOutputChange, isOutputStrip, stripId, type]
+  );
 
   return (
     <div
@@ -138,7 +154,7 @@ export const BaseStrip = ({
       ) : (
         <StripHeader
           header={header}
-          label={label}
+          label={label || ''}
           configMode={configMode}
           copyButton={isBeingConfigured ? undefined : copyButton}
           isRemovingFromMix={configMode}
@@ -154,22 +170,12 @@ export const BaseStrip = ({
       {isOutputStrip && <span className="text-xs ml-4">Output label:</span>}
       <LabelInput
         value={
-          isOutputStrip
-            ? output?.label || ''
-            : label === ''
-              ? stripLabel || ''
-              : label || ''
+          label ||
+          `${type === 'strips' ? 'Strip' : 'Mix'} #${stripId.toString()}`
         }
         isPFLInput={isPFLInput}
         readOnly={isPFLInput}
-        onChange={(updatedLabel) => {
-          setStripLabel(updatedLabel);
-          if (isOutputStrip && handleOutputChange) {
-            handleOutputChange(stripId, 'label', updatedLabel);
-          } else {
-            handleChange(type, stripId, 'label', updatedLabel, config);
-          }
-        }}
+        onChange={handleLabelChange}
       />
 
       {/* Audio Strip Fields */}
@@ -183,11 +189,13 @@ export const BaseStrip = ({
       >
         <Meters
           isPFLInput={isPFLInput}
-          output={output}
-          input={input}
-          pre_fader_meter={pre_fader_meter}
+          type={type}
           isOutputStrip={isOutputStrip}
-          showEbuMeters={showEbuMeters ? true : false}
+          id={isOutputStrip ? output?.outputName : stripId}
+          EBUMetersAreEnabled={
+            isOutputStrip && output?.meters?.enable_ebu_meters
+          }
+          input={input}
           isScreenSmall={isScreenSmall}
           renderPanningAndActions={renderPanningAndActions}
           onReset={onReset}
@@ -206,10 +214,8 @@ export const BaseStrip = ({
           {configMode && (
             <StripDropdown
               options={['pre_fader', 'post_fader']}
-              value={sendLevels?.origin}
-              onChange={(origin) =>
-                handleChange(type, stripId, 'origin', origin, config)
-              }
+              value={sendLevels?.origin || ''}
+              onChange={handleSendLevelOrigin}
             />
           )}
           {configMode && <p className="text-base pb-2 mt-2">Receive Level</p>}
@@ -225,28 +231,18 @@ export const BaseStrip = ({
                   output && output.input.origin === 'pre_fader' && !isPFLInput
                 }
                 inputVolume={configMode ? sendLevels?.volume : fader?.volume}
-                onVolumeChange={(vol: number) =>
-                  handleChange(type, stripId, 'volume', vol, config)
-                }
+                type={type}
+                id={stripId}
+                config={config}
               />
             </div>
 
             {configMode && (
-              <ActionButton
-                label={'MUTE'}
-                buttonColor={
-                  sendLevels?.muted ? 'bg-mute-btn' : 'bg-default-btn'
-                }
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleChange(
-                    type,
-                    stripId,
-                    'muted',
-                    !sendLevels?.muted,
-                    config
-                  );
-                }}
+              <MuteButton
+                type={type}
+                id={stripId}
+                config={config}
+                muted={sendLevels?.muted}
               />
             )}
           </div>

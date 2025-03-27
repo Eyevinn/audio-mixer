@@ -175,13 +175,13 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
           {Object.entries(configurableMixStrips.inputs.strips).map(
             ([key, strip]) => (
               <div
-                key={parseInt(key, 10)}
+                key={'configurable-strip-' + key}
                 ref={(el) => {
                   stripRefs.current[parseInt(key, 10)] = el;
                 }}
               >
                 <ConfigureMixStrip
-                  key={key}
+                  key={'configurable-strip-2-' + key}
                   stripId={configurableMixStrips.stripId}
                   configId={parseInt(key, 10)}
                   sendLevels={strip}
@@ -210,13 +210,13 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
           {Object.entries(configurableMixStrips.inputs.mixes).map(
             ([key, mix]) => (
               <div
-                key={parseInt(key, 10)}
+                key={'configurable-mix-' + key}
                 ref={(el) => {
                   mixRefs.current[parseInt(key, 10)] = el;
                 }}
               >
                 <ConfigureMixStrip
-                  key={key}
+                  key={'configurable-mix-2-' + key}
                   stripId={configurableMixStrips.stripId}
                   configId={parseInt(key, 10)}
                   sendLevels={mix}
@@ -248,7 +248,7 @@ export const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
                 ? (mixRefs.current[output.input.index] = el)
                 : (stripRefs.current[output.input.index] = el);
             }}
-            key={key}
+            key={'output-' + key}
             output={output}
             outputName={key}
             isPFLInactive={
