@@ -25,5 +25,25 @@ LOGGER LEVELS
 REACT_APP_DEV_LOGGER_LEVEL=
 ```
 
-# Running the service
+## Development
 
+To start the Audio Mixer in dev mode, run:
+```
+npm run start
+```
+
+## Deployment
+
+If you have docker installed on your local machine you may create a docker image and run it in a simple container.
+
+To create a docker image tagged "audio-mixer" run:
+
+```
+docker build -t=audio-mixer .
+```
+
+To build a docker image and run it in a simple container run:
+
+```
+docker-compose up
+```
