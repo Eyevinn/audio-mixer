@@ -4,6 +4,8 @@ Audio Mixer for Ateliere.
 
 # Environment Variables
 
+See file .env.local.sample for reference, and create a file named .env.local and enter your environment variables.
+
 Useful for development, 'default' URL for modal
 ```
 REACT_APP_WS_URL=
