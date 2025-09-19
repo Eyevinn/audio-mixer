@@ -1,7 +1,40 @@
 {
-  "name": "audio-mixer",
+  "name": "@eyevinn/audio-mixer",
   "version": "0.1.0",
-  "private": true,
+  "description": "A professional, browser-based digital audio mixer for real-time audio processing and routing",
+  "homepage": "https://github.com/eyevinn/audio-mixer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eyevinn/audio-mixer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eyevinn/audio-mixer/issues"
+  },
+  "license": "AGPL-3.0",
+  "author": {
+    "name": "Eyevinn Technology",
+    "email": "info@eyevinn.se",
+    "url": "https://eyevinn.se"
+  },
+  "keywords": [
+    "audio",
+    "mixer",
+    "audio-processing",
+    "real-time",
+    "broadcast",
+    "streaming",
+    "equalizer",
+    "compressor",
+    "websocket",
+    "react",
+    "typescript",
+    "professional-audio",
+    "digital-mixer",
+    "audio-routing"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@babel/core": "^7.16.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
