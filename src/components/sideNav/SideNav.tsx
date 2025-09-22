@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Icons from '../../assets/icons/Icons';
-import logoSrc from '../../assets/images/ateliere-logo.png';
 import SideNavExport from './CustomSideNavItems/SideNavExport';
 import SideNavImport from './CustomSideNavItems/SideNavImport';
 import SideNavWebSocketStatus from './CustomSideNavItems/SideNavWebSocketStatus';
@@ -47,11 +46,6 @@ export const SideNav = () => {
             className="text-white hover:cursor-pointer rounded-xl hover:bg-light min-w-[60px] min-h-16 p-2 place-self-end"
           />
         </div>
-        <img
-          src={logoSrc}
-          alt="logo"
-          className="min-w-[220px] min-h-[70%] p-2 mr-1"
-        />
       </div>
       <div className={`flex flex-col grow justify-between text-white text-xl`}>
         <div className="mt-6">
