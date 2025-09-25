@@ -161,7 +161,7 @@ The Audio Mixer follows a modern React architecture with real-time capabilities:
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `REACT_APP_WS_URL` | WebSocket URL for backend connection | - | Yes |
+| `REACT_APP_WS_URL` | WebSocket URL for backend connection. Can be configured in UI dialogue. | - | No |
 | `REACT_APP_DEBUG_MODE` | Enable debug logging and features | `false` | No |
 | `REACT_APP_DEV_LOGGER_LEVEL` | Logging verbosity (0-3) | `1` | No |
 

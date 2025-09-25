@@ -6,7 +6,7 @@ export interface SaveConfig {
   audio: AudioState;
 }
 
-export const currentAudioMixerName = 'Ateliere Live Audio Mixer Config';
+export const currentAudioMixerName = 'Audio Mixer Config';
 export const currentAudioMixerVersion = 1;
 
 const saveToFile = (state: AudioState) => {
@@ -20,7 +20,7 @@ const saveToFile = (state: AudioState) => {
   link.href = URL.createObjectURL(file);
   const now = new Date();
   link.download =
-    'Ateliere_Audio_Mixer_Config_' +
+    'Mixer_Config_' +
     String(now.getFullYear()) +
     String(now.getMonth() + 1).padStart(2, '0') +
     String(now.getDate()).padStart(2, '0') +
